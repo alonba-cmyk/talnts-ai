@@ -121,9 +121,13 @@ import { AgentsShowcaseSection } from '@/app/components/AgentsShowcaseSection';
 import { TeamsAndAgentsSection } from '@/app/components/TeamsAndAgentsSection';
 import { TeamsAndAgentsV2 } from '@/app/components/TeamsAndAgentsV2';
 import { AIPlatformArchitectureSection } from '@/app/components/AIPlatformArchitectureSection';
+import { TeamCommandsSection } from '@/app/components/TeamCommandsSection';
 
 // Import SidekickThemeProvider for sidekick theming
 import { SidekickThemeProvider, SidekickPanelTheme } from '@/contexts/SidekickThemeContext';
+
+// Import shared section builder
+import { buildStandaloneSections } from '@/app/useSectionComponents';
 
 // Additional items data is now loaded from Supabase
 
@@ -1228,7 +1232,18 @@ const selectionToDepartment: Record<string, Department> = {
   'empower-teams': 'hr',
 };
 
-export default function App() {
+// Props for page-level overrides (used when rendering as a homepage from Pages system)
+interface AppProps {
+  pageOverride?: {
+    sections_visibility: Record<string, boolean>;
+    sections_order: string[];
+    hero_settings?: Record<string, any> | null;
+  } | null;
+  /** When set, renders only this single section (used for admin preview) */
+  previewSection?: string | null;
+}
+
+export default function App({ pageOverride, previewSection }: AppProps = {}) {
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<string | null>(null);
   const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
   const [showSolution, setShowSolution] = useState(false);
@@ -1357,43 +1372,6 @@ export default function App() {
     }
   };
 
-  // Get hero font size based on settings
-  const getHeroFontSize = () => {
-    const sizes = {
-      small: 'clamp(1.25rem, 3vw, 2rem)',
-      medium: 'clamp(1.5rem, 4vw, 2.75rem)',
-      large: 'clamp(1.875rem, 5vw, 3.75rem)',
-      xlarge: 'clamp(2.25rem, 6vw, 4.5rem)',
-    };
-    return sizes[siteSettings.hero_settings.font_size] || sizes.large;
-  };
-
-  // Get hero background style
-  const getHeroBackground = () => {
-    // While loading, use a neutral black background to prevent flash
-    if (siteSettingsLoading) {
-      return { background: '#000000' };
-    }
-    
-    const { hero_settings } = siteSettings;
-    if (hero_settings.background_type === 'solid') {
-      return { background: hero_settings.background_color };
-    }
-    if (hero_settings.background_type === 'gradient') {
-      return {
-        background: `linear-gradient(to bottom, ${hero_settings.background_gradient_from}, ${hero_settings.background_gradient_to})`,
-      };
-    }
-    if (hero_settings.background_type === 'image' && hero_settings.background_image_url) {
-      return {
-        backgroundImage: `url(${hero_settings.background_image_url})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      };
-    }
-    return { background: '#000000' };
-  };
-
   // Show loading screen while site settings are being fetched
   // This prevents the "flash" of default values before Supabase data loads
   if (siteSettingsLoading) {
@@ -1407,9 +1385,55 @@ export default function App() {
     );
   }
 
+  // Apply page overrides if provided (homepage from Pages system)
+  // In preview mode, force all sections visible so the preview can render any section
+  const effectiveVisibility = previewSection
+    ? Object.fromEntries(Object.keys(siteSettings.sections_visibility).map(k => [k, true])) as typeof siteSettings.sections_visibility
+    : pageOverride
+      ? pageOverride.sections_visibility as typeof siteSettings.sections_visibility
+      : siteSettings.sections_visibility;
+  const effectiveOrder = pageOverride
+    ? pageOverride.sections_order
+    : siteSettings.sections_order;
+  const effectiveHeroSettings = pageOverride?.hero_settings
+    ? { ...siteSettings.hero_settings, ...pageOverride.hero_settings }
+    : siteSettings.hero_settings;
+
+  // Get hero font size based on effective settings
+  const getHeroFontSize = () => {
+    const sizes: Record<string, string> = {
+      small: 'clamp(1.25rem, 3vw, 2rem)',
+      medium: 'clamp(1.5rem, 4vw, 2.75rem)',
+      large: 'clamp(1.875rem, 5vw, 3.75rem)',
+      xlarge: 'clamp(2.25rem, 6vw, 4.5rem)',
+    };
+    return sizes[effectiveHeroSettings.font_size] || sizes.large;
+  };
+
+  // Get hero background style based on effective settings
+  const getHeroBackground = () => {
+    const hs = effectiveHeroSettings;
+    if (hs.background_type === 'solid') {
+      return { background: hs.background_color };
+    }
+    if (hs.background_type === 'gradient') {
+      return {
+        background: `linear-gradient(to bottom, ${hs.background_gradient_from}, ${hs.background_gradient_to})`,
+      };
+    }
+    if (hs.background_type === 'image' && hs.background_image_url) {
+      return {
+        backgroundImage: `url(${hs.background_image_url})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      };
+    }
+    return { background: '#000000' };
+  };
+
   // Define section components for dynamic rendering
   const sectionComponents: Record<string, React.ReactNode> = {
-    hero: siteSettings.sections_visibility.hero ? (
+    hero: effectiveVisibility.hero ? (
       <section 
         key="hero"
         className="relative min-h-screen flex flex-col items-center justify-center px-6 py-20"
@@ -1422,7 +1446,7 @@ export default function App() {
           className="text-center max-w-5xl mx-auto"
         >
           {/* Monday.com Logo */}
-          <HeroLogo customLogoUrl={siteSettings.hero_settings.logo_url} />
+          <HeroLogo customLogoUrl={effectiveHeroSettings.logo_url} />
           
           {/* AI Work Platform Label */}
           <motion.p
@@ -1431,7 +1455,7 @@ export default function App() {
             transition={{ delay: 0.3, duration: 0.8 }}
             className="text-sm md:text-base tracking-[0.2em] uppercase text-muted-foreground/80 mb-8"
           >
-            {siteSettings.hero_settings.platform_label || 'AI Work Platform'}
+            {effectiveHeroSettings.platform_label || 'AI Work Platform'}
           </motion.p>
           
           {/* Main Headline */}
@@ -1442,9 +1466,9 @@ export default function App() {
             className="mb-6 leading-tight"
             style={{ fontSize: getHeroFontSize() }}
           >
-            <span className="text-foreground/80">{siteSettings.hero_settings.headline_text || 'Empowering every team '}</span>
+            <span className="text-foreground/80">{effectiveHeroSettings.headline_text || 'Empowering every team '}</span>
             <span className="bg-gradient-to-r from-[#eaecd8] via-[#c7ede0] to-[#6161ff] bg-clip-text text-transparent">
-              {siteSettings.hero_settings.headline_gradient_text || 'to accelerate business impact'}
+              {effectiveHeroSettings.headline_gradient_text || 'to accelerate business impact'}
             </span>
           </motion.p>
           
@@ -1490,23 +1514,17 @@ export default function App() {
       </section>
     ) : null,
 
-    hero_alternative: siteSettings.sections_visibility.hero_alternative ? (
-      <HeroAlternative key="hero_alternative" />
-    ) : null,
+    // Standalone sections (shared with DynamicPage)
+    ...buildStandaloneSections(
+      effectiveVisibility as unknown as Record<string, boolean>,
+      {
+        teamsAgentsV2Layout: siteSettings.teams_agents_v2_layout,
+        aiPlatformArchLayout: siteSettings.ai_platform_arch_layout,
+      }
+    ),
 
-    hero_outcome_cards: siteSettings.sections_visibility.hero_outcome_cards ? (
-      <HeroOutcomeCards key="hero_outcome_cards" />
-    ) : null,
-
-    work_comparison: siteSettings.sections_visibility.work_comparison ? (
-      <WorkComparisonSection key="work_comparison" agents={mappedAgents} />
-    ) : null,
-
-    sidekick_capabilities: siteSettings.sections_visibility.sidekick_capabilities ? (
-      <SidekickCapabilitiesSection key="sidekick_capabilities" />
-    ) : null,
-
-    sidekick: siteSettings.sections_visibility.sidekick ? (
+    // Override sidekick with onExplore callback for main page
+    sidekick: effectiveVisibility.sidekick ? (
       <BeforeAfterBoardSection
         key="sidekick"
         onExplore={() => {
@@ -1516,27 +1534,12 @@ export default function App() {
       />
     ) : null,
 
-    agents_showcase: siteSettings.sections_visibility.agents_showcase ? (
-      <AgentsShowcaseSection key="agents_showcase" />
+    // Override work_comparison with actual agents data
+    work_comparison: effectiveVisibility.work_comparison ? (
+      <WorkComparisonSection key="work_comparison" agents={mappedAgents} />
     ) : null,
 
-    project_management: siteSettings.sections_visibility.project_management ? (
-      <ProjectManagementSection key="project_management" />
-    ) : null,
-
-    teams_and_agents: siteSettings.sections_visibility.teams_and_agents ? (
-      <TeamsAndAgentsSection key="teams_and_agents" />
-    ) : null,
-
-    teams_and_agents_v2: siteSettings.sections_visibility.teams_and_agents_v2 ? (
-      <TeamsAndAgentsV2 key="teams_and_agents_v2" layoutVariant={siteSettings.teams_agents_v2_layout} />
-    ) : null,
-
-    ai_platform_architecture: siteSettings.sections_visibility.ai_platform_architecture ? (
-      <AIPlatformArchitectureSection key="ai_platform_architecture" layoutVariant={siteSettings.ai_platform_arch_layout} />
-    ) : null,
-
-    departments: siteSettings.sections_visibility.departments ? (
+    departments: effectiveVisibility.departments ? (
       <section
         key="departments"
         id="selector-section"
@@ -1553,7 +1556,7 @@ export default function App() {
       </section>
     ) : null,
 
-    ai_platform: siteSettings.sections_visibility.ai_platform ? (
+    ai_platform: effectiveVisibility.ai_platform ? (
       <AnimatePresence key="ai_platform">
         {showSolution && selectedDepartment && (
           <motion.section
@@ -1615,6 +1618,25 @@ export default function App() {
     ) : null,
   };
 
+  // Preview mode: render only the requested section
+  if (previewSection) {
+    const previewComponent = sectionComponents[previewSection];
+    return (
+      <SidekickThemeProvider
+        initialHeroTheme={siteSettings.sidekick_hero_theme as SidekickPanelTheme | null}
+        initialInActionTheme={siteSettings.sidekick_inaction_theme as SidekickPanelTheme | null}
+      >
+        <div className="bg-background text-foreground overflow-hidden">
+          {previewComponent || (
+            <div className="flex items-center justify-center h-screen text-gray-500">
+              Section "{previewSection}" not found
+            </div>
+          )}
+        </div>
+      </SidekickThemeProvider>
+    );
+  }
+
   return (
     <SidekickThemeProvider
       initialHeroTheme={siteSettings.sidekick_hero_theme as SidekickPanelTheme | null}
@@ -1622,7 +1644,7 @@ export default function App() {
     >
       <div className="min-h-screen bg-background text-foreground">
         {/* Render sections in order based on sections_order */}
-        {siteSettings.sections_order.map((sectionId) => sectionComponents[sectionId])}
+        {effectiveOrder.map((sectionId) => sectionComponents[sectionId])}
       </div>
     </SidekickThemeProvider>
   );

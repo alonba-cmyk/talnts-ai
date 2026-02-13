@@ -7,6 +7,147 @@ interface BusinessValuesEditorProps {
   onBack?: () => void;
 }
 
+// ─── Embeddable Panel (for use inside Departments editor) ────────────────────
+
+interface BusinessValuesPanelProps {
+  departmentName: string; // e.g. 'marketing', 'sales'
+}
+
+export function BusinessValuesPanel({ departmentName }: BusinessValuesPanelProps) {
+  const dept = departmentName.toLowerCase() as Department;
+  const { getValuesForDepartment, updateValue, addValue, deleteValue, resetToDefault } = useBusinessValues();
+
+  const [editingValue, setEditingValue] = useState<BusinessValue | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const [showSaved, setShowSaved] = useState(false);
+
+  const departmentValues = getValuesForDepartment(dept);
+
+  const handleSave = (value: BusinessValue) => {
+    if (isCreating) {
+      addValue(dept, value);
+    } else {
+      updateValue(dept, value);
+    }
+    setEditingValue(null);
+    setIsCreating(false);
+    setShowSaved(true);
+    setTimeout(() => setShowSaved(false), 2000);
+  };
+
+  const handleDelete = (valueId: string) => {
+    if (confirm('Are you sure you want to delete this value?')) {
+      deleteValue(dept, valueId);
+    }
+  };
+
+  const handleCreate = () => {
+    setEditingValue({
+      id: '',
+      iconName: 'TrendingUp',
+      title: '',
+      description: '',
+      supportedBy: [],
+      replacesTools: [],
+    });
+    setIsCreating(true);
+  };
+
+  return (
+    <div>
+      {/* Toolbar */}
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-gray-400 text-sm">
+          Value propositions for this department. These are used in landing pages and marketing materials.
+        </p>
+        <div className="flex items-center gap-2">
+          {showSaved && (
+            <span className="text-xs text-green-400 flex items-center gap-1">
+              <Check className="w-3 h-3" /> Saved
+            </span>
+          )}
+          <button
+            onClick={() => { if (confirm(`Reset all values for ${dept} to defaults?`)) resetToDefault(dept); }}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-400 text-xs transition-colors"
+          >
+            <RotateCcw className="w-3 h-3" /> Reset
+          </button>
+        </div>
+      </div>
+
+      {/* Values Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        {departmentValues.map((value, idx) => {
+          const Icon = getIconComponent(value.iconName);
+          return (
+            <motion.div
+              key={value.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.05 }}
+              className="bg-gray-900 rounded-xl border border-gray-800 p-4 hover:border-gray-700 transition-colors"
+            >
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-5 h-5 text-emerald-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-white font-semibold text-sm mb-0.5">{value.title}</h4>
+                  <p className="text-gray-400 text-xs line-clamp-2">{value.description}</p>
+                  {value.supportedBy.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {value.supportedBy.map(feature => (
+                        <span key={feature} className="px-1.5 py-0.5 text-[10px] bg-gray-800 text-gray-400 rounded">
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="flex gap-0.5">
+                  <button
+                    onClick={() => { setEditingValue(value); setIsCreating(false); }}
+                    className="p-1.5 hover:bg-gray-800 rounded-lg transition-colors text-gray-500 hover:text-white"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(value.id)}
+                    className="p-1.5 hover:bg-red-500/20 rounded-lg transition-colors text-gray-500 hover:text-red-400"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+
+        {/* Add New */}
+        <button
+          onClick={handleCreate}
+          className="bg-gray-900/50 border-2 border-dashed border-gray-700 rounded-xl p-6 hover:border-emerald-500/50 hover:bg-gray-900 transition-all flex flex-col items-center justify-center gap-2 text-gray-500 hover:text-emerald-400"
+        >
+          <Plus className="w-6 h-6" />
+          <span className="text-sm font-medium">Add New Value</span>
+        </button>
+      </div>
+
+      {/* Edit Modal */}
+      <AnimatePresence>
+        {editingValue && (
+          <EditValueModal
+            value={editingValue}
+            isNew={isCreating}
+            onSave={handleSave}
+            onClose={() => { setEditingValue(null); setIsCreating(false); }}
+          />
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 const departments: { id: Department; label: string }[] = [
   { id: 'marketing', label: 'Marketing' },
   { id: 'sales', label: 'Sales' },

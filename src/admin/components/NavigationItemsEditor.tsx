@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, GripVertical, Save, X, Edit2, Target, AlertCircle, Sparkles, Package, Users, Zap, ArrowLeft, Check, ExternalLink, Building2 } from 'lucide-react';
+import { Plus, Trash2, GripVertical, Save, X, Edit2, Target, AlertCircle, Sparkles, Package, Users, Zap, ArrowLeft, Check, ExternalLink, Building2, TrendingUp } from 'lucide-react';
+import { BusinessValuesPanel } from './BusinessValuesEditor';
 import { supabase } from '@/lib/supabase';
 import { ImageUploader } from './ImageUploader';
 
@@ -45,7 +46,7 @@ const departmentOptions = [
   { value: 'hr', label: 'HR' },
 ];
 
-type ContentTab = 'overview' | 'products' | 'agents' | 'vibeapps' | 'sidekick';
+type ContentTab = 'overview' | 'products' | 'agents' | 'vibeapps' | 'sidekick' | 'values';
 type KnowledgeTab = 'products' | 'agents' | 'vibeapps' | 'sidekick';
 
 interface NavigationItem {
@@ -456,6 +457,7 @@ export function NavigationItemsEditor({ type, title, icon, onNavigateToKnowledge
     { id: 'agents' as ContentTab, label: 'Agents', icon: Users, count: linkedAgents.length },
     { id: 'vibeapps' as ContentTab, label: 'Vibe Apps', icon: Sparkles, count: linkedVibeApps.length },
     { id: 'sidekick' as ContentTab, label: 'Sidekick', icon: Zap, count: linkedSidekick.length },
+    ...(isDepartments ? [{ id: 'values' as ContentTab, label: 'Business Values', icon: TrendingUp }] : []),
   ];
 
   const getCurrentContent = () => {
@@ -487,7 +489,7 @@ export function NavigationItemsEditor({ type, title, icon, onNavigateToKnowledge
     }
   };
 
-  // Navigate to Knowledge Base to add new content
+  // Navigate to AI Capabilities to add new content
   const handleAddInKnowledge = () => {
     if (onNavigateToKnowledge && activeTab !== 'overview') {
       onNavigateToKnowledge(activeTab as KnowledgeTab);
@@ -610,6 +612,8 @@ export function NavigationItemsEditor({ type, title, icon, onNavigateToKnowledge
               </div>
             </div>
           </div>
+        ) : activeTab === 'values' && isDepartments && selectedItem.name ? (
+          <BusinessValuesPanel departmentName={selectedItem.name} />
         ) : currentContent ? (
           <div>
             <div className="flex items-center justify-between mb-4">
@@ -621,7 +625,7 @@ export function NavigationItemsEditor({ type, title, icon, onNavigateToKnowledge
                 className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-white transition-colors"
               >
                 <Plus className="w-4 h-4" />
-                Add {getTabLabel()} in Knowledge Base
+                Add {getTabLabel()} in AI Capabilities
                 <ExternalLink className="w-3 h-3 ml-1" />
               </button>
             </div>
@@ -629,14 +633,14 @@ export function NavigationItemsEditor({ type, title, icon, onNavigateToKnowledge
             {currentContent.items.length === 0 ? (
               <div className="text-center py-12 bg-gray-900 rounded-xl border border-gray-800">
                 <Package className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-                <p className="text-gray-400">No {getTabLabel()}s in Knowledge Base yet.</p>
-                <p className="text-gray-500 text-sm mt-1">Go to Knowledge Base to add new content.</p>
+                <p className="text-gray-400">No {getTabLabel()}s in AI Capabilities yet.</p>
+                <p className="text-gray-500 text-sm mt-1">Go to AI Capabilities to add new content.</p>
                 <button
                   onClick={handleAddInKnowledge}
                   className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-white transition-colors"
                 >
                   <Plus className="w-4 h-4" />
-                  Open Knowledge Base
+                  Open AI Capabilities
                   <ExternalLink className="w-3 h-3" />
                 </button>
               </div>

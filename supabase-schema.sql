@@ -183,6 +183,16 @@ DO $$ BEGIN
   END IF;
 END $$;
 
+-- Add battle_card_content column if not exists (for battle card editor)
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'site_settings' AND column_name = 'battle_card_content'
+  ) THEN
+    ALTER TABLE site_settings ADD COLUMN battle_card_content JSONB DEFAULT NULL;
+  END IF;
+END $$;
+
 -- AI Transformations table (for navigation tabs)
 CREATE TABLE IF NOT EXISTS ai_transformations (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -556,3 +566,503 @@ ON CONFLICT (department_id, vibe_app_id) DO NOTHING;
 INSERT INTO department_sidekick_actions (department_id, sidekick_action_id)
 SELECT department_id, id FROM sidekick_actions WHERE department_id IS NOT NULL
 ON CONFLICT (department_id, sidekick_action_id) DO NOTHING;
+
+-- =====================================================
+-- PAGES TABLE for dynamic landing pages
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS pages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug TEXT UNIQUE NOT NULL,
+  title TEXT NOT NULL DEFAULT 'New Page',
+  meta_description TEXT DEFAULT '',
+  og_image TEXT DEFAULT '',
+  department_id TEXT DEFAULT NULL,
+  outcome_id TEXT DEFAULT NULL,
+  sections_visibility JSONB DEFAULT '{"hero": true}',
+  sections_order JSONB DEFAULT '["hero"]',
+  hero_settings JSONB DEFAULT NULL,
+  is_homepage BOOLEAN DEFAULT false,
+  status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'published')),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Enable RLS on pages
+ALTER TABLE pages ENABLE ROW LEVEL SECURITY;
+
+-- Create RLS policy for pages
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "Allow all on pages" ON pages;
+  CREATE POLICY "Allow all on pages" ON pages FOR ALL USING (true) WITH CHECK (true);
+END $$;
+
+-- Create index on slug for fast lookups
+CREATE INDEX IF NOT EXISTS idx_pages_slug ON pages(slug);
+CREATE INDEX IF NOT EXISTS idx_pages_status ON pages(status);
+
+-- Create updated_at trigger for pages
+DROP TRIGGER IF EXISTS update_pages_updated_at ON pages;
+CREATE TRIGGER update_pages_updated_at BEFORE UPDATE ON pages FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- =====================================================
+-- CASE STUDY SOURCES TABLE (uploaded presentations/docs)
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS case_study_sources (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  filename TEXT NOT NULL,
+  file_url TEXT NOT NULL,
+  file_type TEXT DEFAULT 'pdf' CHECK (file_type IN ('pdf', 'pptx', 'docx', 'other')),
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'syncing', 'synced', 'error')),
+  region TEXT DEFAULT '',
+  extracted_count INT DEFAULT 0,
+  error_message TEXT DEFAULT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE case_study_sources ENABLE ROW LEVEL SECURITY;
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "Allow all on case_study_sources" ON case_study_sources;
+  CREATE POLICY "Allow all on case_study_sources" ON case_study_sources FOR ALL USING (true) WITH CHECK (true);
+END $$;
+
+DROP TRIGGER IF EXISTS update_case_study_sources_updated_at ON case_study_sources;
+CREATE TRIGGER update_case_study_sources_updated_at BEFORE UPDATE ON case_study_sources FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- =====================================================
+-- CASE STUDIES TABLE (individual customer stories)
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS case_studies (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  source_id UUID DEFAULT NULL REFERENCES case_study_sources(id) ON DELETE SET NULL,
+  company_name TEXT NOT NULL,
+  company_logo TEXT DEFAULT '',
+  industry TEXT DEFAULT '',
+  location TEXT DEFAULT '',
+  region TEXT DEFAULT '',
+  products_used TEXT[] DEFAULT '{}',
+  challenge TEXT DEFAULT '',
+  solution TEXT DEFAULT '',
+  quote_text TEXT DEFAULT '',
+  quote_author TEXT DEFAULT '',
+  quote_title TEXT DEFAULT '',
+  impact_metrics JSONB DEFAULT '[]',
+  partner TEXT DEFAULT '',
+  is_public_approved BOOLEAN DEFAULT false,
+  order_index INT DEFAULT 0,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE case_studies ENABLE ROW LEVEL SECURITY;
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "Allow all on case_studies" ON case_studies;
+  CREATE POLICY "Allow all on case_studies" ON case_studies FOR ALL USING (true) WITH CHECK (true);
+END $$;
+
+CREATE INDEX IF NOT EXISTS idx_case_studies_source ON case_studies(source_id);
+CREATE INDEX IF NOT EXISTS idx_case_studies_industry ON case_studies(industry);
+CREATE INDEX IF NOT EXISTS idx_case_studies_region ON case_studies(region);
+
+DROP TRIGGER IF EXISTS update_case_studies_updated_at ON case_studies;
+CREATE TRIGGER update_case_studies_updated_at BEFORE UPDATE ON case_studies FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- =====================================================
+-- DESIGN ASSETS TABLE (organized visual assets)
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS design_assets (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  description TEXT DEFAULT '',
+  category TEXT DEFAULT 'other' CHECK (category IN ('product_logo', 'agent_image', 'department_avatar', 'vibe', 'sidekick', 'icon', 'background', 'other')),
+  subcategory TEXT DEFAULT '',
+  file_url TEXT NOT NULL,
+  thumbnail_url TEXT DEFAULT '',
+  file_type TEXT DEFAULT 'png' CHECK (file_type IN ('png', 'svg', 'jpg', 'jpeg', 'webp', 'gif', 'other')),
+  tags TEXT[] DEFAULT '{}',
+  order_index INT DEFAULT 0,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE design_assets ENABLE ROW LEVEL SECURITY;
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "Allow all on design_assets" ON design_assets;
+  CREATE POLICY "Allow all on design_assets" ON design_assets FOR ALL USING (true) WITH CHECK (true);
+END $$;
+
+CREATE INDEX IF NOT EXISTS idx_design_assets_category ON design_assets(category);
+
+DROP TRIGGER IF EXISTS update_design_assets_updated_at ON design_assets;
+CREATE TRIGGER update_design_assets_updated_at BEFORE UPDATE ON design_assets FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- =====================================================
+-- JUNCTION TABLES for Products (Many-to-Many)
+-- Allows capabilities (agents, vibe apps, sidekick) to be linked to products
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS product_agents (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  agent_id UUID REFERENCES agents(id) ON DELETE CASCADE,
+  order_index INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(product_id, agent_id)
+);
+
+CREATE TABLE IF NOT EXISTS product_vibe_apps (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  vibe_app_id UUID REFERENCES vibe_apps(id) ON DELETE CASCADE,
+  order_index INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(product_id, vibe_app_id)
+);
+
+CREATE TABLE IF NOT EXISTS product_sidekick_actions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  sidekick_action_id UUID REFERENCES sidekick_actions(id) ON DELETE CASCADE,
+  order_index INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(product_id, sidekick_action_id)
+);
+
+-- Enable RLS on product junction tables
+ALTER TABLE product_agents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE product_vibe_apps ENABLE ROW LEVEL SECURITY;
+ALTER TABLE product_sidekick_actions ENABLE ROW LEVEL SECURITY;
+
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "Allow all" ON product_agents;
+  DROP POLICY IF EXISTS "Allow all" ON product_vibe_apps;
+  DROP POLICY IF EXISTS "Allow all" ON product_sidekick_actions;
+  
+  CREATE POLICY "Allow all" ON product_agents FOR ALL USING (true) WITH CHECK (true);
+  CREATE POLICY "Allow all" ON product_vibe_apps FOR ALL USING (true) WITH CHECK (true);
+  CREATE POLICY "Allow all" ON product_sidekick_actions FOR ALL USING (true) WITH CHECK (true);
+END $$;
+
+CREATE INDEX IF NOT EXISTS idx_product_agents_product ON product_agents(product_id);
+CREATE INDEX IF NOT EXISTS idx_product_agents_agent ON product_agents(agent_id);
+CREATE INDEX IF NOT EXISTS idx_product_vibe_apps_product ON product_vibe_apps(product_id);
+CREATE INDEX IF NOT EXISTS idx_product_vibe_apps_vibe ON product_vibe_apps(vibe_app_id);
+CREATE INDEX IF NOT EXISTS idx_product_sidekick_product ON product_sidekick_actions(product_id);
+CREATE INDEX IF NOT EXISTS idx_product_sidekick_action ON product_sidekick_actions(sidekick_action_id);
+
+-- =====================================================
+-- CAPABILITY MESSAGING
+-- Stores value proposition headlines and bullet points
+-- for each capability type (Agents, Vibe, Sidekick)
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS capability_messaging (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  capability_type TEXT NOT NULL UNIQUE CHECK (capability_type IN ('agents', 'vibe', 'sidekick')),
+  headline TEXT DEFAULT '',
+  value_points JSONB DEFAULT '[]'::jsonb,
+  hero_image TEXT DEFAULT '',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE capability_messaging ENABLE ROW LEVEL SECURITY;
+
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "Allow all on capability_messaging" ON capability_messaging;
+  CREATE POLICY "Allow all on capability_messaging" ON capability_messaging FOR ALL USING (true) WITH CHECK (true);
+END $$;
+
+DROP TRIGGER IF EXISTS update_capability_messaging_updated_at ON capability_messaging;
+CREATE TRIGGER update_capability_messaging_updated_at BEFORE UPDATE ON capability_messaging FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- =====================================================
+-- BATTLE CARDS SYSTEM
+-- Competitive intelligence for sales enablement
+-- =====================================================
+
+-- Competitors table
+CREATE TABLE IF NOT EXISTS competitors (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  logo_url TEXT DEFAULT '',
+  website TEXT DEFAULT '',
+  description TEXT DEFAULT '',
+  pricing_info TEXT DEFAULT '',
+  founded TEXT DEFAULT '',
+  hq_location TEXT DEFAULT '',
+  tier INTEGER DEFAULT 1 CHECK (tier IN (1, 2)),
+  is_active BOOLEAN DEFAULT true,
+  order_index INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Add tier column if not exists (for existing DBs)
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'competitors' AND column_name = 'tier'
+  ) THEN
+    ALTER TABLE competitors ADD COLUMN tier INTEGER DEFAULT 1 CHECK (tier IN (1, 2));
+  END IF;
+END $$;
+
+-- Product-Competitor mapping (which competitors compete with which monday products)
+CREATE TABLE IF NOT EXISTS product_competitors (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  competitor_id UUID REFERENCES competitors(id) ON DELETE CASCADE,
+  UNIQUE(product_id, competitor_id)
+);
+
+-- Comparison parameters (categories and criteria for comparison)
+CREATE TABLE IF NOT EXISTS comparison_parameters (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  category TEXT DEFAULT 'features' CHECK (category IN ('features', 'ai_capabilities', 'pricing', 'integrations', 'security', 'ux', 'support', 'scalability')),
+  description TEXT DEFAULT '',
+  weight INTEGER DEFAULT 5 CHECK (weight >= 1 AND weight <= 10),
+  is_ai_feature BOOLEAN DEFAULT false,
+  order_index INTEGER DEFAULT 0,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Battle scores (the actual comparison data)
+CREATE TABLE IF NOT EXISTS battle_scores (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  competitor_id UUID REFERENCES competitors(id) ON DELETE CASCADE,
+  parameter_id UUID REFERENCES comparison_parameters(id) ON DELETE CASCADE,
+  monday_score INTEGER DEFAULT 3 CHECK (monday_score >= 1 AND monday_score <= 5),
+  competitor_score INTEGER DEFAULT 3 CHECK (competitor_score >= 1 AND competitor_score <= 5),
+  monday_notes TEXT DEFAULT '',
+  competitor_notes TEXT DEFAULT '',
+  talking_points TEXT DEFAULT '',
+  source TEXT DEFAULT 'manual',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(product_id, competitor_id, parameter_id)
+);
+
+-- Knowledge sources for battle cards (uploaded docs, scanned sites)
+CREATE TABLE IF NOT EXISTS battle_knowledge_sources (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL DEFAULT '',
+  file_url TEXT DEFAULT '',
+  source_url TEXT DEFAULT '',
+  file_type TEXT DEFAULT 'pdf' CHECK (file_type IN ('pdf', 'pptx', 'docx', 'url', 'other')),
+  competitor_id UUID REFERENCES competitors(id) ON DELETE SET NULL,
+  product_id UUID REFERENCES products(id) ON DELETE SET NULL,
+  extracted_data JSONB DEFAULT '{}'::jsonb,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'processed', 'error')),
+  error_message TEXT DEFAULT '',
+  scanned_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Objection handlers (responses to common competitor objections)
+CREATE TABLE IF NOT EXISTS objection_handlers (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  competitor_id UUID REFERENCES competitors(id) ON DELETE CASCADE,
+  objection_text TEXT NOT NULL DEFAULT '',
+  response_text TEXT NOT NULL DEFAULT '',
+  category TEXT DEFAULT 'general' CHECK (category IN ('general', 'pricing', 'features', 'security', 'migration', 'support', 'ai')),
+  order_index INTEGER DEFAULT 0,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable RLS on battle card tables
+ALTER TABLE competitors ENABLE ROW LEVEL SECURITY;
+ALTER TABLE product_competitors ENABLE ROW LEVEL SECURITY;
+ALTER TABLE comparison_parameters ENABLE ROW LEVEL SECURITY;
+ALTER TABLE battle_scores ENABLE ROW LEVEL SECURITY;
+ALTER TABLE battle_knowledge_sources ENABLE ROW LEVEL SECURITY;
+ALTER TABLE objection_handlers ENABLE ROW LEVEL SECURITY;
+
+-- Create RLS policies for battle card tables
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "Allow all on competitors" ON competitors;
+  DROP POLICY IF EXISTS "Allow all on product_competitors" ON product_competitors;
+  DROP POLICY IF EXISTS "Allow all on comparison_parameters" ON comparison_parameters;
+  DROP POLICY IF EXISTS "Allow all on battle_scores" ON battle_scores;
+  DROP POLICY IF EXISTS "Allow all on battle_knowledge_sources" ON battle_knowledge_sources;
+  DROP POLICY IF EXISTS "Allow all on objection_handlers" ON objection_handlers;
+
+  CREATE POLICY "Allow all on competitors" ON competitors FOR ALL USING (true) WITH CHECK (true);
+  CREATE POLICY "Allow all on product_competitors" ON product_competitors FOR ALL USING (true) WITH CHECK (true);
+  CREATE POLICY "Allow all on comparison_parameters" ON comparison_parameters FOR ALL USING (true) WITH CHECK (true);
+  CREATE POLICY "Allow all on battle_scores" ON battle_scores FOR ALL USING (true) WITH CHECK (true);
+  CREATE POLICY "Allow all on battle_knowledge_sources" ON battle_knowledge_sources FOR ALL USING (true) WITH CHECK (true);
+  CREATE POLICY "Allow all on objection_handlers" ON objection_handlers FOR ALL USING (true) WITH CHECK (true);
+END $$;
+
+-- Triggers for battle card tables
+DROP TRIGGER IF EXISTS update_competitors_updated_at ON competitors;
+CREATE TRIGGER update_competitors_updated_at BEFORE UPDATE ON competitors FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_comparison_parameters_updated_at ON comparison_parameters;
+CREATE TRIGGER update_comparison_parameters_updated_at BEFORE UPDATE ON comparison_parameters FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_battle_scores_updated_at ON battle_scores;
+CREATE TRIGGER update_battle_scores_updated_at BEFORE UPDATE ON battle_scores FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_battle_knowledge_sources_updated_at ON battle_knowledge_sources;
+CREATE TRIGGER update_battle_knowledge_sources_updated_at BEFORE UPDATE ON battle_knowledge_sources FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_objection_handlers_updated_at ON objection_handlers;
+CREATE TRIGGER update_objection_handlers_updated_at BEFORE UPDATE ON objection_handlers FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Indexes for battle card tables
+CREATE INDEX IF NOT EXISTS idx_product_competitors_product ON product_competitors(product_id);
+CREATE INDEX IF NOT EXISTS idx_product_competitors_competitor ON product_competitors(competitor_id);
+CREATE INDEX IF NOT EXISTS idx_battle_scores_product ON battle_scores(product_id);
+CREATE INDEX IF NOT EXISTS idx_battle_scores_competitor ON battle_scores(competitor_id);
+CREATE INDEX IF NOT EXISTS idx_battle_scores_parameter ON battle_scores(parameter_id);
+CREATE INDEX IF NOT EXISTS idx_battle_knowledge_competitor ON battle_knowledge_sources(competitor_id);
+CREATE INDEX IF NOT EXISTS idx_battle_knowledge_product ON battle_knowledge_sources(product_id);
+CREATE INDEX IF NOT EXISTS idx_objection_handlers_product ON objection_handlers(product_id);
+CREATE INDEX IF NOT EXISTS idx_objection_handlers_competitor ON objection_handlers(competitor_id);
+
+-- Seed initial competitors (full list with tier and product-specific entries)
+-- CRM competitors
+INSERT INTO competitors (name, website, description, logo_url, tier, order_index) VALUES
+  ('Salesforce CRM', 'https://salesforce.com', 'Enterprise CRM and cloud platform', 'https://www.google.com/s2/favicons?domain=salesforce.com&sz=128', 1, 1),
+  ('HubSpot CRM', 'https://hubspot.com', 'Inbound marketing, sales, and CRM platform', 'https://www.google.com/s2/favicons?domain=hubspot.com&sz=128', 1, 2),
+  ('Zoho CRM', 'https://zoho.com/crm', 'Flexible CRM for growing businesses', 'https://www.google.com/s2/favicons?domain=zoho.com&sz=128', 2, 3),
+  ('Attio', 'https://attio.com', 'Next-gen CRM built on your data', 'https://www.google.com/s2/favicons?domain=attio.com&sz=128', 1, 4),
+  -- Work Management competitors
+  ('Asana', 'https://asana.com', 'Work management and project tracking', 'https://www.google.com/s2/favicons?domain=asana.com&sz=128', 1, 5),
+  ('Smartsheet', 'https://smartsheet.com', 'Enterprise work management platform', 'https://www.google.com/s2/favicons?domain=smartsheet.com&sz=128', 1, 6),
+  ('ClickUp', 'https://clickup.com', 'All-in-one productivity and project management', 'https://www.google.com/s2/favicons?domain=clickup.com&sz=128', 1, 7),
+  ('Airtable', 'https://airtable.com', 'Low-code platform for building collaborative apps', 'https://www.google.com/s2/favicons?domain=airtable.com&sz=128', 1, 8),
+  ('Wrike', 'https://wrike.com', 'Versatile work management and collaboration', 'https://www.google.com/s2/favicons?domain=wrike.com&sz=128', 1, 9),
+  ('Notion', 'https://notion.so', 'All-in-one workspace for notes, tasks, and wikis', 'https://www.google.com/s2/favicons?domain=notion.so&sz=128', 1, 10),
+  ('Adobe Workfront', 'https://business.adobe.com/products/workfront/main.html', 'Enterprise work management by Adobe', 'https://www.google.com/s2/favicons?domain=adobe.com&sz=128', 1, 11),
+  ('Microsoft Planner', 'https://www.microsoft.com/en-us/microsoft-365/business/task-management-software', 'Task management within Microsoft 365', 'https://www.google.com/s2/favicons?domain=microsoft.com&sz=128', 2, 12),
+  ('Planview', 'https://planview.com', 'Enterprise portfolio and work management', 'https://www.google.com/s2/favicons?domain=planview.com&sz=128', 1, 13),
+  ('Zoho Projects', 'https://zoho.com/projects', 'Project management for growing teams', 'https://www.google.com/s2/favicons?domain=zoho.com&sz=128', 2, 14),
+  ('Jira Work Management', 'https://atlassian.com/software/jira/work-management', 'Team project tracking by Atlassian', 'https://www.google.com/s2/favicons?domain=atlassian.com&sz=128', 2, 15),
+  -- Service competitors
+  ('Jira Service Management', 'https://atlassian.com/software/jira/service-management', 'IT service management by Atlassian', 'https://www.google.com/s2/favicons?domain=atlassian.com&sz=128', 1, 16),
+  ('Freshservice', 'https://freshworks.com/freshservice', 'IT service management by Freshworks', 'https://www.google.com/s2/favicons?domain=freshworks.com&sz=128', 1, 17),
+  ('Zendesk', 'https://zendesk.com', 'Customer service and engagement platform', 'https://www.google.com/s2/favicons?domain=zendesk.com&sz=128', 1, 18),
+  ('ServiceNow', 'https://servicenow.com', 'Enterprise IT service management', 'https://www.google.com/s2/favicons?domain=servicenow.com&sz=128', 1, 19),
+  -- Dev competitors
+  ('Jira Software', 'https://atlassian.com/software/jira', 'Issue tracking and agile development by Atlassian', 'https://www.google.com/s2/favicons?domain=atlassian.com&sz=128', 1, 20)
+ON CONFLICT DO NOTHING;
+
+-- Clean up old generic entries that have been replaced by product-specific ones
+DELETE FROM competitors WHERE name = 'Jira' AND NOT EXISTS (SELECT 1 FROM battle_knowledge_sources WHERE competitor_id = competitors.id);
+DELETE FROM competitors WHERE name = 'Freshworks' AND NOT EXISTS (SELECT 1 FROM battle_knowledge_sources WHERE competitor_id = competitors.id);
+
+-- Update existing competitors that have no logo_url to use Google Favicons
+UPDATE competitors SET logo_url = 'https://www.google.com/s2/favicons?domain=' || regexp_replace(regexp_replace(website, '^https?://(www\.)?', ''), '/.*$', '') || '&sz=128'
+WHERE (logo_url IS NULL OR logo_url = '' OR logo_url LIKE '%clearbit%') AND website IS NOT NULL AND website != '';
+
+-- Seed product-competitor links (maps each competitor to their relevant monday product)
+-- This uses a helper function to safely insert links by name matching
+DO $$
+DECLARE
+  v_product_id UUID;
+  v_competitor_id UUID;
+BEGIN
+  -- CRM competitors
+  SELECT id INTO v_product_id FROM products WHERE lower(name) LIKE '%crm%' LIMIT 1;
+  IF v_product_id IS NOT NULL THEN
+    FOR v_competitor_id IN SELECT id FROM competitors WHERE name IN ('Salesforce CRM', 'HubSpot CRM', 'Zoho CRM', 'Attio') LOOP
+      INSERT INTO product_competitors (product_id, competitor_id) VALUES (v_product_id, v_competitor_id) ON CONFLICT DO NOTHING;
+    END LOOP;
+  END IF;
+
+  -- Work Management competitors
+  SELECT id INTO v_product_id FROM products WHERE lower(name) LIKE '%work%management%' OR lower(name) LIKE '%wm%' LIMIT 1;
+  IF v_product_id IS NOT NULL THEN
+    FOR v_competitor_id IN SELECT id FROM competitors WHERE name IN ('Asana', 'Smartsheet', 'ClickUp', 'Airtable', 'Wrike', 'Notion', 'Adobe Workfront', 'Microsoft Planner', 'Planview', 'Zoho Projects', 'Jira Work Management') LOOP
+      INSERT INTO product_competitors (product_id, competitor_id) VALUES (v_product_id, v_competitor_id) ON CONFLICT DO NOTHING;
+    END LOOP;
+  END IF;
+
+  -- Service competitors
+  SELECT id INTO v_product_id FROM products WHERE lower(name) LIKE '%service%' LIMIT 1;
+  IF v_product_id IS NOT NULL THEN
+    FOR v_competitor_id IN SELECT id FROM competitors WHERE name IN ('Jira Service Management', 'Freshservice', 'Zendesk', 'ServiceNow') LOOP
+      INSERT INTO product_competitors (product_id, competitor_id) VALUES (v_product_id, v_competitor_id) ON CONFLICT DO NOTHING;
+    END LOOP;
+  END IF;
+
+  -- Dev competitors
+  SELECT id INTO v_product_id FROM products WHERE lower(name) LIKE '%dev%' LIMIT 1;
+  IF v_product_id IS NOT NULL THEN
+    FOR v_competitor_id IN SELECT id FROM competitors WHERE name IN ('Jira Software') LOOP
+      INSERT INTO product_competitors (product_id, competitor_id) VALUES (v_product_id, v_competitor_id) ON CONFLICT DO NOTHING;
+    END LOOP;
+  END IF;
+END $$;
+
+-- Seed initial comparison parameters
+INSERT INTO comparison_parameters (name, category, description, weight, is_ai_feature, order_index) VALUES
+  ('Workflow Automation', 'features', 'Ability to create and manage automated workflows', 8, false, 1),
+  ('Custom Fields & Views', 'features', 'Flexibility in data modeling and visualization', 7, false, 2),
+  ('Reporting & Dashboards', 'features', 'Built-in analytics and reporting capabilities', 7, false, 3),
+  ('Integration Ecosystem', 'integrations', 'Number and quality of third-party integrations', 8, false, 4),
+  ('API & Developer Tools', 'integrations', 'API quality, documentation, and developer experience', 6, false, 5),
+  ('AI Agents', 'ai_capabilities', 'Autonomous AI agents that execute work end-to-end', 10, true, 6),
+  ('AI App Builder (Vibe)', 'ai_capabilities', 'Ability to build custom apps with AI/natural language', 10, true, 7),
+  ('AI Assistant (Sidekick)', 'ai_capabilities', 'Intelligent AI assistant integrated into workflows', 9, true, 8),
+  ('AI Automation', 'ai_capabilities', 'AI-powered automation and smart suggestions', 8, true, 9),
+  ('Pricing Value', 'pricing', 'Cost-effectiveness relative to features provided', 7, false, 10),
+  ('Free Tier', 'pricing', 'Availability and quality of free plan', 5, false, 11),
+  ('Enterprise Security', 'security', 'SOC2, HIPAA, GDPR compliance and security features', 8, false, 12),
+  ('SSO & Auth', 'security', 'Single sign-on and authentication options', 6, false, 13),
+  ('User Experience', 'ux', 'Ease of use, onboarding, and interface quality', 8, false, 14),
+  ('Mobile Experience', 'ux', 'Quality of mobile apps and responsive design', 6, false, 15),
+  ('Customer Support', 'support', 'Quality and availability of customer support', 7, false, 16),
+  ('Scalability', 'scalability', 'Ability to scale with enterprise-level needs', 8, false, 17)
+ON CONFLICT DO NOTHING;
+
+-- Seed initial messaging from product slides
+INSERT INTO capability_messaging (capability_type, headline, value_points) VALUES
+  ('agents', 'Unlimited resources of expert agents doing the work for you', '[
+    {"title": "Start with expert agents", "description": "or build your own with the Agent Builder for any end-to-end workflow"},
+    {"title": "Scale execution", "description": "with autonomous, always-on action across all your workflows"},
+    {"title": "Plan, assign, and route", "description": "requests automatically while identifying and flagging potential bottlenecks"},
+    {"title": "Customize skills", "description": "and terminology to match your specific workflows, native to your boards and context"},
+    {"title": "Acts where you work", "description": "stepping in only when and where you decide"},
+    {"title": "Stay in full control", "description": "with guardrails and enterprise-ready security and permissions"}
+  ]'::jsonb),
+  ('vibe', 'Turn any business need into a complete solution — consolidate your stack with just a prompt', '[
+    {"title": "Build any work app", "description": "you can imagine tailored to your team needs"},
+    {"title": "Consolidate your stack", "description": "by replacing tools with tailored apps"},
+    {"title": "Natively connect", "description": "to your data, workflows and integrations ecosystem"},
+    {"title": "Customize to perfection", "description": ""},
+    {"title": "Secure and enterprise-ready", "description": ""},
+    {"title": "Every app runs on monday.com''s trusted infrastructure", "description": ""}
+  ]'::jsonb),
+  ('sidekick', 'Your intelligent AI assistant that understands your work, thinks and executes with you', '[
+    {"title": "Knows you and your business", "description": "understands your role, goals, and active work across monday.com and connected apps for precise responses"},
+    {"title": "Accelerates work at every level", "description": "from planning and research to execution — handling your tasks from start to finish"},
+    {"title": "Works the way you do", "description": "Sidekick learns your workflows, preferences, and style with every interaction to help you perform at your best"},
+    {"title": "Keeps you in total control", "description": "every action is transparent and adjustable. You orchestrate and Sidekick executes"},
+    {"title": "Delivers answers you can trust", "description": "Securely connected to the web and powered by advanced LLMs for accurate, real-world moves"}
+  ]'::jsonb)
+ON CONFLICT (capability_type) DO NOTHING;

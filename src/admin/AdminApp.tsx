@@ -4,11 +4,18 @@ import { SiteSettingsEditor } from './components/SiteSettingsEditor';
 import { SidekickSettingsEditor } from './components/SidekickSettingsEditor';
 import { NavigationItemsEditor } from './components/NavigationItemsEditor';
 import { KnowledgeBaseEditor } from './components/KnowledgeBaseEditor';
-import { BusinessValuesEditor } from './components/BusinessValuesEditor';
+import { AIProductsEditor } from './components/AIProductsEditor';
+// BusinessValuesEditor is now embedded inside the Departments editor as a tab
+import { PagesEditor } from './components/PagesEditor';
+import { CaseStudiesEditor } from './components/CaseStudiesEditor';
+import { DesignAssetsEditor } from './components/DesignAssetsEditor';
+import { CompetitorsEditor } from './components/CompetitorsEditor';
+import { BattleCardsEditor } from './components/BattleCardsEditor';
+import { BattleKnowledgeEditor } from './components/BattleKnowledgeEditor';
 import { SidekickThemeProvider } from '@/contexts/SidekickThemeContext';
-import { Settings, LayoutDashboard, Globe, Target, AlertCircle, Sparkles, Building2, Database, Rocket, ExternalLink, CheckCircle, X, Wand2, TrendingUp } from 'lucide-react';
+import { Globe, Target, AlertCircle, Sparkles, Building2, Package, Rocket, ExternalLink, CheckCircle, X, Wand2, FileText, BookOpen, Palette, Cpu, Swords, Users, FolderOpen } from 'lucide-react';
 
-type NavigationSection = 'site_settings' | 'knowledge_base' | 'sidekick_settings' | 'outcomes' | 'pain_points' | 'ai_transformations' | 'departments' | 'business_values' | null;
+type NavigationSection = 'site_settings' | 'knowledge_base' | 'ai_products' | 'sidekick_settings' | 'outcomes' | 'pain_points' | 'ai_transformations' | 'departments' | 'business_values' | 'pages' | 'case_studies' | 'design_assets' | 'competitors' | 'battle_cards' | 'battle_knowledge' | null;
 
 type KnowledgeTab = 'products' | 'agents' | 'vibeapps' | 'sidekick';
 
@@ -30,7 +37,7 @@ export default function AdminApp() {
     setShowPublishModal(false);
   };
 
-  // Navigate to Knowledge Base with a specific tab open
+  // Navigate to Products & Offerings with a specific tab open
   const navigateToKnowledge = (tab?: KnowledgeTab) => {
     setKnowledgeDefaultTab(tab || null);
     setActiveNavSection('knowledge_base');
@@ -42,41 +49,60 @@ export default function AdminApp() {
 
   const getNavSectionTitle = () => {
     switch (activeNavSection) {
-      case 'site_settings': return 'Site Settings';
-      case 'sidekick_settings': return 'Sidekick Settings';
-      case 'knowledge_base': return 'Knowledge Base';
+      case 'ai_products': return 'AI Core Products';
+      case 'knowledge_base': return 'AI Capabilities';
+      case 'departments': return 'Departments';
       case 'outcomes': return 'Business Outcomes';
       case 'pain_points': return 'Pain Points';
       case 'ai_transformations': return 'AI Transformations';
-      case 'departments': return 'Departments';
-      case 'business_values': return 'Business Values';
+      case 'case_studies': return 'Customer Case Studies';
+      case 'design_assets': return 'Design Assets';
+      case 'competitors': return 'Competitors';
+      case 'battle_cards': return 'Battle Cards';
+      case 'battle_knowledge': return 'Knowledge Sources';
+      case 'site_settings': return 'Site Settings';
+      case 'sidekick_settings': return 'Sidekick Theme';
+      case 'pages': return 'Landing Pages';
       default: return 'Admin Dashboard';
     }
   };
 
   const getNavSectionSubtitle = () => {
     switch (activeNavSection) {
-      case 'site_settings': return 'Edit hero section, navigation tabs, and site content';
+      case 'ai_products': return 'Manage core products (CRM, Work Management, etc.) with linked capabilities, use cases, and value propositions';
+      case 'knowledge_base': return 'Manage AI agents, Vibe apps, and Sidekick actions — the building blocks of the platform';
+      case 'departments': return 'Organize capabilities by department and manage department-specific content';
+      case 'outcomes': return 'Define business outcomes that map to platform capabilities';
+      case 'pain_points': return 'Define customer pain points and their solutions';
+      case 'ai_transformations': return 'Define AI transformation journeys for each department';
+      case 'case_studies': return 'Customer success stories and proof points for use across the platform';
+      case 'design_assets': return 'Organize product logos, agent images, avatars, and visual assets';
+      case 'competitors': return 'Manage competitors and map them to monday.com products';
+      case 'battle_cards': return 'Configure comparison parameters, scores, and talking points';
+      case 'battle_knowledge': return 'Upload battle cards, pitch decks, and scan competitor websites';
+      case 'site_settings': return 'Configure hero section, navigation tabs, sections visibility, and layout';
       case 'sidekick_settings': return 'Customize Sidekick appearance, colors, and themes';
-      case 'knowledge_base': return 'Central source of truth for all AI capabilities and products';
-      case 'outcomes': return 'Manage business outcomes navigation items';
-      case 'pain_points': return 'Manage pain points navigation items';
-      case 'ai_transformations': return 'Manage AI transformations navigation items';
-      case 'departments': return 'Manage departments and their content';
-      case 'business_values': return 'Edit business value propositions for each department';
+      case 'pages': return 'Create and manage landing pages with custom section configurations';
       default: return 'Select a section from the sidebar to start editing';
     }
   };
 
   const getNavSectionIcon = () => {
     switch (activeNavSection) {
-      case 'site_settings': return <Globe className="w-6 h-6 text-blue-500" />;
-      case 'sidekick_settings': return <Wand2 className="w-6 h-6 text-pink-500" />;
+      case 'ai_products': return <Package className="w-6 h-6 text-indigo-500" />;
+      case 'knowledge_base': return <Cpu className="w-6 h-6 text-purple-500" />;
+      case 'departments': return <Building2 className="w-6 h-6 text-blue-500" />;
       case 'outcomes': return <Target className="w-6 h-6 text-green-500" />;
       case 'pain_points': return <AlertCircle className="w-6 h-6 text-amber-500" />;
       case 'ai_transformations': return <Sparkles className="w-6 h-6 text-purple-500" />;
-      case 'departments': return <Building2 className="w-6 h-6 text-indigo-500" />;
-      case 'business_values': return <TrendingUp className="w-6 h-6 text-emerald-500" />;
+      case 'case_studies': return <BookOpen className="w-6 h-6 text-amber-500" />;
+      case 'design_assets': return <Palette className="w-6 h-6 text-teal-500" />;
+      case 'competitors': return <Users className="w-6 h-6 text-red-500" />;
+      case 'battle_cards': return <Swords className="w-6 h-6 text-orange-500" />;
+      case 'battle_knowledge': return <FolderOpen className="w-6 h-6 text-yellow-500" />;
+      case 'site_settings': return <Globe className="w-6 h-6 text-blue-500" />;
+      case 'sidekick_settings': return <Wand2 className="w-6 h-6 text-pink-500" />;
+      case 'pages': return <FileText className="w-6 h-6 text-blue-500" />;
       default: return null;
     }
   };
@@ -99,25 +125,28 @@ export default function AdminApp() {
       />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col bg-[#0a0b10]">
         {/* Header */}
-        <header className="bg-gray-900 border-b border-gray-800 px-8 py-4">
+        <header className="bg-[#0c0d14]/80 backdrop-blur-md border-b border-gray-800/50 px-8 py-4 sticky top-0 z-30">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-white">{getNavSectionTitle()}</h1>
-              <p className="text-gray-400 text-sm mt-1">{getNavSectionSubtitle()}</p>
+            <div className="flex items-center gap-4">
+              {activeNavSection && (
+                <div className="w-10 h-10 rounded-xl bg-gray-800/80 flex items-center justify-center">
+                  {getNavSectionIcon()}
+                </div>
+              )}
+              <div>
+                <h1 className="text-xl font-bold text-white">{getNavSectionTitle()}</h1>
+                <p className="text-gray-500 text-sm mt-0.5">{getNavSectionSubtitle()}</p>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <button 
                 onClick={() => setShowPublishModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 rounded-lg text-white font-medium transition-all shadow-lg shadow-green-900/20"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 rounded-xl text-white font-medium text-sm transition-all shadow-lg shadow-emerald-900/20"
               >
-                <Rocket className="w-5 h-5" />
+                <Rocket className="w-4 h-4" />
                 Publish
-              </button>
-              <button className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300 transition-colors">
-                <Settings className="w-5 h-5" />
-                Settings
               </button>
             </div>
           </div>
@@ -135,7 +164,15 @@ export default function AdminApp() {
             <SidekickSettingsEditor onBack={() => setActiveNavSection(null)} />
           )}
 
-          {/* Knowledge Base */}
+          {/* AI Core Products */}
+          {activeNavSection === 'ai_products' && (
+            <AIProductsEditor
+              onBack={() => setActiveNavSection(null)}
+              onNavigateToCapabilities={() => setActiveNavSection('knowledge_base')}
+            />
+          )}
+
+          {/* AI Capabilities */}
           {activeNavSection === 'knowledge_base' && (
             <KnowledgeBaseEditor 
               defaultTab={knowledgeDefaultTab} 
@@ -184,72 +221,137 @@ export default function AdminApp() {
             />
           )}
 
-          {/* Business Values Editor */}
-          {activeNavSection === 'business_values' && (
-            <BusinessValuesEditor onBack={() => setActiveNavSection(null)} />
+          {/* Pages Editor */}
+          {activeNavSection === 'pages' && (
+            <PagesEditor onBack={() => setActiveNavSection(null)} />
+          )}
+
+          {/* Case Studies Editor */}
+          {activeNavSection === 'case_studies' && (
+            <CaseStudiesEditor onBack={() => setActiveNavSection(null)} />
+          )}
+
+          {/* Design Assets Editor */}
+          {activeNavSection === 'design_assets' && (
+            <DesignAssetsEditor onBack={() => setActiveNavSection(null)} />
+          )}
+
+          {/* Competitors Editor */}
+          {activeNavSection === 'competitors' && (
+            <CompetitorsEditor onBack={() => setActiveNavSection(null)} />
+          )}
+
+          {/* Battle Cards Editor */}
+          {activeNavSection === 'battle_cards' && (
+            <BattleCardsEditor onBack={() => setActiveNavSection(null)} />
+          )}
+
+          {/* Battle Knowledge Editor */}
+          {activeNavSection === 'battle_knowledge' && (
+            <BattleKnowledgeEditor onBack={() => setActiveNavSection(null)} />
           )}
 
           {/* Welcome Screen */}
           {!activeNavSection && (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center">
-                <div className="w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <LayoutDashboard className="w-12 h-12 text-gray-600" />
+            <div className="max-w-4xl mx-auto pt-6">
+              {/* Hero greeting */}
+              <div className="mb-10 text-center">
+                <h2 className="text-2xl font-bold text-white mb-1">Admin Panel</h2>
+                <p className="text-gray-600 text-sm">Select a section to manage your platform</p>
+              </div>
+
+              {/* Quick-access groups */}
+              <div className="space-y-6">
+                {/* Platform */}
+                <div>
+                  <p className="text-gray-600 text-xs font-semibold uppercase tracking-wider mb-2 px-1">Platform</p>
+                  <div className="grid grid-cols-3 gap-2.5">
+                    {[
+                      { id: 'ai_products' as NavigationSection, icon: Package, color: '#6366f1', label: 'AI Core Products' },
+                      { id: 'knowledge_base' as NavigationSection, icon: Cpu, color: '#8b5cf6', label: 'AI Capabilities' },
+                      { id: 'departments' as NavigationSection, icon: Building2, color: '#3b82f6', label: 'Departments' },
+                    ].map(item => (
+                      <button key={item.label} onClick={() => setActiveNavSection(item.id)}
+                        className="flex items-center gap-3 p-3.5 bg-gray-900/40 rounded-xl border border-gray-800/30 hover:border-gray-700 hover:bg-gray-900/70 transition-all text-left group">
+                        <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${item.color}12` }}>
+                          <item.icon className="w-4.5 h-4.5 group-hover:scale-110 transition-transform" style={{ color: item.color }} />
+                        </div>
+                        <span className="text-gray-300 text-sm font-medium group-hover:text-white transition-colors">{item.label}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <h2 className="text-xl font-semibold text-white mb-2">Welcome to Admin Panel</h2>
-                <p className="text-gray-400 mb-8">Select a section from the sidebar to start editing</p>
-                
-                <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto">
-                  <button
-                    onClick={() => setActiveNavSection('site_settings')}
-                    className="flex items-center gap-3 p-4 bg-gray-900 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors text-left"
-                  >
-                    <Globe className="w-8 h-8 text-blue-500" />
-                    <div>
-                      <p className="text-white font-medium">Site Settings</p>
-                      <p className="text-gray-400 text-sm">Hero & Tabs</p>
+
+                {/* Customer Journeys */}
+                <div>
+                  <p className="text-gray-600 text-xs font-semibold uppercase tracking-wider mb-2 px-1">Customer Journeys</p>
+                  <div className="grid grid-cols-3 gap-2.5">
+                    {[
+                      { id: 'outcomes' as NavigationSection, icon: Target, color: '#10b981', label: 'Outcomes' },
+                      { id: 'pain_points' as NavigationSection, icon: AlertCircle, color: '#f59e0b', label: 'Pain Points' },
+                      { id: 'ai_transformations' as NavigationSection, icon: Sparkles, color: '#a855f7', label: 'AI Transformations' },
+                    ].map(item => (
+                      <button key={item.label} onClick={() => setActiveNavSection(item.id)}
+                        className="flex items-center gap-3 p-3.5 bg-gray-900/40 rounded-xl border border-gray-800/30 hover:border-gray-700 hover:bg-gray-900/70 transition-all text-left group">
+                        <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${item.color}12` }}>
+                          <item.icon className="w-4.5 h-4.5 group-hover:scale-110 transition-transform" style={{ color: item.color }} />
+                        </div>
+                        <span className="text-gray-300 text-sm font-medium group-hover:text-white transition-colors">{item.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Sales Enablement */}
+                <div>
+                  <p className="text-gray-600 text-xs font-semibold uppercase tracking-wider mb-2 px-1">Sales Enablement</p>
+                  <div className="grid grid-cols-3 gap-2.5">
+                    {[
+                      { id: 'competitors' as NavigationSection, icon: Users, color: '#ef4444', label: 'Competitors' },
+                      { id: 'battle_cards' as NavigationSection, icon: Swords, color: '#f97316', label: 'Battle Cards' },
+                      { id: 'case_studies' as NavigationSection, icon: BookOpen, color: '#f59e0b', label: 'Case Studies' },
+                    ].map(item => (
+                      <button key={item.label} onClick={() => setActiveNavSection(item.id)}
+                        className="flex items-center gap-3 p-3.5 bg-gray-900/40 rounded-xl border border-gray-800/30 hover:border-gray-700 hover:bg-gray-900/70 transition-all text-left group">
+                        <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${item.color}12` }}>
+                          <item.icon className="w-4.5 h-4.5 group-hover:scale-110 transition-transform" style={{ color: item.color }} />
+                        </div>
+                        <span className="text-gray-300 text-sm font-medium group-hover:text-white transition-colors">{item.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                  {/* Battle Cards App Link */}
+                  <a href="/battle-cards" target="_blank" rel="noopener noreferrer"
+                    className="mt-2.5 flex items-center gap-3 p-3 bg-gradient-to-r from-orange-950/20 to-red-950/20 rounded-xl border border-orange-500/15 hover:border-orange-500/30 transition-all text-left group">
+                    <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+                      <Swords className="w-4 h-4 text-orange-400" />
                     </div>
-                  </button>
-                  <button
-                    onClick={() => setActiveNavSection('sidekick_settings')}
-                    className="flex items-center gap-3 p-4 bg-gray-900 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors text-left"
-                  >
-                    <Wand2 className="w-8 h-8 text-pink-500" />
-                    <div>
-                      <p className="text-white font-medium">Sidekick</p>
-                      <p className="text-gray-400 text-sm">Themes & Colors</p>
+                    <div className="flex-1">
+                      <span className="text-orange-400/90 text-sm font-medium">Open Battle Cards App</span>
+                      <span className="text-gray-600 text-xs ml-2">/battle-cards</span>
                     </div>
-                  </button>
-                  <button
-                    onClick={() => setActiveNavSection('knowledge_base')}
-                    className="flex items-center gap-3 p-4 bg-gray-900 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors text-left"
-                  >
-                    <Database className="w-8 h-8 text-purple-500" />
-                    <div>
-                      <p className="text-white font-medium">Knowledge Base</p>
-                      <p className="text-gray-400 text-sm">All AI content</p>
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => setActiveNavSection('departments')}
-                    className="flex items-center gap-3 p-4 bg-gray-900 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors text-left"
-                  >
-                    <Building2 className="w-8 h-8 text-indigo-500" />
-                    <div>
-                      <p className="text-white font-medium">Departments</p>
-                      <p className="text-gray-400 text-sm">Manage content</p>
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => setActiveNavSection('outcomes')}
-                    className="flex items-center gap-3 p-4 bg-gray-900 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors text-left"
-                  >
-                    <Target className="w-8 h-8 text-green-500" />
-                    <div>
-                      <p className="text-white font-medium">Outcomes</p>
-                      <p className="text-gray-400 text-sm">Business goals</p>
-                    </div>
-                  </button>
+                    <ExternalLink className="w-3.5 h-3.5 text-gray-700 group-hover:text-orange-400 transition-colors" />
+                  </a>
+                </div>
+
+                {/* Site & Media */}
+                <div>
+                  <p className="text-gray-600 text-xs font-semibold uppercase tracking-wider mb-2 px-1">Site & Media</p>
+                  <div className="grid grid-cols-3 gap-2.5">
+                    {[
+                      { id: 'site_settings' as NavigationSection, icon: Globe, color: '#3b82f6', label: 'Site Settings' },
+                      { id: 'design_assets' as NavigationSection, icon: Palette, color: '#14b8a6', label: 'Design Assets' },
+                      { id: 'pages' as NavigationSection, icon: FileText, color: '#6366f1', label: 'Landing Pages' },
+                    ].map(item => (
+                      <button key={item.label} onClick={() => setActiveNavSection(item.id)}
+                        className="flex items-center gap-3 p-3.5 bg-gray-900/40 rounded-xl border border-gray-800/30 hover:border-gray-700 hover:bg-gray-900/70 transition-all text-left group">
+                        <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${item.color}12` }}>
+                          <item.icon className="w-4.5 h-4.5 group-hover:scale-110 transition-transform" style={{ color: item.color }} />
+                        </div>
+                        <span className="text-gray-300 text-sm font-medium group-hover:text-white transition-colors">{item.label}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

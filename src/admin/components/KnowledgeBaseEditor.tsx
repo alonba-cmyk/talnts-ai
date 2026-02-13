@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Plus, Trash2, Save, X, Edit2, Package, Users, Sparkles, Zap, Database, ChevronRight, ChevronUp, Building2, Target, AlertCircle, Wand2, ArrowLeft, Search, ChevronDown, ArrowUpDown, Undo2, Palette, Eye } from 'lucide-react';
+import { Plus, Trash2, Save, X, Edit2, Package, Users, Sparkles, Zap, Database, ChevronRight, ChevronUp, Building2, Target, AlertCircle, Wand2, ArrowLeft, Search, ChevronDown, ArrowUpDown, Undo2, Palette, Eye, MessageSquare, GripVertical, Check } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { ImageUploader } from './ImageUploader';
 import { useVibeTheme, vibePresets, type VibeCardTheme } from '@/contexts/VibeThemeContext';
@@ -99,16 +99,71 @@ interface ItemLinkDetails {
   aiTransformationNames: string[];
 }
 
-const tabs = [
-  { 
-    id: 'products' as TabType, 
-    label: 'Products', 
-    icon: Package, 
-    iconImage: null,
-    table: 'products',
-    description: 'AI-powered products like Work Management, CRM, Service, Dev',
-    color: '#6366f1'
+// ─── Capability Messaging Types ─────────────────────────────────────────────
+
+interface ValuePoint {
+  title: string;
+  description: string;
+}
+
+interface CapabilityMessaging {
+  id?: string;
+  capability_type: string;
+  headline: string;
+  value_points: ValuePoint[];
+  hero_image: string;
+}
+
+// Map tab IDs to capability_type values
+const tabToCapabilityType: Record<string, string> = {
+  agents: 'agents',
+  vibeapps: 'vibe',
+  sidekick: 'sidekick',
+};
+
+// Default messaging from product slides (used as fallback if DB is empty)
+const defaultCapabilityMessaging: Record<string, CapabilityMessaging> = {
+  agents: {
+    capability_type: 'agents',
+    headline: 'Unlimited resources of expert agents doing the work for you',
+    hero_image: '',
+    value_points: [
+      { title: 'Start with expert agents', description: 'or build your own with the Agent Builder for any end-to-end workflow' },
+      { title: 'Scale execution', description: 'with autonomous, always-on action across all your workflows' },
+      { title: 'Plan, assign, and route', description: 'requests automatically while identifying and flagging potential bottlenecks' },
+      { title: 'Customize skills', description: 'and terminology to match your specific workflows, native to your boards and context' },
+      { title: 'Acts where you work', description: 'stepping in only when and where you decide' },
+      { title: 'Stay in full control', description: 'with guardrails and enterprise-ready security and permissions' },
+    ],
   },
+  vibe: {
+    capability_type: 'vibe',
+    headline: 'Turn any business need into a complete solution — consolidate your stack with just a prompt',
+    hero_image: '',
+    value_points: [
+      { title: 'Build any work app', description: 'you can imagine tailored to your team needs' },
+      { title: 'Consolidate your stack', description: 'by replacing tools with tailored apps' },
+      { title: 'Natively connect', description: 'to your data, workflows and integrations ecosystem' },
+      { title: 'Customize to perfection', description: '' },
+      { title: 'Secure and enterprise-ready', description: '' },
+      { title: "Every app runs on monday.com's trusted infrastructure", description: '' },
+    ],
+  },
+  sidekick: {
+    capability_type: 'sidekick',
+    headline: 'Your intelligent AI assistant that understands your work, thinks and executes with you',
+    hero_image: '',
+    value_points: [
+      { title: 'Knows you and your business', description: 'understands your role, goals, and active work across monday.com and connected apps for precise responses' },
+      { title: 'Accelerates work at every level', description: 'from planning and research to execution — handling your tasks from start to finish' },
+      { title: 'Works the way you do', description: 'Sidekick learns your workflows, preferences, and style with every interaction to help you perform at your best' },
+      { title: 'Keeps you in total control', description: 'every action is transparent and adjustable. You orchestrate and Sidekick executes' },
+      { title: 'Delivers answers you can trust', description: 'Securely connected to the web and powered by advanced LLMs for accurate, real-world moves' },
+    ],
+  },
+};
+
+const tabs = [
   { 
     id: 'agents' as TabType, 
     label: 'Agents', 
@@ -145,7 +200,7 @@ interface KnowledgeBaseEditorProps {
 }
 
 export function KnowledgeBaseEditor({ defaultTab, onTabChange, onBack }: KnowledgeBaseEditorProps) {
-  const [activeTab, setActiveTab] = useState<TabType>(defaultTab || 'products');
+  const [activeTab, setActiveTab] = useState<TabType>(defaultTab || 'agents');
   const [items, setItems] = useState<ContentItem[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [loading, setLoading] = useState(true);
@@ -165,6 +220,16 @@ export function KnowledgeBaseEditor({ defaultTab, onTabChange, onBack }: Knowled
   
   // Accordion state for grouped items
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+
+  // Capability messaging state
+  const [messaging, setMessaging] = useState<CapabilityMessaging | null>(null);
+  const [messagingExpanded, setMessagingExpanded] = useState(false);
+  const [editingMessaging, setEditingMessaging] = useState(false);
+  const [messagingForm, setMessagingForm] = useState<CapabilityMessaging>({
+    capability_type: '', headline: '', value_points: [], hero_image: ''
+  });
+  const [savingMessaging, setSavingMessaging] = useState(false);
+  const [messagingMessage, setMessagingMessage] = useState<string | null>(null);
 
   // All Intent Types for assignment in edit form
   const [allDepartments, setAllDepartments] = useState<IntentType[]>([]);
@@ -251,7 +316,87 @@ export function KnowledgeBaseEditor({ defaultTab, onTabChange, onBack }: Knowled
 
   useEffect(() => {
     fetchItems();
+    fetchMessaging();
+    setMessagingExpanded(false);
+    setEditingMessaging(false);
   }, [activeTab]);
+
+  // ─── Capability Messaging fetch/save ──────────────────────────────────────
+
+  const fetchMessaging = async () => {
+    const capType = tabToCapabilityType[activeTab];
+    if (!capType) { setMessaging(null); return; }
+    try {
+      const { data } = await supabase
+        .from('capability_messaging')
+        .select('*')
+        .eq('capability_type', capType)
+        .single();
+      // Use DB data if available, otherwise fall back to slide defaults
+      setMessaging(data || defaultCapabilityMessaging[capType] || null);
+    } catch {
+      // Table might not exist yet — use defaults from slides
+      setMessaging(defaultCapabilityMessaging[capType] || null);
+    }
+  };
+
+  const saveMessaging = async () => {
+    setSavingMessaging(true);
+    const capType = tabToCapabilityType[activeTab];
+    if (!capType) return;
+
+    const payload = {
+      capability_type: capType,
+      headline: messagingForm.headline,
+      value_points: messagingForm.value_points,
+      hero_image: messagingForm.hero_image,
+    };
+
+    if (messaging?.id) {
+      await supabase.from('capability_messaging').update(payload).eq('id', messaging.id);
+    } else {
+      await supabase.from('capability_messaging').insert(payload);
+    }
+
+    await fetchMessaging();
+    setEditingMessaging(false);
+    setSavingMessaging(false);
+    setMessagingMessage('Saved!');
+    setTimeout(() => setMessagingMessage(null), 2000);
+  };
+
+  const startEditMessaging = () => {
+    setMessagingForm(messaging ? { ...messaging } : {
+      capability_type: tabToCapabilityType[activeTab] || '',
+      headline: '',
+      value_points: [],
+      hero_image: '',
+    });
+    setEditingMessaging(true);
+  };
+
+  const addValuePoint = () => {
+    setMessagingForm(f => ({
+      ...f,
+      value_points: [...f.value_points, { title: '', description: '' }],
+    }));
+  };
+
+  const removeValuePoint = (idx: number) => {
+    setMessagingForm(f => ({
+      ...f,
+      value_points: f.value_points.filter((_, i) => i !== idx),
+    }));
+  };
+
+  const updateValuePoint = (idx: number, field: 'title' | 'description', val: string) => {
+    setMessagingForm(f => ({
+      ...f,
+      value_points: f.value_points.map((vp, i) => i === idx ? { ...vp, [field]: val } : vp),
+    }));
+  };
+
+  // ─── End Capability Messaging ─────────────────────────────────────────────
 
   const fetchDepartments = async () => {
     const { data } = await supabase.from('departments').select('id, name, title').order('order_index');
@@ -1087,12 +1232,12 @@ export function KnowledgeBaseEditor({ defaultTab, onTabChange, onBack }: Knowled
 
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
-        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-          <Database className="w-7 h-7 text-white" />
+        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
+          <Sparkles className="w-7 h-7 text-white" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-white">Knowledge Base</h2>
-          <p className="text-gray-400">Central source of truth for all AI capabilities and products</p>
+          <h2 className="text-2xl font-bold text-white">AI Capabilities</h2>
+          <p className="text-gray-400">Manage AI agents, Vibe apps, and Sidekick actions — the building blocks of the platform</p>
         </div>
       </div>
 
@@ -1125,6 +1270,149 @@ export function KnowledgeBaseEditor({ defaultTab, onTabChange, onBack }: Knowled
           </button>
         ))}
       </div>
+
+      {/* Value Messaging Panel */}
+      {tabToCapabilityType[activeTab] && (
+        <div className="mb-6 bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
+          <button
+            onClick={() => setMessagingExpanded(!messagingExpanded)}
+            className="w-full flex items-center justify-between px-6 py-4 hover:bg-gray-800/40 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <MessageSquare className="w-5 h-5 text-indigo-400" />
+              <span className="text-white font-semibold">Value Messaging</span>
+              {messaging?.headline && (
+                <span className="text-gray-500 text-sm ml-2 max-w-md truncate">— {messaging.headline}</span>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              {messagingMessage && (
+                <span className="text-emerald-400 text-sm flex items-center gap-1"><Check className="w-3.5 h-3.5" />{messagingMessage}</span>
+              )}
+              {messaging?.value_points && messaging.value_points.length > 0 && (
+                <span className="text-gray-500 text-xs bg-gray-800 px-2 py-0.5 rounded-full">
+                  {messaging.value_points.length} points
+                </span>
+              )}
+              <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${messagingExpanded ? 'rotate-180' : ''}`} />
+            </div>
+          </button>
+
+          {messagingExpanded && (
+            <div className="px-6 pb-6 border-t border-gray-800 pt-4">
+              {editingMessaging ? (
+                /* Edit Mode */
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-1">Headline / Tagline</label>
+                    <input
+                      type="text"
+                      value={messagingForm.headline}
+                      onChange={e => setMessagingForm(f => ({ ...f, headline: e.target.value }))}
+                      placeholder="e.g., Unlimited resources of expert agents doing the work for you"
+                      className="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:border-indigo-500 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-sm font-medium text-gray-400">Value Points</label>
+                      <button onClick={addValuePoint}
+                        className="flex items-center gap-1 px-3 py-1 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-white text-xs transition-colors">
+                        <Plus className="w-3 h-3" /> Add Point
+                      </button>
+                    </div>
+                    <div className="space-y-3">
+                      {messagingForm.value_points.map((vp, idx) => (
+                        <div key={idx} className="flex gap-3 items-start bg-gray-800/50 rounded-lg p-3 border border-gray-700/50 group">
+                          <div className="w-7 h-7 rounded-lg bg-indigo-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span className="text-xs font-bold text-indigo-400">{idx + 1}</span>
+                          </div>
+                          <div className="flex-1 space-y-2">
+                            <input
+                              type="text"
+                              value={vp.title}
+                              onChange={e => updateValuePoint(idx, 'title', e.target.value)}
+                              placeholder="Bold title (e.g., Scale execution)"
+                              className="w-full px-3 py-1.5 bg-gray-900 border border-gray-700 rounded-md text-white text-sm focus:border-indigo-500 outline-none font-medium"
+                            />
+                            <input
+                              type="text"
+                              value={vp.description}
+                              onChange={e => updateValuePoint(idx, 'description', e.target.value)}
+                              placeholder="Description (e.g., with autonomous, always-on action across all your workflows)"
+                              className="w-full px-3 py-1.5 bg-gray-900 border border-gray-700 rounded-md text-gray-300 text-sm focus:border-indigo-500 outline-none"
+                            />
+                          </div>
+                          <button onClick={() => removeValuePoint(idx)}
+                            className="p-1.5 opacity-0 group-hover:opacity-100 hover:bg-red-500/20 rounded-lg text-gray-500 hover:text-red-400 transition-all mt-0.5">
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                      {messagingForm.value_points.length === 0 && (
+                        <p className="text-gray-600 text-sm text-center py-4">No value points yet. Click "Add Point" to start.</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2 pt-2">
+                    <button onClick={saveMessaging} disabled={savingMessaging}
+                      className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-white font-medium text-sm transition-colors disabled:opacity-50">
+                      <Save className="w-4 h-4" /> {savingMessaging ? 'Saving...' : 'Save Messaging'}
+                    </button>
+                    <button onClick={() => setEditingMessaging(false)}
+                      className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300 text-sm transition-colors">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* View Mode */
+                <div>
+                  {messaging ? (
+                    <div>
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <p className="text-white text-lg font-medium italic leading-relaxed">"{messaging.headline}"</p>
+                        </div>
+                        <button onClick={startEditMessaging}
+                          className="flex items-center gap-2 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300 text-sm transition-colors ml-4 flex-shrink-0">
+                          <Edit2 className="w-3.5 h-3.5" /> Edit
+                        </button>
+                      </div>
+                      {messaging.value_points && messaging.value_points.length > 0 && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {messaging.value_points.map((vp: ValuePoint, idx: number) => (
+                            <div key={idx} className="flex items-start gap-3 p-3 bg-gray-800/30 rounded-lg">
+                              <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: currentTab.color }} />
+                              <div>
+                                <span className="text-white font-semibold text-sm">{vp.title}</span>
+                                {vp.description && (
+                                  <span className="text-gray-400 text-sm"> — {vp.description}</span>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-center py-6">
+                      <MessageSquare className="w-8 h-8 text-gray-600 mx-auto mb-2" />
+                      <p className="text-gray-500 text-sm">No messaging defined yet for {currentTab.label}</p>
+                      <button onClick={startEditMessaging}
+                        className="mt-3 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-white text-sm transition-colors">
+                        Add Value Messaging
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Active Tab Content */}
       <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">

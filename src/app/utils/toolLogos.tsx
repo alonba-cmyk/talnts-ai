@@ -1,41 +1,43 @@
 // Mapping of tool names to their logo URLs or components
-// Using icon placeholders for now - these can be replaced with actual brand logos
+// Using Google's high-res favicon API for reliable logo fetching
+
+const LOGO = (domain: string) => `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
 
 export const toolLogos: Record<string, string> = {
   // Social Media Management
-  'Hootsuite': 'https://logo.clearbit.com/hootsuite.com',
-  'Buffer': 'https://logo.clearbit.com/buffer.com',
-  'Sprout Social': 'https://logo.clearbit.com/sproutsocial.com',
+  'Hootsuite': LOGO('hootsuite.com'),
+  'Buffer': LOGO('buffer.com'),
+  'Sprout Social': LOGO('sproutsocial.com'),
   
   // Marketing Automation
-  'HubSpot Marketing Hub': 'https://logo.clearbit.com/hubspot.com',
-  'Marketo': 'https://logo.clearbit.com/marketo.com',
-  'Pardot': 'https://logo.clearbit.com/salesforce.com',
+  'HubSpot Marketing Hub': LOGO('hubspot.com'),
+  'Marketo': LOGO('marketo.com'),
+  'Pardot': LOGO('salesforce.com'),
   
   // Project Management / Content
-  'CoSchedule': 'https://logo.clearbit.com/coschedule.com',
-  'Trello': 'https://logo.clearbit.com/trello.com',
-  'Asana': 'https://logo.clearbit.com/asana.com',
+  'CoSchedule': LOGO('coschedule.com'),
+  'Trello': LOGO('trello.com'),
+  'Asana': LOGO('asana.com'),
   
   // CRM
-  'Salesforce': 'https://logo.clearbit.com/salesforce.com',
-  'Pipedrive': 'https://logo.clearbit.com/pipedrive.com',
-  'Zoho CRM': 'https://logo.clearbit.com/zoho.com',
+  'Salesforce': LOGO('salesforce.com'),
+  'Pipedrive': LOGO('pipedrive.com'),
+  'Zoho CRM': LOGO('zoho.com'),
   
   // Customer Support
-  'Zendesk': 'https://logo.clearbit.com/zendesk.com',
-  'Intercom': 'https://logo.clearbit.com/intercom.com',
-  'Freshdesk': 'https://logo.clearbit.com/freshworks.com',
+  'Zendesk': LOGO('zendesk.com'),
+  'Intercom': LOGO('intercom.com'),
+  'Freshdesk': LOGO('freshworks.com'),
   
   // Analytics
-  'Google Analytics': 'https://logo.clearbit.com/google.com',
-  'Mixpanel': 'https://logo.clearbit.com/mixpanel.com',
-  'Amplitude': 'https://logo.clearbit.com/amplitude.com',
+  'Google Analytics': LOGO('google.com'),
+  'Mixpanel': LOGO('mixpanel.com'),
+  'Amplitude': LOGO('amplitude.com'),
   
   // Communication
-  'Slack': 'https://logo.clearbit.com/slack.com',
-  'Microsoft Teams': 'https://logo.clearbit.com/microsoft.com',
-  'Zoom': 'https://logo.clearbit.com/zoom.us',
+  'Slack': LOGO('slack.com'),
+  'Microsoft Teams': LOGO('microsoft.com'),
+  'Zoom': LOGO('zoom.us'),
 };
 
 export function getToolLogo(toolName: string): string | null {

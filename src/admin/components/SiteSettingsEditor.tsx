@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Save, Plus, Trash2, GripVertical, ArrowLeft, Upload, X } from 'lucide-react';
+import { Save, Plus, Trash2, GripVertical, ArrowLeft, Upload, X, Rocket, Type, LayoutGrid, Scale, MessageSquare, Bot, Building2, Package, FolderKanban, Users, UsersRound, Workflow, Terminal, Eye, EyeOff, ChevronDown } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { DndContext, closestCenter, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
@@ -27,6 +27,7 @@ interface SectionsVisibility {
   teams_and_agents: boolean;
   teams_and_agents_v2: boolean;
   ai_platform_architecture: boolean;
+  team_commands: boolean;
 }
 
 type TeamsAgentsV2Layout = 'mixed_circle' | 'team_with_agents' | 'side_by_side_unified' | 'cards_layout';
@@ -81,6 +82,7 @@ const defaultSectionsVisibility: SectionsVisibility = {
   teams_and_agents: false,
   teams_and_agents_v2: false,
   ai_platform_architecture: false,
+  team_commands: false,
 };
 
 const defaultHeroSettings: HeroSettings = {
@@ -117,19 +119,384 @@ const defaultSectionsOrder: string[] = [
   'teams_and_agents',
   'teams_and_agents_v2',
   'ai_platform_architecture',
+  'team_commands',
   'departments',
   'ai_platform',
 ];
 
+// ─── Section Metadata ───────────────────────────────────────────────────────
+
+interface SectionMeta {
+  label: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+  category: 'hero' | 'content' | 'interactive' | 'showcase';
+  color: string;
+}
+
+const sectionMeta: Record<string, SectionMeta> = {
+  hero: {
+    label: 'Hero Section',
+    description: 'Main hero with gradient headline, logo, and animated scroll',
+    icon: Rocket,
+    category: 'hero',
+    color: '#6366f1',
+  },
+  hero_alternative: {
+    label: 'Hero Alternative (White)',
+    description: 'Light hero with typing animation and agent images',
+    icon: Type,
+    category: 'hero',
+    color: '#8b5cf6',
+  },
+  hero_outcome_cards: {
+    label: 'Hero Outcome Cards',
+    description: 'White hero with gradient and 6 selectable outcome cards',
+    icon: LayoutGrid,
+    category: 'hero',
+    color: '#a855f7',
+  },
+  work_comparison: {
+    label: 'Work Comparison',
+    description: 'Split layout: manual work vs. AI agents side by side',
+    icon: Scale,
+    category: 'content',
+    color: '#ec4899',
+  },
+  sidekick_capabilities: {
+    label: 'Sidekick (Half Story)',
+    description: 'Sidekick onboarding flow with options and board mockups',
+    icon: MessageSquare,
+    category: 'interactive',
+    color: '#f59e0b',
+  },
+  sidekick: {
+    label: 'Sidekick (Full Story)',
+    description: 'Full AI chat demo with multi-stage flow and board views',
+    icon: Bot,
+    category: 'interactive',
+    color: '#f97316',
+  },
+  departments: {
+    label: 'Departments Selector',
+    description: 'Tabbed navigation with department/outcome/pain point cards',
+    icon: Building2,
+    category: 'content',
+    color: '#3b82f6',
+  },
+  ai_platform: {
+    label: 'AI Work Platform',
+    description: 'Department sidebar with isometric platform and product tabs',
+    icon: Package,
+    category: 'content',
+    color: '#6366f1',
+  },
+  project_management: {
+    label: 'Project Management',
+    description: 'Board layers with database, context, workflow, and Vibe',
+    icon: FolderKanban,
+    category: 'content',
+    color: '#10b981',
+  },
+  agents_showcase: {
+    label: 'Agents Showcase',
+    description: 'Cyan gradient background with grid of agent cards',
+    icon: Users,
+    category: 'showcase',
+    color: '#06b6d4',
+  },
+  teams_and_agents: {
+    label: 'Teams and Agents',
+    description: 'Dark gradient with team members and agent avatars',
+    icon: UsersRound,
+    category: 'showcase',
+    color: '#8b5cf6',
+  },
+  teams_and_agents_v2: {
+    label: 'Teams and Agents V2',
+    description: 'Multi-layout variant with department selector and team visuals',
+    icon: UsersRound,
+    category: 'showcase',
+    color: '#a855f7',
+  },
+  ai_platform_architecture: {
+    label: 'AI Platform Architecture',
+    description: 'App-frame layouts with agent cycles and workflow visualization',
+    icon: Workflow,
+    category: 'content',
+    color: '#14b8a6',
+  },
+  team_commands: {
+    label: 'Team Commands',
+    description: 'Interactive chat demo with board items and overlay modes',
+    icon: Terminal,
+    category: 'interactive',
+    color: '#ef4444',
+  },
+};
+
+const categoryLabels: Record<string, { label: string; color: string }> = {
+  hero: { label: 'Hero', color: '#8b5cf6' },
+  content: { label: 'Content', color: '#3b82f6' },
+  interactive: { label: 'Interactive', color: '#f59e0b' },
+  showcase: { label: 'Showcase', color: '#06b6d4' },
+};
+
+// ─── Mini Wireframe Previews ────────────────────────────────────────────────
+
+function SectionPreview({ sectionId }: { sectionId: string }) {
+  const base = "w-full h-full rounded overflow-hidden relative";
+
+  switch (sectionId) {
+    case 'hero':
+      return (
+        <div className={`${base} bg-gradient-to-b from-gray-900 to-indigo-950`}>
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-3">
+            <div className="w-6 h-1.5 bg-indigo-500/40 rounded mb-1.5" />
+            <div className="w-16 h-1 bg-white/30 rounded mb-0.5" />
+            <div className="w-12 h-1 bg-indigo-400/50 rounded mb-2" />
+            <div className="w-8 h-2 bg-indigo-600/60 rounded-sm" />
+          </div>
+        </div>
+      );
+    case 'hero_alternative':
+      return (
+        <div className={`${base} bg-white`}>
+          <div className="absolute inset-0 flex items-center p-3 gap-2">
+            <div className="flex-1 space-y-1">
+              <div className="w-12 h-1 bg-gray-300 rounded" />
+              <div className="w-10 h-1 bg-purple-300 rounded" />
+              <div className="w-6 h-1.5 bg-purple-400 rounded-sm mt-1.5" />
+            </div>
+            <div className="flex gap-0.5">
+              <div className="w-4 h-5 bg-gray-200 rounded-sm" />
+              <div className="w-4 h-5 bg-purple-100 rounded-sm" />
+            </div>
+          </div>
+        </div>
+      );
+    case 'hero_outcome_cards':
+      return (
+        <div className={`${base} bg-white`}>
+          <div className="absolute inset-0 p-2">
+            <div className="w-12 h-1 bg-purple-300 rounded mx-auto mb-1.5" />
+            <div className="grid grid-cols-3 gap-1">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-3 bg-purple-100 rounded-sm" />
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    case 'work_comparison':
+      return (
+        <div className={`${base} flex`}>
+          <div className="flex-1 bg-gray-100 p-1.5">
+            <div className="w-8 h-0.5 bg-gray-300 rounded mb-1" />
+            <div className="space-y-0.5">
+              <div className="h-1.5 bg-gray-200 rounded-sm" />
+              <div className="h-1.5 bg-gray-200 rounded-sm" />
+            </div>
+          </div>
+          <div className="flex-1 bg-gray-900 p-1.5">
+            <div className="w-8 h-0.5 bg-gray-600 rounded mb-1" />
+            <div className="space-y-0.5">
+              <div className="h-1.5 bg-indigo-800 rounded-sm" />
+              <div className="h-1.5 bg-indigo-800 rounded-sm" />
+            </div>
+          </div>
+        </div>
+      );
+    case 'sidekick_capabilities':
+      return (
+        <div className={`${base} bg-gradient-to-br from-gray-900 to-gray-800`}>
+          <div className="absolute inset-0 flex items-center p-2 gap-2">
+            <div className="flex-1 space-y-1">
+              <div className="w-10 h-0.5 bg-amber-400/50 rounded" />
+              <div className="flex gap-0.5">
+                <div className="w-5 h-2 bg-gray-700 rounded-sm" />
+                <div className="w-5 h-2 bg-gray-700 rounded-sm" />
+              </div>
+            </div>
+            <div className="w-10 h-8 bg-gray-700 rounded border border-gray-600" />
+          </div>
+        </div>
+      );
+    case 'sidekick':
+      return (
+        <div className={`${base} bg-gradient-to-br from-gray-900 to-orange-950`}>
+          <div className="absolute inset-0 flex items-center p-2 gap-2">
+            <div className="flex-1 space-y-1">
+              <div className="w-10 h-0.5 bg-orange-400/50 rounded" />
+              <div className="h-3 bg-gray-800 rounded border border-gray-700 p-0.5">
+                <div className="w-6 h-0.5 bg-orange-500/30 rounded" />
+              </div>
+            </div>
+            <div className="w-12 h-9 bg-gray-800 rounded border border-gray-700 p-1 space-y-0.5">
+              <div className="h-1 bg-gray-700 rounded-sm" />
+              <div className="h-1 bg-gray-700 rounded-sm" />
+              <div className="h-1 bg-orange-800/50 rounded-sm" />
+            </div>
+          </div>
+        </div>
+      );
+    case 'departments':
+      return (
+        <div className={`${base} bg-gray-950`}>
+          <div className="absolute inset-0 p-2">
+            <div className="flex gap-1 mb-1.5">
+              <div className="w-5 h-1.5 bg-blue-600 rounded-sm" />
+              <div className="w-5 h-1.5 bg-gray-700 rounded-sm" />
+              <div className="w-5 h-1.5 bg-gray-700 rounded-sm" />
+            </div>
+            <div className="flex gap-1">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="flex-1 h-5 bg-gray-800 rounded-sm p-0.5">
+                  <div className="w-2 h-2 bg-blue-500/30 rounded-full mx-auto" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    case 'ai_platform':
+      return (
+        <div className={`${base} bg-gray-950 flex`}>
+          <div className="w-5 bg-gray-900 border-r border-gray-800 p-0.5 space-y-0.5">
+            <div className="w-full h-1.5 bg-indigo-800 rounded-sm" />
+            <div className="w-full h-1.5 bg-gray-800 rounded-sm" />
+            <div className="w-full h-1.5 bg-gray-800 rounded-sm" />
+          </div>
+          <div className="flex-1 p-1.5 space-y-1">
+            <div className="flex gap-0.5">
+              <div className="w-4 h-1 bg-indigo-700 rounded-sm" />
+              <div className="w-4 h-1 bg-gray-700 rounded-sm" />
+            </div>
+            <div className="h-5 bg-gray-800 rounded border border-gray-700" />
+          </div>
+        </div>
+      );
+    case 'project_management':
+      return (
+        <div className={`${base} bg-gray-950`}>
+          <div className="absolute inset-0 p-2 space-y-0.5">
+            <div className="h-2 bg-emerald-900/40 rounded-sm border border-emerald-800/30 flex items-center px-0.5">
+              <div className="w-3 h-0.5 bg-emerald-500/40 rounded" />
+            </div>
+            <div className="h-2 bg-blue-900/30 rounded-sm border border-blue-800/30" />
+            <div className="h-2 bg-purple-900/30 rounded-sm border border-purple-800/30" />
+            <div className="h-2 bg-pink-900/30 rounded-sm border border-pink-800/30" />
+          </div>
+        </div>
+      );
+    case 'agents_showcase':
+      return (
+        <div className={`${base} bg-gradient-to-br from-cyan-950 to-gray-900`}>
+          <div className="absolute inset-0 p-2">
+            <div className="w-10 h-0.5 bg-cyan-400/50 rounded mb-1.5 mx-auto" />
+            <div className="grid grid-cols-3 gap-1">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-3 bg-cyan-900/40 rounded-sm border border-cyan-800/30 flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 bg-cyan-500/30 rounded-full" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    case 'teams_and_agents':
+      return (
+        <div className={`${base} bg-gradient-to-b from-gray-900 to-purple-950`}>
+          <div className="absolute inset-0 p-2 flex flex-col items-center">
+            <div className="w-10 h-0.5 bg-purple-400/50 rounded mb-2" />
+            <div className="flex gap-1 items-end">
+              <div className="w-3 h-4 bg-purple-800/50 rounded-sm" />
+              <div className="w-4 h-5 bg-purple-700/50 rounded-sm" />
+              <div className="w-3 h-4 bg-purple-800/50 rounded-sm" />
+            </div>
+          </div>
+        </div>
+      );
+    case 'teams_and_agents_v2':
+      return (
+        <div className={`${base} bg-gradient-to-b from-gray-900 to-violet-950`}>
+          <div className="absolute inset-0 p-2">
+            <div className="flex gap-1 mb-1.5">
+              <div className="w-5 h-1 bg-violet-600 rounded-sm" />
+              <div className="w-5 h-1 bg-gray-700 rounded-sm" />
+            </div>
+            <div className="flex gap-1">
+              <div className="flex-1 flex flex-col items-center gap-0.5">
+                <div className="w-4 h-4 bg-violet-800/50 rounded-full" />
+                <div className="w-3 h-0.5 bg-violet-500/30 rounded" />
+              </div>
+              <div className="flex-1 flex flex-col items-center gap-0.5">
+                <div className="w-4 h-4 bg-violet-800/50 rounded-full" />
+                <div className="w-3 h-0.5 bg-violet-500/30 rounded" />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    case 'ai_platform_architecture':
+      return (
+        <div className={`${base} bg-gray-950`}>
+          <div className="absolute inset-0 p-1.5">
+            <div className="h-full bg-gray-900 rounded border border-gray-700 p-1 flex flex-col">
+              <div className="flex gap-0.5 mb-1">
+                <div className="w-1 h-1 bg-red-500/60 rounded-full" />
+                <div className="w-1 h-1 bg-yellow-500/60 rounded-full" />
+                <div className="w-1 h-1 bg-green-500/60 rounded-full" />
+              </div>
+              <div className="flex-1 flex gap-1">
+                <div className="w-4 bg-gray-800 rounded-sm" />
+                <div className="flex-1 bg-gray-800 rounded-sm p-0.5">
+                  <div className="w-full h-0.5 bg-teal-500/30 rounded mb-0.5" />
+                  <div className="w-3/4 h-0.5 bg-gray-700 rounded" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    case 'team_commands':
+      return (
+        <div className={`${base} bg-gradient-to-br from-gray-900 to-red-950`}>
+          <div className="absolute inset-0 flex items-center p-2 gap-2">
+            <div className="flex-1 space-y-0.5">
+              <div className="flex items-center gap-0.5">
+                <div className="w-2 h-2 bg-red-500/30 rounded-full" />
+                <div className="w-8 h-1.5 bg-gray-800 rounded border border-gray-700" />
+              </div>
+              <div className="flex items-center gap-0.5 justify-end">
+                <div className="w-6 h-1.5 bg-red-900/40 rounded border border-red-800/30" />
+                <div className="w-2 h-2 bg-blue-500/30 rounded-full" />
+              </div>
+            </div>
+            <div className="w-10 h-8 bg-gray-800 rounded border border-gray-700 p-0.5 space-y-0.5">
+              <div className="h-1 bg-gray-700 rounded-sm" />
+              <div className="h-1 bg-gray-700 rounded-sm" />
+              <div className="h-1 bg-red-800/40 rounded-sm" />
+            </div>
+          </div>
+        </div>
+      );
+    default:
+      return <div className={`${base} bg-gray-800`} />;
+  }
+}
+
 // Sortable Section Card Component
 interface SortableSectionCardProps {
   id: string;
-  label: string;
   isVisible: boolean;
   onToggle: () => void;
+  index: number;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
 }
 
-function SortableSectionCard({ id, label, isVisible, onToggle }: SortableSectionCardProps) {
+function SortableSectionCard({ id, isVisible, onToggle, index, isExpanded, onToggleExpand }: SortableSectionCardProps) {
   const {
     attributes,
     listeners,
@@ -145,45 +512,140 @@ function SortableSectionCard({ id, label, isVisible, onToggle }: SortableSection
     zIndex: isDragging ? 50 : undefined,
   };
 
+  const meta = sectionMeta[id];
+  if (!meta) return null;
+
+  const cat = categoryLabels[meta.category];
+  const IconComp = meta.icon;
+
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center justify-between p-4 bg-gray-800 rounded-lg transition-opacity ${
-        isVisible ? '' : 'opacity-60'
-      } ${isDragging ? 'shadow-xl ring-2 ring-indigo-500' : ''}`}
+      className={`rounded-xl border transition-all ${
+        isDragging
+          ? 'shadow-2xl ring-2 ring-indigo-500 bg-gray-800'
+          : isVisible
+            ? 'bg-gray-800/80 border-gray-700/60 hover:border-gray-600'
+            : 'bg-gray-900/60 border-gray-800/40 opacity-55 hover:opacity-75'
+      }`}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 p-3.5">
+        {/* Drag Handle */}
         <div
           {...attributes}
           {...listeners}
-          className="cursor-grab active:cursor-grabbing p-1 hover:bg-gray-700 rounded"
+          className="cursor-grab active:cursor-grabbing p-1.5 hover:bg-gray-700 rounded-lg flex-shrink-0"
         >
-          <GripVertical className="w-5 h-5 text-gray-500" />
+          <GripVertical className="w-4 h-4 text-gray-600" />
         </div>
-        <div>
-          <span className="text-white font-medium">{label}</span>
-          <span className={`ml-3 text-xs px-2 py-1 rounded ${
-            isVisible
-              ? 'bg-green-500/20 text-green-400'
-              : 'bg-gray-600/20 text-gray-500'
-          }`}>
-            {isVisible ? 'Visible' : 'Hidden'}
-          </span>
+
+        {/* Order Number */}
+        <div className="w-6 h-6 rounded-md bg-gray-700/50 flex items-center justify-center flex-shrink-0">
+          <span className="text-[10px] font-bold text-gray-400">{index + 1}</span>
+        </div>
+
+        {/* Mini Preview Thumbnail */}
+        <button
+          onClick={onToggleExpand}
+          className="w-14 h-10 rounded-lg overflow-hidden border border-gray-700/60 flex-shrink-0 hover:border-gray-600 transition-colors cursor-pointer"
+        >
+          <SectionPreview sectionId={id} />
+        </button>
+
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-0.5">
+            <span className="text-white font-medium text-sm">{meta.label}</span>
+            <span
+              className="text-[10px] px-1.5 py-0.5 rounded-full font-medium"
+              style={{ backgroundColor: `${cat.color}20`, color: cat.color }}
+            >
+              {cat.label}
+            </span>
+          </div>
+          <p className="text-gray-500 text-xs truncate">{meta.description}</p>
+        </div>
+
+        {/* Preview expand button */}
+        <button
+          onClick={onToggleExpand}
+          className={`p-1.5 rounded-lg transition-all flex-shrink-0 ${
+            isExpanded ? 'bg-indigo-600/20 text-indigo-400' : 'text-gray-600 hover:bg-gray-700 hover:text-gray-400'
+          }`}
+          title="Toggle preview"
+        >
+          <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+        </button>
+
+        {/* Visibility Toggle */}
+        <div className="flex items-center gap-2.5 flex-shrink-0">
+          {isVisible ? (
+            <Eye className="w-4 h-4 text-emerald-400" />
+          ) : (
+            <EyeOff className="w-4 h-4 text-gray-600" />
+          )}
+          <button
+            onClick={onToggle}
+            className={`relative w-11 h-6 rounded-full transition-colors ${
+              isVisible ? 'bg-emerald-500' : 'bg-gray-700'
+            }`}
+          >
+            <div
+              className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-all shadow-sm ${
+                isVisible ? 'left-5' : 'left-0.5'
+              }`}
+            />
+          </button>
         </div>
       </div>
-      <button
-        onClick={onToggle}
-        className={`relative w-14 h-7 rounded-full transition-colors ${
-          isVisible ? 'bg-indigo-600' : 'bg-gray-600'
-        }`}
-      >
-        <div
-          className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-transform ${
-            isVisible ? 'left-8' : 'left-1'
-          }`}
-        />
-      </button>
+
+      {/* Expanded Live Preview */}
+      {isExpanded && (
+        <div className="px-4 pb-4 pt-0">
+          <div className="bg-gray-950 rounded-xl border border-gray-700/40 overflow-hidden">
+            {/* Live iframe preview */}
+            <div className="relative w-full" style={{ height: '280px' }}>
+              <div className="absolute inset-0 overflow-hidden rounded-t-xl">
+                <iframe
+                  src={`/preview/${id}`}
+                  title={`Preview: ${meta.label}`}
+                  className="border-0 origin-top-left"
+                  style={{
+                    width: '1440px',
+                    height: '900px',
+                    transform: 'scale(0.65)',
+                    transformOrigin: 'top left',
+                    pointerEvents: 'none',
+                  }}
+                />
+              </div>
+              {/* Gradient fade at bottom */}
+              <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-gray-950 to-transparent" />
+              {/* Live badge */}
+              <div className="absolute top-3 right-3 flex items-center gap-1.5 px-2 py-1 bg-black/60 backdrop-blur-sm rounded-full">
+                <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+                <span className="text-[10px] text-emerald-400 font-medium">LIVE</span>
+              </div>
+            </div>
+            <div className="p-3 border-t border-gray-700/40 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <IconComp className="w-4 h-4" style={{ color: meta.color }} />
+                <span className="text-white text-sm font-medium">{meta.label}</span>
+                <span className="text-gray-600 text-xs">— {meta.description}</span>
+              </div>
+              <a
+                href={`/preview/${id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+              >
+                Open full preview
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -215,6 +677,7 @@ export function SiteSettingsEditor({ onBack }: SiteSettingsEditorProps) {
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activePanel, setActivePanel] = useState<'sections' | 'hero' | 'tabs'>('sections');
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const bgImageInputRef = useRef<HTMLInputElement>(null);
 
@@ -430,21 +893,7 @@ export function SiteSettingsEditor({ onBack }: SiteSettingsEditorProps) {
     return <div className="text-gray-400">Loading settings...</div>;
   }
 
-  const sectionLabels: Record<keyof SectionsVisibility, string> = {
-    hero: 'Hero Section',
-    hero_alternative: 'Hero Alternative (White)',
-    hero_outcome_cards: 'Hero Outcome Cards (Two-column)',
-    work_comparison: 'Work Comparison (Black/White)',
-    sidekick_capabilities: 'Sidekick (Half story)',
-    sidekick: 'Sidekick (Full story)',
-    departments: 'Departments Selector',
-    ai_platform: 'AI Work Platform',
-    project_management: 'Project Management (New World)',
-    agents_showcase: 'Agents Showcase (monday agents)',
-    teams_and_agents: 'Teams and Agents',
-    teams_and_agents_v2: 'Teams and Agents V2 (Multi-Layout)',
-    ai_platform_architecture: 'AI Platform Architecture (Vision)',
-  };
+  // Section labels are now managed via sectionMeta above
 
   const solutionTabLabels: Record<keyof SolutionTabsVisibility, string> = {
     overview: 'Overview',
@@ -495,10 +944,38 @@ export function SiteSettingsEditor({ onBack }: SiteSettingsEditorProps) {
       {/* Sections Visibility Panel */}
       {activePanel === 'sections' && (
         <div className="bg-gray-900 rounded-xl p-6 border border-gray-800 mb-6">
-          <h2 className="text-xl font-semibold text-white mb-6">Section Visibility & Order</h2>
-          <p className="text-gray-400 text-sm mb-6">
-            Drag sections to reorder them on the main page. Toggle visibility with the switch.
-          </p>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-xl font-semibold text-white">Section Visibility & Order</h2>
+              <p className="text-gray-400 text-sm mt-1">
+                Drag to reorder, toggle visibility. Each section represents a distinct visual block on the page.
+              </p>
+            </div>
+            <div className="flex items-center gap-3 text-xs">
+              {Object.entries(categoryLabels).map(([key, cat]) => (
+                <span key={key} className="flex items-center gap-1.5 px-2 py-1 rounded-full" style={{ backgroundColor: `${cat.color}15`, color: cat.color }}>
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.color }} />
+                  {cat.label}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Summary bar */}
+          <div className="flex gap-3 mb-5">
+            <div className="flex-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-4 py-2.5 flex items-center gap-2">
+              <Eye className="w-4 h-4 text-emerald-400" />
+              <span className="text-emerald-400 text-sm font-medium">
+                {Object.values(settings.sections_visibility).filter(Boolean).length} visible
+              </span>
+            </div>
+            <div className="flex-1 bg-gray-800/60 border border-gray-700/40 rounded-lg px-4 py-2.5 flex items-center gap-2">
+              <EyeOff className="w-4 h-4 text-gray-500" />
+              <span className="text-gray-500 text-sm font-medium">
+                {Object.values(settings.sections_visibility).filter(v => !v).length} hidden
+              </span>
+            </div>
+          </div>
           
           <DndContext
             sensors={sensors}
@@ -509,8 +986,8 @@ export function SiteSettingsEditor({ onBack }: SiteSettingsEditorProps) {
               items={settings.sections_order}
               strategy={verticalListSortingStrategy}
             >
-              <div className="space-y-4">
-                {settings.sections_order.map((sectionId) => {
+              <div className="space-y-2">
+                {settings.sections_order.map((sectionId, idx) => {
                   const section = sectionId as keyof SectionsVisibility;
                   // Skip if section doesn't exist in visibility settings
                   if (!(section in settings.sections_visibility)) return null;
@@ -519,9 +996,11 @@ export function SiteSettingsEditor({ onBack }: SiteSettingsEditorProps) {
                     <SortableSectionCard
                       key={section}
                       id={section}
-                      label={sectionLabels[section]}
                       isVisible={settings.sections_visibility[section]}
                       onToggle={() => toggleSection(section)}
+                      index={idx}
+                      isExpanded={expandedSection === section}
+                      onToggleExpand={() => setExpandedSection(expandedSection === section ? null : section)}
                     />
                   );
                 })}
