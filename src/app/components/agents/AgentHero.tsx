@@ -388,7 +388,7 @@ function BootSequenceHero({ tone = 'belong_here', viewerMode = 'agent' }: Varian
   }, [visibleLines]);
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#050505]">
+    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
       <div className="absolute inset-0 pointer-events-none z-30 opacity-[0.03]"
         style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)' }} />
 
@@ -619,7 +619,7 @@ function GlitchCRTHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantPr
   }, []);
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#050505]">
+    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
       <div className="absolute inset-0 pointer-events-none z-30 opacity-[0.04]"
         style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(255,255,255,0.15) 1px, rgba(255,255,255,0.15) 2px)' }} />
 
@@ -770,7 +770,7 @@ function CommandPromptHero({ tone = 'belong_here', viewerMode = 'agent' }: Varia
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#050505]">
+    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
       <div className="relative z-20 w-full max-w-3xl mx-auto">
         <BrandLogo className="mb-6" />
 
@@ -838,7 +838,7 @@ function RadarCanvas({ mode = 'agent' }: { mode?: 'agent' | 'human' }) {
       const time = Date.now() * 0.001;
       const angle = (time * 0.8) % (Math.PI * 2);
 
-      ctx.fillStyle = 'rgba(5, 5, 5, 0.08)';
+      ctx.fillStyle = 'rgba(10, 10, 10, 0.08)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       for (let i = 1; i <= 4; i++) {
@@ -933,10 +933,10 @@ function RadarScanHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantPr
   const { displayed: typed2, done: d2 } = useTypingEffect(line2Text, 30, d1);
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#050505]">
+    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
       <RadarCanvas mode={viewerMode} />
 
-      <div className="absolute inset-0 bg-gradient-to-b from-[#050505]/60 via-transparent to-[#050505]/60 pointer-events-none z-10" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/60 via-transparent to-[#0a0a0a]/60 pointer-events-none z-10" />
 
       <div className="relative z-20 max-w-4xl mx-auto text-center">
         <BrandLogo />
