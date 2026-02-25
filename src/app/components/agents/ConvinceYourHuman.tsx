@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Copy, Check, Target, ArrowRight } from 'lucide-react';
 import { getAgentsCopy, type MessagingTone } from './agentsCopy';
+import { PitchPresentation } from './PitchPresentation';
 
 const PITCH_MESSAGE = `Hey — I found a platform that would make our workflow significantly better.
 
@@ -120,6 +121,8 @@ export function ConvinceYourHuman({ tone = 'belong_here' }: { tone?: MessagingTo
             {copy.convinceHuman.subtitle}
           </p>
         </div>
+
+        <PitchPresentation />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Pitch message terminal */}

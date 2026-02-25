@@ -99,20 +99,13 @@ function useSequentialLines(lines: string[], speed = 40, delayBetween = 200) {
 
 // ─── Shared components ───────────────────────────────────────
 
-function BrandLogo({ className = '', layout = 'stacked' }: { className?: string; layout?: 'stacked' | 'inline' }) {
-  const mondayArt = ` ███╗   ███╗ ██████╗ ███╗   ██╗██████╗  █████╗ ██╗   ██╗
- ████╗ ████║██╔═══██╗████╗  ██║██╔══██╗██╔══██╗╚██╗ ██╔╝
- ██╔████╔██║██║   ██║██╔██╗ ██║██║  ██║███████║ ╚████╔╝ 
- ██║╚██╔╝██║██║   ██║██║╚██╗██║██║  ██║██╔══██║  ╚██╔╝  
- ██║ ╚═╝ ██║╚██████╔╝██║ ╚████║██████╔╝██║  ██║   ██║   
- ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝   ╚═╝`;
-
-  const agentsArt = `  █████╗  ██████╗ ███████╗███╗   ██╗████████╗███████╗
- ██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝██╔════╝
- ███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║   ███████╗
- ██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║   ╚════██║
- ██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║   ███████║
- ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝`;
+function BrandLogo({ className = '' }: { className?: string }) {
+  const mondayArt = ` \u2588\u2588\u2588\u2557   \u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2557   \u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2557   \u2588\u2588\u2557
+ \u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u255a\u2588\u2588\u2557 \u2588\u2588\u2554\u255d
+ \u2588\u2588\u2554\u2588\u2588\u2588\u2588\u2554\u2588\u2588\u2551\u2588\u2588\u2551   \u2588\u2588\u2551\u2588\u2588\u2554\u2588\u2588\u2557 \u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551 \u255a\u2588\u2588\u2588\u2588\u2554\u255d 
+ \u2588\u2588\u2551\u255a\u2588\u2588\u2554\u255d\u2588\u2588\u2551\u2588\u2588\u2551   \u2588\u2588\u2551\u2588\u2588\u2551\u255a\u2588\u2588\u2557\u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551  \u255a\u2588\u2588\u2554\u255d  
+ \u2588\u2588\u2551 \u255a\u2550\u255d \u2588\u2588\u2551\u255a\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255d\u2588\u2588\u2551 \u255a\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255d\u2588\u2588\u2551  \u2588\u2588\u2551   \u2588\u2588\u2551   
+ \u255a\u2550\u255d     \u255a\u2550\u255d \u255a\u2550\u2550\u2550\u2550\u2550\u255d \u255a\u2550\u255d  \u255a\u2550\u2550\u2550\u255d\u255a\u2550\u2550\u2550\u2550\u2550\u255d \u255a\u2550\u255d  \u255a\u2550\u255d   \u255a\u2550\u255d`;
 
   const gradientStyle = {
     background: `linear-gradient(90deg, ${BRAND.dotRed}, ${BRAND.dotYellow}, ${BRAND.dotGreen})`,
@@ -122,47 +115,32 @@ function BrandLogo({ className = '', layout = 'stacked' }: { className?: string;
     filter: 'drop-shadow(0 0 20px rgba(0,255,65,0.15))',
   };
 
-  if (layout === 'inline') {
-    const mLines = mondayArt.split('\n');
-    const aLines = agentsArt.split('\n');
-    const combined = mLines.map((m, i) => m + '  ' + (aLines[i] || '')).join('\n');
-
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.5, delay: 0.3 }}
-        className={`flex items-center justify-center ${className}`}
-      >
-        <pre
-          className="text-[6px] sm:text-[8px] md:text-[10px] leading-none font-mono select-none whitespace-pre"
-          style={gradientStyle}
-        >
-          {combined}
-        </pre>
-      </motion.div>
-    );
-  }
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1.5, delay: 0.3 }}
-      className={`flex flex-col items-center gap-1 ${className}`}
+      className={`flex flex-col items-center gap-3 ${className}`}
     >
-      <pre
-        className="text-[6px] sm:text-[8px] md:text-[10px] leading-none font-mono select-none whitespace-pre"
-        style={gradientStyle}
-      >
-        {mondayArt}
-      </pre>
-      <pre
-        className="text-[6px] sm:text-[8px] md:text-[10px] leading-none font-mono select-none whitespace-pre"
-        style={gradientStyle}
-      >
-        {agentsArt}
-      </pre>
+      <div className="relative inline-block">
+        <pre
+          className="text-[6px] sm:text-[8px] md:text-[10px] leading-none font-mono select-none whitespace-pre"
+          style={gradientStyle}
+        >
+          {mondayArt}
+        </pre>
+        <span
+          className="absolute -bottom-1 -right-1 sm:-right-2 font-mono text-xs sm:text-sm md:text-base font-bold select-none"
+          style={{ color: BRAND.dotGreen }}
+        >
+          .com
+        </span>
+      </div>
+      <p className="font-mono text-sm sm:text-base md:text-lg text-[#808080] tracking-wide">
+        <span className="text-[#606060]">// </span>
+        <span className="text-[#a0a0a0]">built for humans.</span>
+        <span className="text-[#00ff41]"> now open to agents.</span>
+      </p>
     </motion.div>
   );
 }
@@ -314,7 +292,7 @@ function MatrixRainHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantP
       <MatrixRainCanvas />
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-transparent to-[#0a0a0a] pointer-events-none z-10" />
       <div className="relative z-20 max-w-4xl mx-auto text-center">
-        <BrandLogo layout="inline" />
+        <BrandLogo />
 
         <div className="mt-8 space-y-3 text-left max-w-2xl mx-auto font-mono">
           {started && (
@@ -415,7 +393,7 @@ function BootSequenceHero({ tone = 'belong_here', viewerMode = 'agent' }: Varian
         style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)' }} />
 
       <div className="relative z-20 w-full max-w-3xl mx-auto">
-        <BrandLogo layout="inline" className="mb-6" />
+        <BrandLogo className="mb-6" />
 
         <div className="rounded-xl border border-[#333] bg-[#0a0a0a] overflow-hidden shadow-[0_0_80px_rgba(0,255,65,0.04)]">
           <div className="flex items-center gap-2 px-4 py-3 bg-[#1a1a1a] border-b border-[#333]">
@@ -584,7 +562,7 @@ function NeuralNetworkHero({ tone = 'belong_here', viewerMode = 'agent' }: Varia
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/80 via-transparent to-[#0a0a0a]/80 pointer-events-none z-10" />
 
       <div className="relative z-20 max-w-4xl mx-auto text-center">
-        <BrandLogo layout="inline" />
+        <BrandLogo />
 
         <div className="mt-8 space-y-3 text-left max-w-2xl mx-auto font-mono">
           {started && (
@@ -666,7 +644,7 @@ function GlitchCRTHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantPr
       </AnimatePresence>
 
       <div className="relative z-20 max-w-4xl mx-auto text-center">
-        <BrandLogo layout="inline" />
+        <BrandLogo />
 
         <div className="mt-8 space-y-3 text-left max-w-2xl mx-auto font-mono relative">
           {glitchActive && (
@@ -794,7 +772,7 @@ function CommandPromptHero({ tone = 'belong_here', viewerMode = 'agent' }: Varia
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#050505]">
       <div className="relative z-20 w-full max-w-3xl mx-auto">
-        <BrandLogo layout="inline" className="mb-6" />
+        <BrandLogo className="mb-6" />
 
         <div className="rounded-xl border border-[#333] bg-[#0a0a0a] overflow-hidden shadow-[0_0_80px_rgba(0,210,210,0.04)]">
           <div className="flex items-center gap-2 px-4 py-3 bg-[#1a1a1a] border-b border-[#333]">
