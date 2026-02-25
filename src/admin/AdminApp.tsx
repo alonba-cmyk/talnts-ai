@@ -12,10 +12,13 @@ import { DesignAssetsEditor } from './components/DesignAssetsEditor';
 import { CompetitorsEditor } from './components/CompetitorsEditor';
 import { BattleCardsEditor } from './components/BattleCardsEditor';
 import { BattleKnowledgeEditor } from './components/BattleKnowledgeEditor';
+import { SiteBuilderView } from './components/SiteBuilderView';
+import { PageBuilderEditor } from './components/PageBuilderEditor';
+import { AgentsPageSettings } from './components/AgentsPageSettings';
 import { SidekickThemeProvider } from '@/contexts/SidekickThemeContext';
-import { Globe, Target, AlertCircle, Sparkles, Building2, Package, Rocket, ExternalLink, CheckCircle, X, Wand2, FileText, BookOpen, Palette, Cpu, Swords, Users, FolderOpen } from 'lucide-react';
+import { Globe, Target, AlertCircle, Sparkles, Building2, Package, Rocket, ExternalLink, CheckCircle, X, Wand2, FileText, BookOpen, Palette, Cpu, Swords, Users, FolderOpen, LayoutDashboard, Bot } from 'lucide-react';
 
-type NavigationSection = 'site_settings' | 'knowledge_base' | 'ai_products' | 'sidekick_settings' | 'outcomes' | 'pain_points' | 'ai_transformations' | 'departments' | 'business_values' | 'pages' | 'case_studies' | 'design_assets' | 'competitors' | 'battle_cards' | 'battle_knowledge' | null;
+type NavigationSection = 'site_builder' | 'site_settings' | 'knowledge_base' | 'ai_products' | 'sidekick_settings' | 'outcomes' | 'pain_points' | 'ai_transformations' | 'departments' | 'business_values' | 'pages' | 'case_studies' | 'design_assets' | 'competitors' | 'battle_cards' | 'battle_knowledge' | 'agents_page' | null;
 
 type KnowledgeTab = 'products' | 'agents' | 'vibeapps' | 'sidekick';
 
@@ -24,6 +27,8 @@ export default function AdminApp() {
   const [knowledgeDefaultTab, setKnowledgeDefaultTab] = useState<KnowledgeTab | null>(null);
   const [loading] = useState(false);
   const [showPublishModal, setShowPublishModal] = useState(false);
+  // Page builder sub-navigation
+  const [editingPageId, setEditingPageId] = useState<'homepage' | 'platform' | null>(null);
 
   // Get the base URL for the main site (same origin, just root path)
   const getSiteUrl = () => {
@@ -45,10 +50,18 @@ export default function AdminApp() {
 
   const handleSelectNavSection = (section: NavigationSection) => {
     setActiveNavSection(section);
+    // Reset page builder when navigating away
+    if (section !== 'site_builder') {
+      setEditingPageId(null);
+    }
   };
 
   const getNavSectionTitle = () => {
+    if (activeNavSection === 'site_builder' && editingPageId) {
+      return editingPageId === 'homepage' ? 'Homepage Builder' : 'Platform Page Builder';
+    }
     switch (activeNavSection) {
+      case 'site_builder': return 'Site Builder';
       case 'ai_products': return 'AI Core Products';
       case 'knowledge_base': return 'AI Capabilities';
       case 'departments': return 'Departments';
@@ -60,15 +73,22 @@ export default function AdminApp() {
       case 'competitors': return 'Competitors';
       case 'battle_cards': return 'Battle Cards';
       case 'battle_knowledge': return 'Knowledge Sources';
-      case 'site_settings': return 'Site Settings';
-      case 'sidekick_settings': return 'Sidekick Theme';
+      case 'site_settings': return 'Site Settings (Legacy)';
+      case 'sidekick_settings': return 'Sidekick Theme (Legacy)';
       case 'pages': return 'Landing Pages';
+      case 'agents_page': return 'Agents Page';
       default: return 'Admin Dashboard';
     }
   };
 
   const getNavSectionSubtitle = () => {
+    if (activeNavSection === 'site_builder' && editingPageId) {
+      return editingPageId === 'homepage'
+        ? 'Manage components, layout, and settings for the homepage'
+        : 'Manage components, layout, and settings for the platform page';
+    }
     switch (activeNavSection) {
+      case 'site_builder': return 'Build and manage your site pages with a visual component system';
       case 'ai_products': return 'Manage core products (CRM, Work Management, etc.) with linked capabilities, use cases, and value propositions';
       case 'knowledge_base': return 'Manage AI agents, Vibe apps, and Sidekick actions — the building blocks of the platform';
       case 'departments': return 'Organize capabilities by department and manage department-specific content';
@@ -83,12 +103,19 @@ export default function AdminApp() {
       case 'site_settings': return 'Configure hero section, navigation tabs, sections visibility, and layout';
       case 'sidekick_settings': return 'Customize Sidekick appearance, colors, and themes';
       case 'pages': return 'Create and manage landing pages with custom section configurations';
+      case 'agents_page': return 'Configure the agent-facing landing page at /agents — hero variants and settings';
       default: return 'Select a section from the sidebar to start editing';
     }
   };
 
   const getNavSectionIcon = () => {
+    if (activeNavSection === 'site_builder' && editingPageId) {
+      return editingPageId === 'homepage'
+        ? <Globe className="w-6 h-6 text-blue-500" />
+        : <LayoutDashboard className="w-6 h-6 text-teal-500" />;
+    }
     switch (activeNavSection) {
+      case 'site_builder': return <LayoutDashboard className="w-6 h-6 text-indigo-500" />;
       case 'ai_products': return <Package className="w-6 h-6 text-indigo-500" />;
       case 'knowledge_base': return <Cpu className="w-6 h-6 text-purple-500" />;
       case 'departments': return <Building2 className="w-6 h-6 text-blue-500" />;
@@ -103,6 +130,7 @@ export default function AdminApp() {
       case 'site_settings': return <Globe className="w-6 h-6 text-blue-500" />;
       case 'sidekick_settings': return <Wand2 className="w-6 h-6 text-pink-500" />;
       case 'pages': return <FileText className="w-6 h-6 text-blue-500" />;
+      case 'agents_page': return <Bot className="w-6 h-6 text-green-400" />;
       default: return null;
     }
   };
@@ -154,12 +182,29 @@ export default function AdminApp() {
 
         {/* Content Area */}
         <main className="flex-1 p-8 overflow-auto">
-          {/* Site Settings */}
+          {/* Site Builder */}
+          {activeNavSection === 'site_builder' && !editingPageId && (
+            <SiteBuilderView
+              onEditPage={(pageId) => setEditingPageId(pageId)}
+              onOpenDynamicPages={() => setActiveNavSection('pages')}
+              onOpenAgentsPage={() => setActiveNavSection('agents_page')}
+            />
+          )}
+
+          {/* Page Builder Editor (inside Site Builder) */}
+          {activeNavSection === 'site_builder' && editingPageId && (
+            <PageBuilderEditor
+              pageId={editingPageId}
+              onBack={() => setEditingPageId(null)}
+            />
+          )}
+
+          {/* Site Settings (Legacy - kept for backward compatibility) */}
           {activeNavSection === 'site_settings' && (
             <SiteSettingsEditor onBack={() => setActiveNavSection(null)} />
           )}
 
-          {/* Sidekick Settings */}
+          {/* Sidekick Settings (Legacy - now part of Sidekick component in Site Builder) */}
           {activeNavSection === 'sidekick_settings' && (
             <SidekickSettingsEditor onBack={() => setActiveNavSection(null)} />
           )}
@@ -251,6 +296,11 @@ export default function AdminApp() {
             <BattleKnowledgeEditor onBack={() => setActiveNavSection(null)} />
           )}
 
+          {/* Agents Page Settings */}
+          {activeNavSection === 'agents_page' && (
+            <AgentsPageSettings onBack={() => setActiveNavSection(null)} />
+          )}
+
           {/* Welcome Screen */}
           {!activeNavSection && (
             <div className="max-w-4xl mx-auto pt-6">
@@ -334,14 +384,23 @@ export default function AdminApp() {
                   </a>
                 </div>
 
-                {/* Site & Media */}
+                {/* Site Builder */}
                 <div>
-                  <p className="text-gray-600 text-xs font-semibold uppercase tracking-wider mb-2 px-1">Site & Media</p>
-                  <div className="grid grid-cols-3 gap-2.5">
+                  <p className="text-gray-600 text-xs font-semibold uppercase tracking-wider mb-2 px-1">Site Builder</p>
+                  <button onClick={() => setActiveNavSection('site_builder')}
+                    className="w-full flex items-center gap-4 p-4 bg-gradient-to-r from-indigo-950/40 to-purple-950/30 rounded-xl border border-indigo-500/20 hover:border-indigo-500/40 transition-all text-left group mb-2.5">
+                    <div className="w-11 h-11 rounded-xl bg-indigo-500/15 flex items-center justify-center flex-shrink-0">
+                      <LayoutDashboard className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" />
+                    </div>
+                    <div className="flex-1">
+                      <span className="text-white text-sm font-semibold">Site Builder</span>
+                      <p className="text-gray-500 text-xs mt-0.5">Pages, components, and visual layout editor</p>
+                    </div>
+                  </button>
+                  <div className="grid grid-cols-2 gap-2.5">
                     {[
-                      { id: 'site_settings' as NavigationSection, icon: Globe, color: '#3b82f6', label: 'Site Settings' },
                       { id: 'design_assets' as NavigationSection, icon: Palette, color: '#14b8a6', label: 'Design Assets' },
-                      { id: 'pages' as NavigationSection, icon: FileText, color: '#6366f1', label: 'Landing Pages' },
+                      { id: 'pages' as NavigationSection, icon: FileText, color: '#6366f1', label: 'Dynamic Pages' },
                     ].map(item => (
                       <button key={item.label} onClick={() => setActiveNavSection(item.id)}
                         className="flex items-center gap-3 p-3.5 bg-gray-900/40 rounded-xl border border-gray-800/30 hover:border-gray-700 hover:bg-gray-900/70 transition-all text-left group">

@@ -42,8 +42,8 @@ const agentImageMapping = {
   // MARKETING AGENTS
   // ============================================
   'Marketing Agent': 'Frame 2147238730.png',
-  'RSVP Manager Agent': 'Frame 2147238712.png',
-  'Competitor Research Agent': 'Frame 2147238707.png',
+  'RSVP Agent': 'Frame 2147238712.png',
+  'Competitor Agent': 'Frame 2147238707.png',
   'Market Landscape Analyzer': 'Frame 2147238713.png',
   'Marketing Image Generator': 'Frame 2147238714.png',
   'Translator Agent': 'Frame 2147238727.png',

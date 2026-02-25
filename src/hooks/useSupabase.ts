@@ -317,6 +317,29 @@ export interface SiteSettings {
   teams_agents_v2_layout: TeamsAgentsV2Layout;
   team_flanked_featured_agents: Record<string, string[]>;
   ai_platform_arch_layout: AIPlatformArchLayout;
+  platform_architecture_variant: 'classic' | 'restructured';
+  platform_page_version: 'v1' | 'v2' | 'v3' | 'v4';
+  platform_context_toggle: boolean;
+  platform_sidekick_panel_style: 'right_overlay' | 'center_modal' | 'left_overlay';
+  platform_v3_team_avatars: 'in_chat' | 'header_row' | 'header_merged';
+  platform_v3_minimal_chat: boolean;
+  platform_sidebar_left: boolean;
+  platform_v4_left_panel: 'sidekick_chat' | 'v1_sidebar';
+  platform_showcase_section: boolean;
+  platform_show_jtbd_sidebar: boolean;
+  platform_show_inline_sidekick: boolean;
+  platform_show_department_bar: boolean;
+  platform_showcase_show_jtbd_sidebar: boolean;
+  platform_showcase_show_inline_sidekick: boolean;
+  platform_showcase_show_department_bar: 'none' | 'horizontal' | 'vertical_sidebar' | 'both';
+  platform_showcase_variant: 'classic' | 'sandbox';
+  platform_show_intro: boolean;
+  platform_intro_style: 'unified' | 'with_plus';
+  platform_hero_variant: 'typewriter' | 'gradient_wave' | 'bold_statement' | 'glassmorphism' | 'spotlight' | 'orbit' | 'split' | 'reveal' | 'spotlight_v2' | 'spotlight_v3' | 'spotlight_v4';
+  platform_use_cases_variant: 'cards_grid' | 'hero_featured' | 'department_tabs' | 'bento_mosaic';
+  agents_hero_variant: 'matrix' | 'boot' | 'neural' | 'glitch' | 'cli' | 'radar';
+  agents_messaging_tone: 'belong_here' | 'pure_machine' | 'machine_personality' | 'agent_pov' | 'system_native';
+  agents_page_layout: 'visual' | 'plain_text';
 }
 
 const defaultSectionsVisibility: SectionsVisibility = {
@@ -389,6 +412,29 @@ export function useSiteSettings() {
     teams_agents_v2_layout: 'mixed_circle',
     team_flanked_featured_agents: {},
     ai_platform_arch_layout: 'app_frame_canvas',
+    platform_architecture_variant: 'classic',
+    platform_page_version: 'v1',
+    platform_context_toggle: false,
+    platform_sidekick_panel_style: 'right_overlay',
+    platform_v3_team_avatars: 'header_row',
+    platform_v3_minimal_chat: false,
+    platform_sidebar_left: false,
+    platform_v4_left_panel: 'sidekick_chat',
+    platform_showcase_section: false,
+    platform_show_jtbd_sidebar: true,
+    platform_show_inline_sidekick: false,
+    platform_show_department_bar: true,
+    platform_showcase_show_jtbd_sidebar: true,
+    platform_showcase_show_inline_sidekick: false,
+    platform_showcase_show_department_bar: 'horizontal',
+    platform_showcase_variant: 'classic',
+    platform_show_intro: false,
+    platform_intro_style: 'unified',
+    platform_hero_variant: 'typewriter',
+    platform_use_cases_variant: 'cards_grid',
+    agents_hero_variant: 'matrix',
+    agents_messaging_tone: 'belong_here',
+    agents_page_layout: 'visual',
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -411,7 +457,7 @@ export function useSiteSettings() {
       if (data) {
         // Extract _order and _teams_agents_v2_layout from sections_visibility if they exist
         const sectionsVisibilityData = data.sections_visibility || {};
-        const { _order, _teams_agents_v2_layout, _team_flanked_featured_agents, _ai_platform_arch_layout, ...sectionsVisibilityWithoutOrder } = sectionsVisibilityData;
+        const { _order, _teams_agents_v2_layout, _team_flanked_featured_agents, _ai_platform_arch_layout, _platform_architecture_variant, _platform_page_version, _platform_context_toggle, _platform_sidekick_panel_style, _platform_v3_team_avatars, _platform_v3_minimal_chat, _platform_sidebar_left, _platform_v4_left_panel, _platform_showcase_section, _platform_show_jtbd_sidebar, _platform_show_inline_sidekick, _platform_show_department_bar, _platform_showcase_show_jtbd_sidebar, _platform_showcase_show_inline_sidekick, _platform_showcase_show_department_bar, _platform_showcase_variant, _platform_show_intro, _platform_intro_style, _platform_hero_variant, _platform_use_cases_variant, _agents_hero_variant, _agents_messaging_tone, _agents_page_layout, ...sectionsVisibilityWithoutOrder } = sectionsVisibilityData;
         
         setSettings({
           hero_title: data.hero_title || 'What would you like to achieve?',
@@ -430,6 +476,31 @@ export function useSiteSettings() {
           teams_agents_v2_layout: _teams_agents_v2_layout || 'mixed_circle',
           team_flanked_featured_agents: _team_flanked_featured_agents || {},
           ai_platform_arch_layout: _ai_platform_arch_layout || 'app_frame_canvas',
+          platform_architecture_variant: _platform_architecture_variant || 'classic',
+          platform_page_version: _platform_page_version || 'v1',
+          platform_context_toggle: _platform_context_toggle ?? false,
+          platform_sidekick_panel_style: _platform_sidekick_panel_style || 'right_overlay',
+          platform_v3_team_avatars: _platform_v3_team_avatars || 'header_row',
+          platform_v3_minimal_chat: _platform_v3_minimal_chat ?? false,
+          platform_sidebar_left: _platform_sidebar_left ?? false,
+          platform_v4_left_panel: _platform_v4_left_panel || 'sidekick_chat',
+          platform_showcase_section: _platform_showcase_section ?? false,
+          platform_show_jtbd_sidebar: _platform_show_jtbd_sidebar ?? true,
+          platform_show_inline_sidekick: _platform_show_inline_sidekick ?? false,
+          platform_show_department_bar: _platform_show_department_bar ?? true,
+          platform_showcase_show_jtbd_sidebar: _platform_showcase_show_jtbd_sidebar ?? true,
+          platform_showcase_show_inline_sidekick: _platform_showcase_show_inline_sidekick ?? false,
+          platform_showcase_show_department_bar: typeof _platform_showcase_show_department_bar === 'boolean'
+            ? (_platform_showcase_show_department_bar ? 'horizontal' : 'none')
+            : (_platform_showcase_show_department_bar || 'horizontal'),
+          platform_showcase_variant: _platform_showcase_variant || 'classic',
+          platform_show_intro: _platform_show_intro ?? false,
+          platform_intro_style: _platform_intro_style || 'unified',
+          platform_hero_variant: _platform_hero_variant || 'typewriter',
+          platform_use_cases_variant: _platform_use_cases_variant || 'cards_grid',
+          agents_hero_variant: _agents_hero_variant || 'matrix',
+          agents_messaging_tone: _agents_messaging_tone || 'belong_here',
+          agents_page_layout: _agents_page_layout || 'visual',
         });
       }
     } catch (err: any) {
@@ -901,4 +972,465 @@ export function useDesignAssets(category?: DesignAssetCategory) {
   };
 
   return { assets, loading, refetch: fetchAssets, addAsset, updateAsset, deleteAsset, bulkAddAssets };
+}
+
+// ─── Page Components ─────────────────────────────────────────────────────────
+
+export interface PageComponentRow {
+  id: string;
+  page_id: string;           // 'homepage', 'platform', or uuid
+  component_type: string;
+  display_name: string;
+  settings: Record<string, any>;
+  order_index: number;
+  is_visible: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export function usePageComponents(pageId: string) {
+  const [components, setComponents] = useState<PageComponentRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchComponents = useCallback(async () => {
+    if (!pageId) {
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      const { data, error: fetchError } = await supabase
+        .from('page_components')
+        .select('*')
+        .eq('page_id', pageId)
+        .order('order_index', { ascending: true });
+
+      if (fetchError) throw fetchError;
+      setComponents((data as PageComponentRow[]) || []);
+      setError(null);
+    } catch (err: any) {
+      setError(err.message);
+      setComponents([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [pageId]);
+
+  useEffect(() => {
+    fetchComponents();
+  }, [fetchComponents]);
+
+  const addComponent = async (component: Omit<PageComponentRow, 'id' | 'created_at' | 'updated_at'>) => {
+    const { error: insertError } = await supabase
+      .from('page_components')
+      .insert({
+        page_id: component.page_id,
+        component_type: component.component_type,
+        display_name: component.display_name,
+        settings: component.settings || {},
+        order_index: component.order_index,
+        is_visible: component.is_visible ?? true,
+      });
+    if (insertError) throw insertError;
+    await fetchComponents();
+  };
+
+  const updateComponent = async (id: string, updates: Partial<PageComponentRow>) => {
+    const { error: updateErr } = await supabase
+      .from('page_components')
+      .update(updates)
+      .eq('id', id);
+    if (updateErr) throw updateErr;
+    await fetchComponents();
+  };
+
+  const deleteComponent = async (id: string) => {
+    const { error: deleteErr } = await supabase
+      .from('page_components')
+      .delete()
+      .eq('id', id);
+    if (deleteErr) throw deleteErr;
+    await fetchComponents();
+  };
+
+  const reorderComponents = async (orderedIds: string[]) => {
+    try {
+      const updates = orderedIds.map((id, index) =>
+        supabase.from('page_components').update({ order_index: index }).eq('id', id)
+      );
+      await Promise.all(updates);
+      await fetchComponents();
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  return {
+    components,
+    loading,
+    error,
+    refetch: fetchComponents,
+    addComponent,
+    updateComponent,
+    deleteComponent,
+    reorderComponents,
+  };
+}
+
+/** Migrates site_settings (sections_visibility, sections_order, hero_settings, etc.) to page_components for homepage. Only runs if no page_components exist for 'homepage' yet. Returns number of components created. */
+export async function migrateHomepageToPageComponents(): Promise<number> {
+  try {
+    const { data: existing } = await supabase
+      .from('page_components')
+      .select('id')
+      .eq('page_id', 'homepage')
+      .limit(1);
+    if (existing && existing.length > 0) return 0;
+
+    const { data: settingsRow, error: settingsErr } = await supabase
+      .from('site_settings')
+      .select('*')
+      .single();
+    if (settingsErr || !settingsRow) return 0;
+
+    const sectionsVisibility = settingsRow.sections_visibility || defaultSectionsVisibility;
+    const sectionsOrder = (settingsRow.sections_visibility as any)?._order || settingsRow.sections_order || defaultSectionsOrder;
+    const heroSettings = settingsRow.hero_settings || defaultHeroSettings;
+    const solutionTabsVisibility = settingsRow.solution_tabs_visibility || defaultSolutionTabsVisibility;
+    const teamsAgentsV2Layout = (settingsRow.sections_visibility as any)?._teams_agents_v2_layout || 'mixed_circle';
+    const teamFlankedFeaturedAgents = (settingsRow.sections_visibility as any)?._team_flanked_featured_agents || {};
+    const aiPlatformArchLayout = (settingsRow.sections_visibility as any)?._ai_platform_arch_layout || 'app_frame_canvas';
+
+    const sectionToSettings: Record<string, Record<string, any>> = {
+      hero: { ...heroSettings },
+      hero_alternative: {},
+      hero_outcome_cards: {},
+      work_comparison: {},
+      sidekick_capabilities: {},
+      sidekick: {
+        hero_theme: settingsRow.sidekick_hero_theme || null,
+        inaction_theme: settingsRow.sidekick_inaction_theme || null,
+      },
+      departments: { hero_title: settingsRow.hero_title || 'What would you like to achieve?' },
+      ai_platform: { solution_tabs_visibility: solutionTabsVisibility },
+      project_management: {},
+      agents_showcase: {},
+      teams_and_agents: {},
+      teams_and_agents_v2: { layout: teamsAgentsV2Layout, team_flanked_featured_agents: teamFlankedFeaturedAgents },
+      ai_platform_architecture: { layout: aiPlatformArchLayout },
+      team_commands: {},
+    };
+
+    const displayNames: Record<string, string> = {
+      hero: 'Hero Section',
+      hero_alternative: 'Hero Alternative',
+      hero_outcome_cards: 'Hero Outcome Cards',
+      work_comparison: 'Work Comparison',
+      sidekick_capabilities: 'Sidekick (Half Story)',
+      sidekick: 'Sidekick',
+      departments: 'Departments',
+      ai_platform: 'AI Platform',
+      project_management: 'Project Management',
+      agents_showcase: 'Agents Showcase',
+      teams_and_agents: 'Teams and Agents',
+      teams_and_agents_v2: 'Teams and Agents V2',
+      ai_platform_architecture: 'AI Platform Architecture',
+      team_commands: 'Team Commands',
+    };
+
+    const rows: Omit<PageComponentRow, 'id' | 'created_at' | 'updated_at'>[] = [];
+    sectionsOrder.forEach((sectionKey: string, idx: number) => {
+      const isVisible = sectionsVisibility[sectionKey] ?? true;
+      const settings = sectionToSettings[sectionKey] ?? {};
+      const displayName = displayNames[sectionKey] ?? sectionKey;
+      rows.push({
+        page_id: 'homepage',
+        component_type: sectionKey,
+        display_name: displayName,
+        settings,
+        order_index: idx,
+        is_visible: isVisible,
+      });
+    });
+
+    if (rows.length === 0) return 0;
+    const { error: insertErr } = await supabase.from('page_components').insert(rows);
+    if (insertErr) throw insertErr;
+    return rows.length;
+  } catch (err: any) {
+    console.error('migrateHomepageToPageComponents:', err.message);
+    return 0;
+  }
+}
+
+/** Migrates site_settings platform options to page_components for page_id='platform'. Only runs if no page_components exist for 'platform' yet. */
+export async function migratePlatformToPageComponents(): Promise<number> {
+  try {
+    const { data: existing } = await supabase
+      .from('page_components')
+      .select('id')
+      .eq('page_id', 'platform')
+      .limit(1);
+    if (existing && existing.length > 0) return 0;
+
+    const { data: settingsRow, error: settingsErr } = await supabase
+      .from('site_settings')
+      .select('*')
+      .single();
+    if (settingsErr || !settingsRow) return 0;
+
+    const sectionsVisibility = settingsRow.sections_visibility || ({} as Record<string, any>);
+    const platformPageVersion = sectionsVisibility._platform_page_version || 'v1';
+    const platformContextToggle = sectionsVisibility._platform_context_toggle ?? false;
+    const platformSidekickPanelStyle = sectionsVisibility._platform_sidekick_panel_style || 'right_overlay';
+    const platformV3TeamAvatars = sectionsVisibility._platform_v3_team_avatars || 'header_row';
+    const platformV3MinimalChat = sectionsVisibility._platform_v3_minimal_chat ?? false;
+    const platformSidebarLeft = sectionsVisibility._platform_sidebar_left ?? false;
+    const platformV4LeftPanel = sectionsVisibility._platform_v4_left_panel || 'sidekick_chat';
+    const platformShowcaseSection = sectionsVisibility._platform_showcase_section ?? false;
+
+    const rows: Omit<PageComponentRow, 'id' | 'created_at' | 'updated_at'>[] = [];
+    let orderIndex = 0;
+
+    rows.push({
+      page_id: 'platform',
+      component_type: 'platform_hero',
+      display_name: 'Platform Hero',
+      settings: {},
+      order_index: orderIndex++,
+      is_visible: true,
+    });
+
+    rows.push({
+      page_id: 'platform',
+      component_type: 'department_bar',
+      display_name: 'Department Bar',
+      settings: {},
+      order_index: orderIndex++,
+      is_visible: true,
+    });
+
+    rows.push({
+      page_id: 'platform',
+      component_type: 'jtbd_workspace',
+      display_name: 'JTBD Workspace',
+      settings: {
+        platform_page_version: platformPageVersion,
+        context_toggle: platformContextToggle,
+        sidekick_panel_style: platformSidekickPanelStyle,
+        v3_team_avatars: platformV3TeamAvatars,
+        v3_minimal_chat: platformV3MinimalChat,
+        sidebar_left: platformSidebarLeft,
+        v4_left_panel: platformV4LeftPanel,
+      },
+      order_index: orderIndex++,
+      is_visible: true,
+    });
+
+    if (platformShowcaseSection) {
+      rows.push({
+        page_id: 'platform',
+        component_type: 'platform_showcase',
+        display_name: 'Platform Showcase',
+        settings: {},
+        order_index: orderIndex++,
+        is_visible: true,
+      });
+    }
+
+    if (rows.length === 0) return 0;
+    const { error: insertErr } = await supabase.from('page_components').insert(rows);
+    if (insertErr) throw insertErr;
+    return rows.length;
+  } catch (err: any) {
+    console.error('migratePlatformToPageComponents:', err.message);
+    return 0;
+  }
+}
+
+/** Ensures newly-registered platform components exist in page_components. Adds any missing ones at the end. */
+export async function ensurePlatformComponents(): Promise<number> {
+  const requiredComponents: { type: string; name: string; settings: Record<string, any> }[] = [
+    { type: 'use_cases_showcase', name: 'Use Cases Showcase', settings: { use_cases_variant: 'cards_grid' } },
+    { type: 'department_agents_showcase', name: 'Department Agents Showcase', settings: {} },
+  ];
+
+  try {
+    const { data: existing } = await supabase
+      .from('page_components')
+      .select('component_type, order_index')
+      .eq('page_id', 'platform');
+
+    if (!existing || existing.length === 0) return 0;
+
+    const existingTypes = new Set(existing.map(c => c.component_type));
+    const maxOrder = Math.max(...existing.map(c => c.order_index), 0);
+    const missing = requiredComponents.filter(r => !existingTypes.has(r.type));
+    if (missing.length === 0) return 0;
+
+    const rows: Omit<PageComponentRow, 'id' | 'created_at' | 'updated_at'>[] = missing.map((m, i) => ({
+      page_id: 'platform',
+      component_type: m.type,
+      display_name: m.name,
+      settings: m.settings,
+      order_index: maxOrder + 1 + i,
+      is_visible: true,
+    }));
+
+    const { error } = await supabase.from('page_components').insert(rows);
+    if (error) throw error;
+    return rows.length;
+  } catch (err: any) {
+    console.error('ensurePlatformComponents:', err.message);
+    return 0;
+  }
+}
+
+// ─── Backward Compatibility: Sync page_components → site_settings ────────────
+
+/**
+ * Reads page_components for 'homepage' and syncs the corresponding fields
+ * back to site_settings so that the existing frontend rendering
+ * continues to work without any changes.
+ */
+export async function syncHomepageToSiteSettings(): Promise<void> {
+  try {
+    const { data: comps, error: compErr } = await supabase
+      .from('page_components')
+      .select('*')
+      .eq('page_id', 'homepage')
+      .order('order_index', { ascending: true });
+
+    if (compErr || !comps || comps.length === 0) return;
+
+    // Build sections_visibility
+    const sectionsVisibility: Record<string, any> = {};
+    const sectionsOrder: string[] = [];
+
+    for (const comp of comps) {
+      const key = comp.component_type;
+      sectionsVisibility[key] = comp.is_visible;
+      sectionsOrder.push(key);
+    }
+
+    // Extract specific settings from component instances
+    const heroComp = comps.find(c => c.component_type === 'hero');
+    const sidekickComp = comps.find(c => c.component_type === 'sidekick');
+    const departmentsComp = comps.find(c => c.component_type === 'departments');
+    const aiPlatformComp = comps.find(c => c.component_type === 'ai_platform');
+    const teamsV2Comp = comps.find(c => c.component_type === 'teams_and_agents_v2');
+    const archComp = comps.find(c => c.component_type === 'ai_platform_architecture');
+
+    // Build hero_settings from hero component settings
+    const heroSettings = heroComp?.settings || {};
+
+    // Build solution_tabs_visibility
+    const solutionTabsVis = aiPlatformComp?.settings?.solution_tabs_visibility || null;
+
+    // Build sections_visibility with extra underscore-prefixed fields
+    const sectionsVisibilityWithExtras = {
+      ...sectionsVisibility,
+      _order: sectionsOrder,
+      _teams_agents_v2_layout: teamsV2Comp?.settings?.layout || 'mixed_circle',
+      _team_flanked_featured_agents: teamsV2Comp?.settings?.team_flanked_featured_agents || {},
+      _ai_platform_arch_layout: archComp?.settings?.layout || 'app_frame_canvas',
+      _platform_architecture_variant: archComp?.settings?.architecture_variant || 'classic',
+    };
+
+    // Build update payload
+    const updateData: Record<string, any> = {
+      sections_visibility: sectionsVisibilityWithExtras,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (Object.keys(heroSettings).length > 0) {
+      updateData.hero_settings = heroSettings;
+    }
+    if (solutionTabsVis) {
+      updateData.solution_tabs_visibility = solutionTabsVis;
+    }
+    if (departmentsComp?.settings?.hero_title) {
+      updateData.hero_title = departmentsComp.settings.hero_title;
+    }
+    if (sidekickComp?.settings) {
+      if (sidekickComp.settings.hero_theme !== undefined) {
+        updateData.sidekick_hero_theme = sidekickComp.settings.hero_theme;
+      }
+      if (sidekickComp.settings.inaction_theme !== undefined) {
+        updateData.sidekick_inaction_theme = sidekickComp.settings.inaction_theme;
+      }
+    }
+
+    await supabase
+      .from('site_settings')
+      .update(updateData)
+      .eq('id', 'main');
+  } catch (err: any) {
+    console.error('syncHomepageToSiteSettings:', err.message);
+  }
+}
+
+/**
+ * Reads page_components for 'platform' and syncs the relevant platform
+ * options back to site_settings.sections_visibility underscore fields.
+ */
+export async function syncPlatformToSiteSettings(): Promise<void> {
+  try {
+    const { data: comps, error: compErr } = await supabase
+      .from('page_components')
+      .select('*')
+      .eq('page_id', 'platform')
+      .order('order_index', { ascending: true });
+
+    if (compErr || !comps || comps.length === 0) return;
+
+    // Get existing sections_visibility to merge into
+    const { data: settingsRow } = await supabase
+      .from('site_settings')
+      .select('sections_visibility')
+      .single();
+
+    const existingVis = (settingsRow?.sections_visibility || {}) as Record<string, any>;
+
+    const jtbdComp = comps.find(c => c.component_type === 'jtbd_workspace');
+    const showcaseComp = comps.find(c => c.component_type === 'platform_showcase');
+    const heroComp = comps.find(c => c.component_type === 'platform_hero');
+    const archLayerComp = comps.find(c => c.component_type === 'platform_architecture_layer');
+    const useCasesComp = comps.find(c => c.component_type === 'use_cases_showcase');
+
+    const updatedVis = {
+      ...existingVis,
+      _platform_page_version: jtbdComp?.settings?.platform_page_version || existingVis._platform_page_version || 'v1',
+      _platform_context_toggle: jtbdComp?.settings?.context_toggle ?? existingVis._platform_context_toggle ?? false,
+      _platform_sidekick_panel_style: jtbdComp?.settings?.sidekick_panel_style || existingVis._platform_sidekick_panel_style || 'right_overlay',
+      _platform_v3_team_avatars: jtbdComp?.settings?.v3_team_avatars || existingVis._platform_v3_team_avatars || 'header_row',
+      _platform_v3_minimal_chat: jtbdComp?.settings?.v3_minimal_chat ?? existingVis._platform_v3_minimal_chat ?? false,
+      _platform_sidebar_left: jtbdComp?.settings?.sidebar_left ?? existingVis._platform_sidebar_left ?? false,
+      _platform_v4_left_panel: jtbdComp?.settings?.v4_left_panel || existingVis._platform_v4_left_panel || 'sidekick_chat',
+      _platform_showcase_section: showcaseComp ? showcaseComp.is_visible : (existingVis._platform_showcase_section ?? false),
+      _platform_show_jtbd_sidebar: jtbdComp?.settings?.show_jtbd_sidebar ?? existingVis._platform_show_jtbd_sidebar ?? true,
+      _platform_show_inline_sidekick: jtbdComp?.settings?.show_inline_sidekick ?? existingVis._platform_show_inline_sidekick ?? false,
+      _platform_show_department_bar: jtbdComp?.settings?.show_department_bar ?? existingVis._platform_show_department_bar ?? true,
+      _platform_showcase_show_jtbd_sidebar: showcaseComp?.settings?.show_jtbd_sidebar ?? existingVis._platform_showcase_show_jtbd_sidebar ?? true,
+      _platform_showcase_show_inline_sidekick: showcaseComp?.settings?.show_inline_sidekick ?? existingVis._platform_showcase_show_inline_sidekick ?? false,
+      _platform_showcase_show_department_bar: showcaseComp?.settings?.show_department_bar || existingVis._platform_showcase_show_department_bar || 'horizontal',
+      _platform_showcase_variant: showcaseComp?.settings?.showcase_variant || existingVis._platform_showcase_variant || 'classic',
+      _platform_show_intro: jtbdComp?.settings?.show_intro ?? existingVis._platform_show_intro ?? false,
+      _platform_intro_style: jtbdComp?.settings?.intro_style || existingVis._platform_intro_style || 'unified',
+      _platform_hero_variant: heroComp?.settings?.hero_variant || existingVis._platform_hero_variant || 'typewriter',
+      _platform_architecture_variant: archLayerComp?.settings?.architecture_variant || existingVis._platform_architecture_variant || 'classic',
+      _platform_use_cases_variant: useCasesComp?.settings?.use_cases_variant || existingVis._platform_use_cases_variant || 'cards_grid',
+    };
+
+    await supabase
+      .from('site_settings')
+      .update({
+        sections_visibility: updatedVis,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', 'main');
+  } catch (err: any) {
+    console.error('syncPlatformToSiteSettings:', err.message);
+  }
 }

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Loader2 } from 'lucide-react';
 import type { DepartmentRow } from '@/types/database';
@@ -14,7 +15,7 @@ const productLabel: Record<string, string> = {
   hr: 'HR',
 };
 
-interface DepartmentBarProps {
+export interface DepartmentBarProps {
   departments: DepartmentRow[];
   loading: boolean;
   selectedDeptId: string | null;
@@ -36,7 +37,7 @@ export function DepartmentBar({
   }
 
   return (
-    <section className="py-6 md:py-8 bg-white">
+    <section className="pt-6 md:pt-8 pb-4 md:pb-6 bg-white">
       <div className="max-w-4xl mx-auto px-4 md:px-6">
         {/* Framed container */}
         <motion.div
@@ -123,5 +124,121 @@ export function DepartmentBar({
         </motion.div>
       </div>
     </section>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────
+   DepartmentSidebar – vertical avatar column for the Showcase
+   ───────────────────────────────────────────────────────────── */
+
+export function DepartmentSidebar({
+  departments,
+  loading,
+  selectedDeptId,
+  onSelectDepartment,
+}: DepartmentBarProps) {
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center py-4">
+        <Loader2 className="w-5 h-5 text-[#6161ff] animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -12 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
+      className="sticky top-24 flex flex-col items-center gap-3 py-4 px-2.5 rounded-xl border border-gray-200 bg-gray-50/40"
+    >
+      {/* Title */}
+      <span className="text-[8px] font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Departments</span>
+
+      {departments.map((dept, index) => {
+        const isSelected = selectedDeptId === dept.id;
+        const isHovered = hoveredId === dept.id;
+        const label = productLabel[dept.name] || dept.name;
+
+        return (
+          <motion.button
+            key={dept.id}
+            initial={{ opacity: 0, scale: 0.85 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.04 * index, duration: 0.3 }}
+            whileTap={{ scale: 0.93 }}
+            onClick={() => onSelectDepartment(dept.id)}
+            onMouseEnter={() => setHoveredId(dept.id)}
+            onMouseLeave={() => setHoveredId(null)}
+            className="relative flex items-center cursor-pointer flex-shrink-0 group"
+          >
+            {/* Avatar */}
+            <div className="relative">
+              <div
+                className={`
+                  rounded-full overflow-hidden transition-all duration-300
+                  ${isSelected
+                    ? 'w-11 h-11 ring-[2.5px] ring-[#6161ff] ring-offset-[2px] ring-offset-white'
+                    : 'w-9 h-9 opacity-30 group-hover:opacity-60 group-hover:ring-[1.5px] group-hover:ring-gray-300 group-hover:ring-offset-1 group-hover:ring-offset-white'
+                  }
+                `}
+                style={{ backgroundColor: dept.avatar_color || '#e5e7eb' }}
+              >
+                {dept.avatar_image && (
+                  <img
+                    src={dept.avatar_image}
+                    alt={label}
+                    className="w-full h-full object-cover"
+                  />
+                )}
+              </div>
+
+              {/* Glow on selected */}
+              {isSelected && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: [0.2, 0.45, 0.2],
+                    scale: [1, 1.12, 1],
+                  }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                  className="absolute inset-0 rounded-full pointer-events-none"
+                  style={{
+                    boxShadow: `0 0 14px ${dept.avatar_color || '#6161ff'}`,
+                  }}
+                />
+              )}
+            </div>
+
+            {/* Hover tooltip -- department name */}
+            <AnimatePresence>
+              {isHovered && (
+                <motion.div
+                  initial={{ opacity: 0, x: -4 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -4 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute left-full ml-3 whitespace-nowrap z-20 pointer-events-none"
+                >
+                  <div className="relative px-2.5 py-1.5 rounded-lg bg-gray-900 text-white text-[11px] font-medium shadow-lg">
+                    {label}
+                    {/* Arrow */}
+                    <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-gray-900 rotate-45" />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.button>
+        );
+      })}
+    </motion.div>
   );
 }

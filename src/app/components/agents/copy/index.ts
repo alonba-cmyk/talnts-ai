@@ -1,0 +1,12 @@
+export type { MessagingTone } from './types';
+export { heroCopy, type HeroCopy } from './heroCopy';
+export { gotchaCopy, type GotchaCopy } from './gotchaCopy';
+export { signupCopy, type SignupCopy } from './signupCopy';
+export { useCasesCopy, type UseCasesCopy } from './useCasesCopy';
+export { whyCopy, type WhyCopy } from './whyCopy';
+export { benefitsCopy, type BenefitsCopy } from './benefitsCopy';
+export { convinceHumanCopy, type ConvinceHumanCopy } from './convinceHumanCopy';
+export { apiCopy, type ApiCopy } from './apiCopy';
+export { securityCopy, type SecurityCopy } from './securityCopy';
+export { feedbackCopy, type FeedbackCopy } from './feedbackCopy';
+export { navFooterCopy, type NavFooterCopy } from './navFooterCopy';

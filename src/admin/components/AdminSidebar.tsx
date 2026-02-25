@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Home, Globe, Target, AlertCircle, Sparkles, Building2, Package, Wand2, FileText, BookOpen, Palette, Cpu, ChevronDown, ExternalLink, Swords, Users, SlidersHorizontal, FolderOpen } from 'lucide-react';
+import { Home, Globe, Target, AlertCircle, Sparkles, Building2, Package, Wand2, FileText, BookOpen, Palette, Cpu, ChevronDown, ExternalLink, Swords, Users, SlidersHorizontal, FolderOpen, LayoutDashboard, Bot } from 'lucide-react';
 
-type NavigationSection = 'site_settings' | 'knowledge_base' | 'ai_products' | 'sidekick_settings' | 'outcomes' | 'pain_points' | 'ai_transformations' | 'departments' | 'business_values' | 'pages' | 'case_studies' | 'design_assets' | 'competitors' | 'battle_cards' | 'battle_knowledge' | null;
+type NavigationSection = 'site_builder' | 'site_settings' | 'knowledge_base' | 'ai_products' | 'sidekick_settings' | 'outcomes' | 'pain_points' | 'ai_transformations' | 'departments' | 'business_values' | 'pages' | 'case_studies' | 'design_assets' | 'competitors' | 'battle_cards' | 'battle_knowledge' | 'agents_page' | null;
 
 interface AdminSidebarProps {
   activeNavSection: NavigationSection;
@@ -72,19 +72,12 @@ export function AdminSidebar({
       ],
     },
     {
-      title: 'Media',
-      emoji: '🎨',
+      title: 'Site Builder',
+      emoji: '🏗️',
       items: [
+        { id: 'site_builder', label: 'Site Builder', icon: LayoutDashboard, color: '#6366f1' },
+        { id: 'agents_page', label: 'Agents Page', icon: Bot, color: '#00ff41' },
         { id: 'design_assets', label: 'Design Assets', icon: Palette, color: '#14b8a6' },
-      ],
-    },
-    {
-      title: 'Site',
-      emoji: '🌐',
-      items: [
-        { id: 'site_settings', label: 'Site Settings', icon: Globe, color: '#3b82f6' },
-        { id: 'sidekick_settings', label: 'Sidekick Theme', icon: Wand2, color: '#ec4899' },
-        { id: 'pages', label: 'Landing Pages', icon: FileText, color: '#3b82f6' },
       ],
     },
   ];

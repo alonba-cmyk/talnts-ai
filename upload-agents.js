@@ -27,8 +27,8 @@ const agentMapping = {
   
   // Marketing agents
   'Marketing Agent': '2147238730',
-  'RSVP Manager Agent': '2147238712',
-  'Competitor Research Agent': '2147238707',
+  'RSVP Agent': '2147238712',
+  'Competitor Agent': '2147238707',
   'Market Landscape Analyzer': '2147238713',
   'Marketing Image Generator': '2147238714',
   'Translator Agent': '2147238727',

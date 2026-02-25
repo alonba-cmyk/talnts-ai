@@ -32,8 +32,8 @@ FROM departments d, agents a
 WHERE d.title = 'Marketing' 
 AND a.name IN (
   'Marketing Agent', 
-  'RSVP Manager Agent', 
-  'Competitor Research Agent', 
+  'RSVP Agent', 
+  'Competitor Agent', 
   'Market Landscape Analyzer', 
   'Marketing Image Generator', 
   'Translator Agent', 

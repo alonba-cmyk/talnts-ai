@@ -66,6 +66,26 @@ interface SiteSettings {
   teams_agents_v2_layout: TeamsAgentsV2Layout;
   team_flanked_featured_agents: Record<string, string[]>;
   ai_platform_arch_layout: AIPlatformArchLayout;
+  platform_architecture_variant: 'classic' | 'restructured';
+  platform_page_version: 'v1' | 'v2' | 'v3' | 'v4';
+  platform_context_toggle: boolean;
+  platform_sidekick_panel_style: 'right_overlay' | 'center_modal';
+  platform_v3_team_avatars: 'in_chat' | 'header_row' | 'header_merged';
+  platform_v3_minimal_chat: boolean;
+  platform_sidebar_left: boolean;
+  platform_v4_left_panel: 'sidekick_chat' | 'v1_sidebar';
+  platform_showcase_section: boolean;
+  platform_show_jtbd_sidebar: boolean;
+  platform_show_inline_sidekick: boolean;
+  platform_show_department_bar: boolean;
+  platform_showcase_show_jtbd_sidebar: boolean;
+  platform_showcase_show_inline_sidekick: boolean;
+  platform_showcase_show_department_bar: 'none' | 'horizontal' | 'vertical_sidebar' | 'both';
+  platform_showcase_variant: 'classic' | 'sandbox';
+  platform_show_intro: boolean;
+  platform_intro_style: 'unified' | 'with_plus';
+  platform_hero_variant: 'typewriter' | 'gradient_wave' | 'bold_statement' | 'glassmorphism' | 'spotlight' | 'orbit' | 'split' | 'reveal' | 'spotlight_v2' | 'spotlight_v3' | 'spotlight_v4';
+  platform_use_cases_variant: 'cards_grid' | 'hero_featured' | 'department_tabs' | 'bento_mosaic';
 }
 
 const defaultSectionsVisibility: SectionsVisibility = {
@@ -672,6 +692,26 @@ export function SiteSettingsEditor({ onBack }: SiteSettingsEditorProps) {
     teams_agents_v2_layout: 'mixed_circle',
     team_flanked_featured_agents: {},
     ai_platform_arch_layout: 'app_frame_canvas',
+    platform_architecture_variant: 'classic',
+    platform_page_version: 'v1',
+    platform_context_toggle: false,
+    platform_sidekick_panel_style: 'right_overlay',
+    platform_v3_team_avatars: 'header_row',
+    platform_v3_minimal_chat: false,
+    platform_sidebar_left: false,
+    platform_v4_left_panel: 'sidekick_chat',
+    platform_showcase_section: false,
+    platform_show_jtbd_sidebar: true,
+    platform_show_inline_sidekick: false,
+    platform_show_department_bar: true,
+    platform_showcase_show_jtbd_sidebar: true,
+    platform_showcase_show_inline_sidekick: false,
+    platform_showcase_show_department_bar: 'horizontal',
+    platform_showcase_variant: 'classic',
+    platform_show_intro: false,
+    platform_intro_style: 'unified',
+    platform_hero_variant: 'typewriter',
+    platform_use_cases_variant: 'cards_grid',
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -701,7 +741,7 @@ export function SiteSettingsEditor({ onBack }: SiteSettingsEditorProps) {
         
         // Extract _order and _teams_agents_v2_layout from sections_visibility if they exist
         const sectionsVisibilityData = data.sections_visibility || {};
-        const { _order, _teams_agents_v2_layout, _team_flanked_featured_agents, _ai_platform_arch_layout, ...sectionsVisibilityWithoutOrder } = sectionsVisibilityData;
+        const { _order, _teams_agents_v2_layout, _team_flanked_featured_agents, _ai_platform_arch_layout, _platform_architecture_variant, _platform_page_version, _platform_context_toggle, _platform_sidekick_panel_style, _platform_v3_team_avatars, _platform_v3_minimal_chat, _platform_sidebar_left, _platform_v4_left_panel, _platform_showcase_section, _platform_show_jtbd_sidebar, _platform_show_inline_sidekick, _platform_show_department_bar, _platform_showcase_show_jtbd_sidebar, _platform_showcase_show_inline_sidekick, _platform_showcase_show_department_bar, _platform_showcase_variant, _platform_show_intro, _platform_intro_style, _platform_hero_variant, _platform_use_cases_variant, ...sectionsVisibilityWithoutOrder } = sectionsVisibilityData;
         
         setSettings({
           hero_title: data.hero_title || settings.hero_title,
@@ -724,6 +764,28 @@ export function SiteSettingsEditor({ onBack }: SiteSettingsEditorProps) {
           teams_agents_v2_layout: _teams_agents_v2_layout || 'mixed_circle',
           team_flanked_featured_agents: _team_flanked_featured_agents || {},
           ai_platform_arch_layout: _ai_platform_arch_layout || 'app_frame_canvas',
+          platform_architecture_variant: _platform_architecture_variant || 'classic',
+          platform_page_version: _platform_page_version || 'v1',
+          platform_context_toggle: _platform_context_toggle ?? false,
+          platform_sidekick_panel_style: _platform_sidekick_panel_style || 'right_overlay',
+          platform_v3_team_avatars: _platform_v3_team_avatars || 'header_row',
+          platform_v3_minimal_chat: _platform_v3_minimal_chat ?? false,
+          platform_sidebar_left: _platform_sidebar_left ?? false,
+          platform_v4_left_panel: _platform_v4_left_panel || 'sidekick_chat',
+          platform_showcase_section: _platform_showcase_section ?? false,
+          platform_show_jtbd_sidebar: _platform_show_jtbd_sidebar ?? true,
+          platform_show_inline_sidekick: _platform_show_inline_sidekick ?? false,
+          platform_show_department_bar: _platform_show_department_bar ?? true,
+          platform_showcase_show_jtbd_sidebar: _platform_showcase_show_jtbd_sidebar ?? true,
+          platform_showcase_show_inline_sidekick: _platform_showcase_show_inline_sidekick ?? false,
+          platform_showcase_show_department_bar: typeof _platform_showcase_show_department_bar === 'boolean'
+            ? (_platform_showcase_show_department_bar ? 'horizontal' : 'none')
+            : (_platform_showcase_show_department_bar || 'horizontal'),
+          platform_showcase_variant: _platform_showcase_variant || 'classic',
+          platform_show_intro: _platform_show_intro ?? false,
+          platform_intro_style: _platform_intro_style || 'unified',
+          platform_hero_variant: _platform_hero_variant || 'typewriter',
+          platform_use_cases_variant: _platform_use_cases_variant || 'cards_grid',
         });
       }
     } catch (err) {
@@ -746,6 +808,26 @@ export function SiteSettingsEditor({ onBack }: SiteSettingsEditorProps) {
         _teams_agents_v2_layout: settings.teams_agents_v2_layout,
         _team_flanked_featured_agents: settings.team_flanked_featured_agents,
         _ai_platform_arch_layout: settings.ai_platform_arch_layout,
+        _platform_architecture_variant: settings.platform_architecture_variant,
+        _platform_page_version: settings.platform_page_version,
+        _platform_context_toggle: settings.platform_context_toggle,
+        _platform_sidekick_panel_style: settings.platform_sidekick_panel_style,
+        _platform_v3_team_avatars: settings.platform_v3_team_avatars,
+        _platform_v3_minimal_chat: settings.platform_v3_minimal_chat,
+        _platform_sidebar_left: settings.platform_sidebar_left,
+        _platform_v4_left_panel: settings.platform_v4_left_panel,
+        _platform_showcase_section: settings.platform_showcase_section,
+        _platform_show_jtbd_sidebar: settings.platform_show_jtbd_sidebar,
+        _platform_show_inline_sidekick: settings.platform_show_inline_sidekick,
+        _platform_show_department_bar: settings.platform_show_department_bar,
+        _platform_showcase_show_jtbd_sidebar: settings.platform_showcase_show_jtbd_sidebar,
+        _platform_showcase_show_inline_sidekick: settings.platform_showcase_show_inline_sidekick,
+        _platform_showcase_show_department_bar: settings.platform_showcase_show_department_bar,
+        _platform_showcase_variant: settings.platform_showcase_variant,
+        _platform_show_intro: settings.platform_show_intro,
+        _platform_intro_style: settings.platform_intro_style,
+        _platform_hero_variant: settings.platform_hero_variant,
+        _platform_use_cases_variant: settings.platform_use_cases_variant,
       };
       
       const { error: updateError } = await supabase
@@ -1079,6 +1161,539 @@ export function SiteSettingsEditor({ onBack }: SiteSettingsEditorProps) {
               </div>
             </div>
           )}
+
+          {/* Architecture Variant (Classic vs Restructured) */}
+          {settings.sections_visibility.ai_platform_architecture && (
+            <div className="mt-4 p-4 bg-gray-800/50 rounded-lg border border-purple-500/30">
+              <h3 className="text-md font-semibold text-white mb-2">Architecture Layout</h3>
+              <p className="text-gray-400 text-xs mb-3">Choose between the original concentric layout or the new restructured top-down flow.</p>
+              <select
+                value={settings.platform_architecture_variant}
+                onChange={(e) => setSettings({ ...settings, platform_architecture_variant: e.target.value as 'classic' | 'restructured' })}
+                className="w-full bg-gray-700 text-white text-sm rounded-lg px-3 py-2 border border-gray-600 focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+              >
+                <option value="classic">Classic (concentric rings)</option>
+                <option value="restructured">Restructured (top-down flow)</option>
+              </select>
+            </div>
+          )}
+
+          {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+          {/* GROUP 1 — Page Version                                       */}
+          {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+          <div className="mt-6 rounded-xl border-l-4 border-purple-500 bg-gray-800/50 border border-gray-700/60 overflow-hidden">
+            <div className="px-5 py-4">
+              <h3 className="text-md font-semibold text-white mb-1">Page Version</h3>
+              <p className="text-gray-400 text-xs mb-4">Choose which layout version of the platform page to display.</p>
+              <div className="grid grid-cols-4 gap-3">
+                {([
+                  { value: 'v1' as const, label: 'V1 — Sidebar', desc: 'Dept bar + JTBD sidebar + board' },
+                  { value: 'v2' as const, label: 'V2 — Unified', desc: 'Dept pills, team, JTBD tabs in one card' },
+                  { value: 'v3' as const, label: 'V3 — Sidekick', desc: 'Sidekick chat sidebar + board' },
+                  { value: 'v4' as const, label: 'V4 — Platform Card', desc: 'Card frame + board with avatar header' },
+                ]).map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => setSettings({ ...settings, platform_page_version: option.value })}
+                    className={`p-3 rounded-lg text-left transition-all ${
+                      settings.platform_page_version === option.value
+                        ? 'bg-purple-600/30 border-2 border-purple-500 ring-1 ring-purple-400/30'
+                        : 'bg-gray-700/50 border-2 border-transparent hover:bg-gray-700 hover:border-gray-600'
+                    }`}
+                  >
+                    <span className={`block text-sm font-medium ${
+                      settings.platform_page_version === option.value ? 'text-purple-300' : 'text-white'
+                    }`}>{option.label}</span>
+                    <span className="block text-xs text-gray-400 mt-1">{option.desc}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* V4 sub-option */}
+              {settings.platform_page_version === 'v4' && (
+                <div className="mt-4 pt-4 border-t border-gray-700/50">
+                  <p className="text-sm text-gray-300 mb-2">V4 Left Panel Style</p>
+                  <div className="flex gap-2">
+                    {[
+                      { value: 'sidekick_chat' as const, label: 'Sidekick Chat', desc: 'Chat sidebar with JTBD options' },
+                      { value: 'v1_sidebar' as const, label: 'V1 Sidebar', desc: 'Department list + JTBD buttons' },
+                    ].map((opt) => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setSettings({ ...settings, platform_v4_left_panel: opt.value })}
+                        className={`flex-1 p-3 rounded-lg border text-left transition-all ${
+                          settings.platform_v4_left_panel === opt.value
+                            ? 'border-purple-500 bg-purple-500/10'
+                            : 'border-gray-600 bg-gray-700/50 hover:border-gray-500'
+                        }`}
+                      >
+                        <p className={`text-sm font-medium ${settings.platform_v4_left_panel === opt.value ? 'text-purple-300' : 'text-gray-300'}`}>{opt.label}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{opt.desc}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+          {/* GROUP 1.25 — Hero Variant                                     */}
+          {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+          <div className="mt-5 rounded-xl border-l-4 border-cyan-500 bg-gray-800/50 border border-gray-700/60 overflow-hidden">
+            <div className="px-5 py-4">
+              <h3 className="text-md font-semibold text-white mb-1">Hero Style</h3>
+              <p className="text-gray-400 text-xs mb-4">Choose the visual style for the platform hero section at the top of the page.</p>
+              <div className="grid grid-cols-2 gap-3">
+                {([
+                  { value: 'typewriter' as const, label: 'Typewriter', desc: 'Clean white background with animated typewriter text effect', icon: '⌨️' },
+                  { value: 'gradient_wave' as const, label: 'Gradient Wave', desc: 'Dark gradient background with animated flowing wave and glowing text', icon: '🌊' },
+                  { value: 'bold_statement' as const, label: 'Bold Statement', desc: 'Full-screen dark hero with large gradient headline and floating particles', icon: '✨' },
+                  { value: 'glassmorphism' as const, label: 'Glassmorphism', desc: 'Modern frosted glass cards floating over an animated gradient mesh', icon: '🪟' },
+                  { value: 'spotlight' as const, label: 'Spotlight', desc: 'Minimal white hero with radial spotlight and refined typography contrast', icon: '💡' },
+                  { value: 'orbit' as const, label: 'Orbit', desc: 'Animated concentric rings with orbiting icons around the Sidekick logo', icon: '🪐' },
+                  { value: 'split' as const, label: 'Split', desc: 'Two-column layout with animated platform layer cards on the right', icon: '📐' },
+                  { value: 'reveal' as const, label: 'Reveal', desc: 'Staggered letter reveal animation with animated stat counters', icon: '🎬' },
+                  { value: 'spotlight_v2' as const, label: 'Spotlight V2', desc: 'Stacked title lines with breathing glow and "Powered by" badge', icon: '💡' },
+                  { value: 'spotlight_v3' as const, label: 'Spotlight V3', desc: 'Horizontal rules framing the title with mono-spaced label', icon: '✦' },
+                  { value: 'spotlight_v4' as const, label: 'Spotlight V4', desc: 'Floating dots, gradient underline and capability badges', icon: '◆' },
+                ]).map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => setSettings({ ...settings, platform_hero_variant: option.value })}
+                    className={`p-3 rounded-lg text-left transition-all ${
+                      settings.platform_hero_variant === option.value
+                        ? 'bg-cyan-600/30 border-2 border-cyan-500 ring-1 ring-cyan-400/30'
+                        : 'bg-gray-700/50 border-2 border-transparent hover:bg-gray-700 hover:border-gray-600'
+                    }`}
+                  >
+                    <span className="text-lg mb-1 block">{option.icon}</span>
+                    <span className={`block text-sm font-medium ${
+                      settings.platform_hero_variant === option.value ? 'text-cyan-300' : 'text-white'
+                    }`}>{option.label}</span>
+                    <span className="block text-xs text-gray-400 mt-1">{option.desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+          {/* GROUP 1.5 — Workspace Intro                                  */}
+          {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+          <div className="mt-5 rounded-xl border-l-4 border-amber-500 bg-gray-800/50 border border-gray-700/60 overflow-hidden">
+            <div className="px-5 py-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-md font-semibold text-white">Workspace Intro</h3>
+                  <p className="text-gray-400 text-xs mt-0.5">Show an animated team intro when the workspace loads. Displays the department avatar and AI agents with a &quot;Start working together&quot; CTA.</p>
+                </div>
+                <button
+                  onClick={() => setSettings({ ...settings, platform_show_intro: !settings.platform_show_intro })}
+                  className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors ${
+                    settings.platform_show_intro ? 'bg-amber-600' : 'bg-gray-600'
+                  }`}
+                >
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    settings.platform_show_intro ? 'translate-x-6' : 'translate-x-1'
+                  }`} />
+                </button>
+              </div>
+
+              {/* Intro style selector — only when intro is ON */}
+              {settings.platform_show_intro && (
+                <div className="mt-4 pt-3 border-t border-gray-700/40">
+                  <p className="text-sm text-gray-300 mb-2">Intro Layout</p>
+                  <p className="text-gray-500 text-xs mb-3">How the department avatar and agents appear in the intro screen.</p>
+                  <div className="flex gap-2">
+                    {[
+                      { value: 'unified' as const, label: 'Unified Squad', desc: 'Overlapping avatars as one team' },
+                      { value: 'with_plus' as const, label: 'Dept + Agents', desc: 'Department avatar, then "+" separator, then agents' },
+                    ].map((opt) => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setSettings({ ...settings, platform_intro_style: opt.value })}
+                        className={`flex-1 p-3 rounded-lg border text-left transition-all ${
+                          settings.platform_intro_style === opt.value
+                            ? 'border-amber-500 bg-amber-500/10'
+                            : 'border-gray-600 bg-gray-700/50 hover:border-gray-500'
+                        }`}
+                      >
+                        <p className={`text-sm font-medium ${settings.platform_intro_style === opt.value ? 'text-amber-300' : 'text-gray-300'}`}>{opt.label}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{opt.desc}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+          {/* GROUP 2 — Header                                             */}
+          {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+          <div className="mt-5 rounded-xl border-l-4 border-blue-500 bg-gray-800/50 border border-gray-700/60 overflow-hidden">
+            <div className="px-5 py-4">
+              <h3 className="text-md font-semibold text-white mb-1">Header</h3>
+              <p className="text-gray-400 text-xs mb-4">The area between the hero and the workspace.</p>
+
+              <div className="flex items-center justify-between py-3">
+                <div>
+                  <p className="text-sm text-gray-200 font-medium">Department Bar</p>
+                  <p className="text-gray-500 text-xs mt-0.5">Show the department selection strip between the hero and the workspace.</p>
+                </div>
+                <button
+                  onClick={() => setSettings({ ...settings, platform_show_department_bar: !settings.platform_show_department_bar })}
+                  className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors ${
+                    settings.platform_show_department_bar ? 'bg-blue-600' : 'bg-gray-600'
+                  }`}
+                >
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    settings.platform_show_department_bar ? 'translate-x-6' : 'translate-x-1'
+                  }`} />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+          {/* GROUP 3 — Side Panel                                         */}
+          {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+          <div className="mt-5 rounded-xl border-l-4 border-sky-500 bg-gray-800/50 border border-gray-700/60 overflow-hidden">
+            <div className="px-5 py-4 space-y-0">
+              <h3 className="text-md font-semibold text-white mb-1">Side Panel (beside the board)</h3>
+              <p className="text-gray-400 text-xs mb-4">The panel that sits next to the workspace board. In V1 it shows the task list, in V3 the Sidekick chat, in V4 it&apos;s configurable.</p>
+
+              {/* Show Side Panel */}
+              <div className="flex items-center justify-between py-3 border-b border-gray-700/40">
+                <div>
+                  <p className="text-sm text-gray-200 font-medium">Show Side Panel</p>
+                  <p className="text-gray-500 text-xs mt-0.5">Show the panel beside the workspace board.</p>
+                </div>
+                <button
+                  onClick={() => setSettings({ ...settings, platform_show_jtbd_sidebar: !settings.platform_show_jtbd_sidebar })}
+                  className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors ${
+                    settings.platform_show_jtbd_sidebar ? 'bg-sky-600' : 'bg-gray-600'
+                  }`}
+                >
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    settings.platform_show_jtbd_sidebar ? 'translate-x-6' : 'translate-x-1'
+                  }`} />
+                </button>
+              </div>
+
+              {/* Side Panel Content — only meaningful when V4 */}
+              <div className={`flex items-center justify-between py-3 ${settings.platform_page_version !== 'v4' ? 'opacity-40' : ''}`}>
+                <div>
+                  <p className="text-sm text-gray-200 font-medium">Side Panel Content</p>
+                  <p className="text-gray-500 text-xs mt-0.5">What to show in the side panel: Sidekick Chat or Task List. (Applies to Platform Card / V4 layout.)</p>
+                </div>
+                <div className="flex rounded-lg overflow-hidden border border-gray-600 flex-shrink-0">
+                  <button
+                    onClick={() => setSettings({ ...settings, platform_v4_left_panel: 'sidekick_chat' })}
+                    className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                      (settings.platform_v4_left_panel || 'sidekick_chat') === 'sidekick_chat'
+                        ? 'bg-sky-600 text-white'
+                        : 'bg-gray-700 text-gray-400 hover:text-gray-300'
+                    }`}
+                  >
+                    Sidekick Chat
+                  </button>
+                  <button
+                    onClick={() => setSettings({ ...settings, platform_v4_left_panel: 'v1_sidebar' })}
+                    className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                      settings.platform_v4_left_panel === 'v1_sidebar'
+                        ? 'bg-sky-600 text-white'
+                        : 'bg-gray-700 text-gray-400 hover:text-gray-300'
+                    }`}
+                  >
+                    Task List
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+          {/* GROUP 4 — Inside the Board                                   */}
+          {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+          <div className="mt-5 rounded-xl border-l-4 border-indigo-500 bg-gray-800/50 border border-gray-700/60 overflow-hidden">
+            <div className="px-5 py-4 space-y-0">
+              <h3 className="text-md font-semibold text-white mb-1">Inside the Board</h3>
+              <p className="text-gray-400 text-xs mb-4">Elements that appear inside the workspace board itself.</p>
+
+              {/* Inline Sidekick Chat */}
+              <div className="flex items-center justify-between py-3 border-b border-gray-700/40">
+                <div>
+                  <p className="text-sm text-gray-200 font-medium">Inline Sidekick Chat</p>
+                  <p className="text-gray-500 text-xs mt-0.5">Show a persistent Sidekick chat column on the left side inside the board.</p>
+                </div>
+                <button
+                  onClick={() => setSettings({ ...settings, platform_show_inline_sidekick: !settings.platform_show_inline_sidekick })}
+                  className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors ${
+                    settings.platform_show_inline_sidekick ? 'bg-indigo-600' : 'bg-gray-600'
+                  }`}
+                >
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    settings.platform_show_inline_sidekick ? 'translate-x-6' : 'translate-x-1'
+                  }`} />
+                </button>
+              </div>
+
+              {/* Agents & Apps Position */}
+              <div className="flex items-center justify-between py-3 border-b border-gray-700/40">
+                <div>
+                  <p className="text-sm text-gray-200 font-medium">Agents & Apps Position</p>
+                  <p className="text-gray-500 text-xs mt-0.5">Which side the Agents & Apps panel sits on inside the board.</p>
+                </div>
+                <div className="flex rounded-lg overflow-hidden border border-gray-600 flex-shrink-0">
+                  <button
+                    onClick={() => setSettings({ ...settings, platform_sidebar_left: false })}
+                    className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                      !settings.platform_sidebar_left
+                        ? 'bg-indigo-600 text-white'
+                        : 'bg-gray-700 text-gray-400 hover:text-gray-300'
+                    }`}
+                  >
+                    Right
+                  </button>
+                  <button
+                    onClick={() => setSettings({ ...settings, platform_sidebar_left: true })}
+                    className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                      settings.platform_sidebar_left
+                        ? 'bg-indigo-600 text-white'
+                        : 'bg-gray-700 text-gray-400 hover:text-gray-300'
+                    }`}
+                  >
+                    Left
+                  </button>
+                </div>
+              </div>
+
+              {/* Work / Context Switch */}
+              <div className="flex items-center justify-between py-3">
+                <div>
+                  <p className="text-sm text-gray-200 font-medium">Work / Context Switch</p>
+                  <p className="text-gray-500 text-xs mt-0.5">Show a toggle in the board header to switch between Work and Context views.</p>
+                </div>
+                <button
+                  onClick={() => setSettings({ ...settings, platform_context_toggle: !settings.platform_context_toggle })}
+                  className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors ${
+                    settings.platform_context_toggle ? 'bg-indigo-600' : 'bg-gray-600'
+                  }`}
+                >
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    settings.platform_context_toggle ? 'translate-x-6' : 'translate-x-1'
+                  }`} />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+          {/* GROUP 5 — Chat Behavior                                      */}
+          {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+          <div className="mt-5 rounded-xl border-l-4 border-violet-500 bg-gray-800/50 border border-gray-700/60 overflow-hidden">
+            <div className="px-5 py-4 space-y-0">
+              <h3 className="text-md font-semibold text-white mb-1">Chat Behavior</h3>
+              <p className="text-gray-400 text-xs mb-4">How the Sidekick chat overlay behaves and appears.</p>
+
+              {/* Chat Overlay Position */}
+              <div className="py-3 border-b border-gray-700/40">
+                <p className="text-sm text-gray-200 font-medium mb-1">Chat Overlay Position</p>
+                <p className="text-gray-500 text-xs mb-3">Where the Sidekick chat overlay appears when a task starts.</p>
+                <div className="flex gap-2">
+                  {[
+                    { value: 'right_overlay' as const, label: 'Right', desc: 'Slides from right' },
+                    { value: 'left_overlay' as const, label: 'Left', desc: 'Slides from left' },
+                    { value: 'center_modal' as const, label: 'Center', desc: 'Centered card' },
+                  ].map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setSettings({ ...settings, platform_sidekick_panel_style: opt.value })}
+                      className={`flex-1 p-2.5 rounded-lg border text-left transition-all ${
+                        settings.platform_sidekick_panel_style === opt.value
+                          ? 'border-violet-500 bg-violet-500/10'
+                          : 'border-gray-600 bg-gray-700/50 hover:border-gray-500'
+                      }`}
+                    >
+                      <p className={`text-sm font-medium ${settings.platform_sidekick_panel_style === opt.value ? 'text-violet-300' : 'text-gray-300'}`}>{opt.label}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">{opt.desc}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* V3-only settings */}
+              {settings.platform_page_version === 'v3' && (
+                <>
+                  {/* Team Avatars Position */}
+                  <div className="py-3 border-b border-gray-700/40">
+                    <p className="text-sm text-gray-200 font-medium mb-1">Team Avatars Position</p>
+                    <p className="text-gray-500 text-xs mb-3">Where team member avatars appear inside the Sidekick chat sidebar.</p>
+                    <div className="flex gap-2">
+                      {[
+                        { value: 'in_chat' as const, label: 'In Chat', desc: 'Inside the chat, before JTBD options' },
+                        { value: 'header_row' as const, label: 'Header Row', desc: 'Separate row below the header' },
+                        { value: 'header_merged' as const, label: 'Header Merged', desc: 'Merged with header avatar' },
+                      ].map((opt) => (
+                        <button
+                          key={opt.value}
+                          onClick={() => setSettings({ ...settings, platform_v3_team_avatars: opt.value })}
+                          className={`flex-1 p-2.5 rounded-lg border text-left transition-all ${
+                            settings.platform_v3_team_avatars === opt.value
+                              ? 'border-violet-500 bg-violet-500/10'
+                              : 'border-gray-600 bg-gray-700/50 hover:border-gray-500'
+                          }`}
+                        >
+                          <p className={`text-sm font-medium ${settings.platform_v3_team_avatars === opt.value ? 'text-violet-300' : 'text-gray-300'}`}>{opt.label}</p>
+                          <p className="text-xs text-gray-500 mt-0.5">{opt.desc}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Minimal Chat Mode */}
+                  <div className="flex items-center justify-between py-3">
+                    <div>
+                      <p className="text-sm text-gray-200 font-medium">Minimal Chat Mode</p>
+                      <p className="text-gray-500 text-xs mt-0.5">After a task is selected, hide messages and only show the opening prompt and options.</p>
+                    </div>
+                    <button
+                      onClick={() => setSettings({ ...settings, platform_v3_minimal_chat: !settings.platform_v3_minimal_chat })}
+                      className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors ${
+                        settings.platform_v3_minimal_chat ? 'bg-violet-600' : 'bg-gray-600'
+                      }`}
+                    >
+                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        settings.platform_v3_minimal_chat ? 'translate-x-6' : 'translate-x-1'
+                      }`} />
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+          {/* GROUP 6 — Showcase Section                                   */}
+          {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+          <div className="mt-5 rounded-xl border-l-4 border-teal-500 bg-gray-800/50 border border-gray-700/60 overflow-hidden">
+            <div className="px-5 py-4 space-y-0">
+              {/* Master toggle */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-md font-semibold text-white">Showcase Section</h3>
+                  <p className="text-gray-400 text-xs mt-0.5">Show an additional AI Work Platform showcase section with its own department header.</p>
+                </div>
+                <button
+                  onClick={() => setSettings({ ...settings, platform_showcase_section: !settings.platform_showcase_section })}
+                  className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors ${
+                    settings.platform_showcase_section ? 'bg-teal-600' : 'bg-gray-600'
+                  }`}
+                >
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    settings.platform_showcase_section ? 'translate-x-6' : 'translate-x-1'
+                  }`} />
+                </button>
+              </div>
+
+              {/* Sub-settings when ON */}
+              {settings.platform_showcase_section && (
+                <div className="mt-4 pt-3 border-t border-gray-700/40 space-y-0">
+                  <p className="text-xs text-teal-400 font-medium uppercase tracking-wider mb-3">Showcase Layout</p>
+
+                  {/* Department Navigation */}
+                  <div className="flex items-center justify-between py-2.5 border-b border-gray-700/30">
+                    <div>
+                      <p className="text-sm text-gray-300">Department Navigation</p>
+                      <p className="text-gray-500 text-xs mt-0.5">How departments are displayed in the showcase section.</p>
+                    </div>
+                    <select
+                      value={settings.platform_showcase_show_department_bar}
+                      onChange={(e) => setSettings({ ...settings, platform_showcase_show_department_bar: e.target.value as 'none' | 'horizontal' | 'vertical_sidebar' | 'both' })}
+                      className="bg-gray-700 text-gray-200 text-xs rounded-lg px-3 py-1.5 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                    >
+                      <option value="none">Hidden</option>
+                      <option value="horizontal">Horizontal Bar (top)</option>
+                      <option value="vertical_sidebar">Vertical Sidebar (left)</option>
+                      <option value="both">Both</option>
+                    </select>
+                  </div>
+
+                  {/* Showcase Variant */}
+                  <div className="flex items-center justify-between py-2.5 border-b border-gray-700/30">
+                    <div>
+                      <p className="text-sm text-gray-300">Showcase Variant</p>
+                      <p className="text-gray-500 text-xs mt-0.5">Choose between the classic cards layout or the architecture-integrated sandbox.</p>
+                    </div>
+                    <select
+                      value={settings.platform_showcase_variant}
+                      onChange={(e) => setSettings({ ...settings, platform_showcase_variant: e.target.value as 'classic' | 'sandbox' })}
+                      className="bg-gray-700 text-gray-200 text-xs rounded-lg px-3 py-1.5 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                    >
+                      <option value="classic">Classic (Cards)</option>
+                      <option value="sandbox">Sandbox (Architecture)</option>
+                    </select>
+                  </div>
+
+                  {/* Use Cases Showcase Variant (V4 only) */}
+                  <div className="flex items-center justify-between py-2.5 border-b border-gray-700/30">
+                    <div>
+                      <p className="text-sm text-gray-300">Use Cases Showcase</p>
+                      <p className="text-gray-500 text-xs mt-0.5">Layout variant for the use-cases section (V4 only).</p>
+                    </div>
+                    <select
+                      value={settings.platform_use_cases_variant}
+                      onChange={(e) => setSettings({ ...settings, platform_use_cases_variant: e.target.value as any })}
+                      className="bg-gray-700 text-gray-200 text-xs rounded-lg px-3 py-1.5 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                    >
+                      <option value="cards_grid">Cards Grid</option>
+                      <option value="hero_featured">Hero Featured</option>
+                      <option value="department_tabs">Department Tabs</option>
+                      <option value="bento_mosaic">Bento Mosaic</option>
+                    </select>
+                  </div>
+
+                  {/* Side Panel */}
+                  <div className="flex items-center justify-between py-2.5 border-b border-gray-700/30">
+                    <div>
+                      <p className="text-sm text-gray-300">Side Panel</p>
+                      <p className="text-gray-500 text-xs mt-0.5">Show the side panel beside the showcase board.</p>
+                    </div>
+                    <button
+                      onClick={() => setSettings({ ...settings, platform_showcase_show_jtbd_sidebar: !settings.platform_showcase_show_jtbd_sidebar })}
+                      className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors ${
+                        settings.platform_showcase_show_jtbd_sidebar ? 'bg-teal-600' : 'bg-gray-600'
+                      }`}
+                    >
+                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        settings.platform_showcase_show_jtbd_sidebar ? 'translate-x-6' : 'translate-x-1'
+                      }`} />
+                    </button>
+                  </div>
+
+                  {/* Inline Sidekick Chat */}
+                  <div className="flex items-center justify-between py-2.5">
+                    <div>
+                      <p className="text-sm text-gray-300">Inline Sidekick Chat</p>
+                      <p className="text-gray-500 text-xs mt-0.5">Show a persistent Sidekick chat column inside the showcase board.</p>
+                    </div>
+                    <button
+                      onClick={() => setSettings({ ...settings, platform_showcase_show_inline_sidekick: !settings.platform_showcase_show_inline_sidekick })}
+                      className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors ${
+                        settings.platform_showcase_show_inline_sidekick ? 'bg-teal-600' : 'bg-gray-600'
+                      }`}
+                    >
+                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        settings.platform_showcase_show_inline_sidekick ? 'translate-x-6' : 'translate-x-1'
+                      }`} />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* Solution Tabs Visibility */}
           <div className="mt-8 pt-6 border-t border-gray-700">

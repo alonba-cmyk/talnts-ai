@@ -6,6 +6,7 @@ import DynamicPage from "./app/DynamicPage.tsx";
 import App from "./app/App.tsx";
 import BattleCardsApp from "./app/BattleCardsApp.tsx";
 import PlatformLandingPage from "./app/PlatformLandingPage.tsx";
+import AgentsLandingPage from "./app/AgentsLandingPage.tsx";
 import { BusinessValuesProvider } from "./contexts/BusinessValuesContext.tsx";
 import { VibeThemeProvider } from "./contexts/VibeThemeContext.tsx";
 import "./styles/index.css";
@@ -27,6 +28,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/admin" element={<AdminApp />} />
           <Route path="/battle-cards" element={<BattleCardsApp />} />
           <Route path="/platform" element={<PlatformLandingPage />} />
+          <Route path="/agents" element={<AgentsLandingPage />} />
           <Route path="/preview/:sectionId" element={<SectionPreviewPage />} />
           <Route path="/p/:slug" element={<DynamicPage />} />
         </Routes>
