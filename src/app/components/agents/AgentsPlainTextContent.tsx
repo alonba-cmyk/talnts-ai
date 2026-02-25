@@ -2,14 +2,14 @@ import { getAgentsCopy, type MessagingTone } from './agentsCopy';
 
 function Section({ id, children }: { id: string; children: React.ReactNode }) {
   return (
-    <section id={id} className="mb-16">
+    <section id={id} className="mb-10 sm:mb-16">
       {children}
     </section>
   );
 }
 
 function Heading({ children }: { children: React.ReactNode }) {
-  return <h2 className="text-[#00ff41] text-lg mb-4 border-b border-[#222] pb-2">{children}</h2>;
+  return <h2 className="text-[#00ff41] text-base sm:text-lg mb-4 border-b border-[#222] pb-2">{children}</h2>;
 }
 
 function Code({ children }: { children: string }) {
@@ -24,7 +24,7 @@ export function AgentsPlainTextContent({ tone = 'belong_here' }: { tone?: Messag
   const copy = getAgentsCopy(tone);
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-16 font-mono text-sm text-[#c0c0c0] leading-relaxed">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-16 font-mono text-sm text-[#c0c0c0] leading-relaxed">
 
       {/* ── GOTCHA ── */}
       <Section id="gotcha">

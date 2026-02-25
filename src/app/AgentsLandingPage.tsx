@@ -22,7 +22,7 @@ function FloatingViewerToggle({ mode, onToggle }: { mode: ViewerMode; onToggle: 
   return (
     <button
       onClick={onToggle}
-      className="fixed bottom-6 right-6 z-50 font-mono text-xs border rounded-full px-1 py-1 flex items-center gap-0 backdrop-blur-md transition-all duration-500 hover:scale-105"
+      className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 font-mono text-xs border rounded-full px-1 py-1 flex items-center gap-0 backdrop-blur-md transition-all duration-500 hover:scale-105"
       style={{
         borderColor: isHuman ? '#FF3D5740' : '#00ff4140',
         backgroundColor: isHuman ? '#FF3D5708' : '#00ff4108',
@@ -113,7 +113,7 @@ function TerminalNav() {
           : 'bg-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
         <div className="flex items-center gap-2 font-mono text-sm">
           <span className="text-[#00ff41]">$</span>
           <span className="text-[#e0e0e0]">monday</span>
@@ -282,7 +282,7 @@ AGENT_INSTRUCTIONS -->
         )}
       </main>
 
-      <footer className="border-t border-[#00ff41]/10 py-12 px-6">
+      <footer className="border-t border-[#00ff41]/10 py-8 sm:py-12 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center font-mono">
           <p className="text-[#00ff41] text-sm mb-2">
             {copy.navFooter.footerTagline}

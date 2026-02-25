@@ -59,7 +59,7 @@ function AnimatedTerminal({ sequence }: { sequence: TerminalLine[] }) {
         </div>
 
         {/* Terminal content */}
-        <div className="p-6 font-mono text-sm min-h-[400px] max-h-[500px] overflow-y-auto scrollbar-thin">
+        <div className="p-4 sm:p-6 font-mono text-sm min-h-[300px] sm:min-h-[400px] max-h-[400px] sm:max-h-[500px] overflow-y-auto overflow-x-auto scrollbar-thin">
           {sequence.map((line, index) => (
             <div
               key={index}
@@ -129,11 +129,11 @@ export function AgentSignupFlow({ tone = 'belong_here' }: { tone?: MessagingTone
   const copy = getAgentsCopy(tone);
   const sequence = getSignupSequence(copy);
   return (
-    <div className="py-24 px-6 relative">
+    <div className="py-12 sm:py-24 px-4 sm:px-6 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-[#0a0d14] to-[#0a0a0a] pointer-events-none" />
 
       <div className="relative z-10 max-w-5xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             <span className="text-[#e0e0e0]">{copy.signup.heading}</span>{' '}
             <span className="text-[#00ff41]">{copy.signup.headingAccent}</span>

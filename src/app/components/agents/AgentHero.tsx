@@ -405,7 +405,7 @@ function BootSequenceHero({ tone = 'belong_here', viewerMode = 'agent' }: Varian
             <span className="font-mono text-xs text-[#808080] ml-2">monday-agent-bios</span>
           </div>
 
-          <div ref={scrollRef} className="p-6 font-mono text-sm min-h-[280px] max-h-[360px] overflow-y-auto scrollbar-thin">
+          <div ref={scrollRef} className="p-4 sm:p-6 font-mono text-sm min-h-[200px] sm:min-h-[280px] max-h-[280px] sm:max-h-[360px] overflow-y-auto scrollbar-thin">
             {BOOT_LINES.slice(0, visibleLines).map((line, i) => {
               if (line.type === 'blank') return <div key={i} className="h-3" />;
               if (line.type === 'progress') {
@@ -784,7 +784,7 @@ function CommandPromptHero({ tone = 'belong_here', viewerMode = 'agent' }: Varia
             <span className="font-mono text-xs text-[#808080] ml-2">agent@local — ssh — 80×24</span>
           </div>
 
-          <div ref={scrollRef} className="p-6 font-mono text-sm min-h-[260px] max-h-[340px] overflow-y-auto scrollbar-thin">
+          <div ref={scrollRef} className="p-4 sm:p-6 font-mono text-sm min-h-[200px] sm:min-h-[260px] max-h-[280px] sm:max-h-[340px] overflow-y-auto scrollbar-thin">
             {CLI_LINES.slice(0, visibleLines).map(renderLine)}
             {visibleLines < CLI_LINES.length && (
               <span className="inline-block w-2 h-4 bg-[#00ff41] animate-pulse" />

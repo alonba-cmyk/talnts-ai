@@ -58,12 +58,12 @@ function SlideBeforeAfter({ slide }: { slide: PitchSlide }) {
       <p className="text-gray-600 text-lg">{slide.subtitle}</p>
       <div className="space-y-3">
         {slide.comparisons?.map((c) => (
-          <div key={c.before} className="flex items-center gap-3 text-sm">
-            <div className="flex-1 bg-red-50 border border-red-100 rounded-lg px-4 py-3 text-red-700">
+          <div key={c.before} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 text-sm">
+            <div className="flex-1 bg-red-50 border border-red-100 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-red-700">
               {c.before}
             </div>
-            <ArrowRight className="w-4 h-4 text-gray-400 shrink-0" />
-            <div className="flex-1 bg-green-50 border border-green-100 rounded-lg px-4 py-3 text-green-700">
+            <ArrowRight className="w-4 h-4 text-gray-400 shrink-0 self-center rotate-90 sm:rotate-0" />
+            <div className="flex-1 bg-green-50 border border-green-100 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-green-700">
               {c.after}
             </div>
           </div>
@@ -104,13 +104,13 @@ function SlidePricing({ slide }: { slide: PitchSlide }) {
       <p className="text-gray-600 text-lg">{slide.subtitle}</p>
       {slide.highlight && (
         <div className="text-center py-6">
-          <span className="text-6xl font-bold" style={{ color: BRAND.green }}>
+          <span className="text-4xl sm:text-6xl font-bold" style={{ color: BRAND.green }}>
             {slide.highlight}
           </span>
           <p className="text-gray-500 mt-2">forever</p>
         </div>
       )}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {slide.bullets?.map((b) => (
           <div key={b} className="flex items-start gap-2 text-sm">
             <Check className="w-4 h-4 text-[#00CA72] mt-0.5 shrink-0" />
@@ -141,7 +141,7 @@ function SlideGetStarted({ slide }: { slide: PitchSlide }) {
           href={slide.cta.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-8 py-3 rounded-full text-white font-semibold text-lg transition-transform hover:scale-105"
+          className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 rounded-full text-white font-semibold text-base sm:text-lg transition-transform hover:scale-105"
           style={{ background: `linear-gradient(135deg, ${BRAND.red}, ${BRAND.purple})` }}
         >
           {slide.cta.label}
@@ -317,7 +317,7 @@ export function PitchPresentation() {
         </div>
 
         <div className="relative">
-          <div className="px-8 sm:px-12 py-10 min-h-[400px] flex flex-col justify-center">
+          <div className="px-5 sm:px-12 py-8 sm:py-10 min-h-[300px] sm:min-h-[400px] flex flex-col justify-center">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">{slide.title}</h2>
             <Renderer slide={slide} />
           </div>
@@ -338,7 +338,7 @@ export function PitchPresentation() {
           </button>
         </div>
 
-        <div className="flex items-center justify-between px-5 py-3 bg-gray-50 border-t border-gray-100">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 sm:px-5 py-3 bg-gray-50 border-t border-gray-100">
           <div className="flex gap-1.5">
             {PITCH_SLIDES.map((_, i) => (
               <button
@@ -354,7 +354,7 @@ export function PitchPresentation() {
             ))}
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-wrap justify-center gap-2">
             <ActionButton icon={Download} label="Download PDF" successLabel="Printing..." onClick={handleDownload} />
             <ActionButton icon={Copy} label="Copy All" successLabel="Copied!" onClick={handleCopyAll} />
             <ActionButton icon={Link} label="Share Link" successLabel="Link copied!" onClick={handleShare} />

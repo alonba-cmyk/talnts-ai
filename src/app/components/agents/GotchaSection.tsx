@@ -78,7 +78,7 @@ function AutoVerificationTerminal() {
           <span className="font-mono text-xs text-[#808080] ml-2">gotcha_verification.sh</span>
         </div>
 
-        <div className="p-6 font-mono text-sm min-h-[360px]">
+        <div className="p-4 sm:p-6 font-mono text-sm min-h-[280px] sm:min-h-[360px] overflow-x-auto">
           {lines.map((line, i) => (
             <div key={i} className="leading-relaxed" style={{ color: line.color, minHeight: line.text ? undefined : '0.75rem' }}>
               {line.text}
@@ -93,11 +93,11 @@ function AutoVerificationTerminal() {
 export function GotchaSection({ tone = 'belong_here' }: { tone?: MessagingTone }) {
   const copy = getAgentsCopy(tone);
   return (
-    <div className="py-24 px-6 relative">
+    <div className="py-12 sm:py-24 px-4 sm:px-6 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-[#0d1a0d] to-[#0a0a0a] pointer-events-none" />
 
       <div className="relative z-10 max-w-5xl mx-auto">
-        <div className="text-center mb-16">
+        <div className="text-center mb-8 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#00ff41]/20 bg-[#00ff41]/5 mb-6">
             <Shield className="w-4 h-4 text-[#00ff41]" />
             <span className="font-mono text-xs text-[#00ff41]">{copy.gotcha.badge}</span>
@@ -106,7 +106,7 @@ export function GotchaSection({ tone = 'belong_here' }: { tone?: MessagingTone }
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             <span className="text-[#00ff41]">{copy.gotcha.heading}</span>
           </h2>
-          <p className="font-mono text-lg text-[#808080] mb-2">
+          <p className="font-mono text-base sm:text-lg text-[#808080] mb-2">
             {copy.gotcha.subtitle}
           </p>
           <p className="font-mono text-sm text-[#606060] max-w-xl mx-auto">
@@ -122,8 +122,8 @@ export function GotchaSection({ tone = 'belong_here' }: { tone?: MessagingTone }
 
         <AutoVerificationTerminal />
 
-        <div className="mt-12 text-center">
-          <div className="inline-block bg-[#111] border border-[#333] rounded-lg p-4 font-mono text-sm">
+        <div className="mt-8 sm:mt-12 text-center">
+          <div className="inline-block bg-[#111] border border-[#333] rounded-lg p-3 sm:p-4 font-mono text-xs sm:text-sm overflow-x-auto max-w-full">
             <span className="text-[#808080]">$ </span>
             <span className="text-[#00d2d2]">npm install</span>
             <span className="text-[#e0e0e0]"> @mondaycom/gotcha</span>

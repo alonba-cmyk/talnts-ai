@@ -227,9 +227,9 @@ export function SecurityCompliance({ tone = 'belong_here' }: { tone?: MessagingT
   const copy = getAgentsCopy(tone);
 
   return (
-    <div className="py-24 px-6">
+    <div className="py-12 sm:py-24 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
+        <div className="text-center mb-8 sm:mb-16">
           <div className="inline-block mb-4">
             <span className="font-mono text-xs text-[#00ff41] bg-[#00ff41]/10 border border-[#00ff41]/30 px-3 py-1 rounded-full">
               {copy.security.badge}

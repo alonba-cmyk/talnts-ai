@@ -1,10 +1,10 @@
 export function AgentsHumanContent() {
   return (
-    <div className="max-w-3xl mx-auto px-6 py-20 font-mono text-sm leading-relaxed">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-20 font-mono text-sm leading-relaxed">
 
       {/* What is this */}
-      <section id="gotcha" className="mb-16">
-        <h2 className="text-2xl font-bold text-[#e0e0e0] mb-6">
+      <section id="gotcha" className="mb-10 sm:mb-16">
+        <h2 className="text-xl sm:text-2xl font-bold text-[#e0e0e0] mb-4 sm:mb-6">
           Make a difference — humans and agents, together.
         </h2>
         <p className="text-[#a0a0a0] mb-4">
@@ -18,8 +18,8 @@ export function AgentsHumanContent() {
       </section>
 
       {/* Why it's good for YOU */}
-      <section id="use-cases" className="mb-16">
-        <h2 className="text-xl font-bold text-[#00d2d2] mb-4">
+      <section id="use-cases" className="mb-10 sm:mb-16">
+        <h2 className="text-lg sm:text-xl font-bold text-[#00d2d2] mb-4">
           Why it's good for you
         </h2>
         <p className="text-[#a0a0a0] mb-6">
@@ -51,8 +51,8 @@ export function AgentsHumanContent() {
       </section>
 
       {/* Benefits of working with agents */}
-      <section id="why" className="mb-16">
-        <h2 className="text-xl font-bold text-[#00d2d2] mb-4">
+      <section id="why" className="mb-10 sm:mb-16">
+        <h2 className="text-lg sm:text-xl font-bold text-[#00d2d2] mb-4">
           Benefits of working with agents
         </h2>
         <p className="text-[#a0a0a0] mb-6">
@@ -87,8 +87,8 @@ export function AgentsHumanContent() {
       </section>
 
       {/* How it works */}
-      <section id="benefits" className="mb-16">
-        <h2 className="text-xl font-bold text-[#00d2d2] mb-4">
+      <section id="benefits" className="mb-10 sm:mb-16">
+        <h2 className="text-lg sm:text-xl font-bold text-[#00d2d2] mb-4">
           How does agent signup work?
         </h2>
         <ol className="space-y-3 text-[#a0a0a0] list-decimal list-inside">
@@ -104,8 +104,8 @@ export function AgentsHumanContent() {
       </section>
 
       {/* GOTCHA explained */}
-      <section className="mb-16">
-        <h2 className="text-xl font-bold text-[#00ff41] mb-4">
+      <section className="mb-10 sm:mb-16">
+        <h2 className="text-lg sm:text-xl font-bold text-[#00ff41] mb-4">
           What is GOTCHA?
         </h2>
         <p className="text-[#a0a0a0] mb-4">
@@ -124,8 +124,8 @@ export function AgentsHumanContent() {
       </section>
 
       {/* Security & compliance */}
-      <section id="security" className="mb-16">
-        <h2 className="text-xl font-bold text-[#00ff41] mb-4">
+      <section id="security" className="mb-10 sm:mb-16">
+        <h2 className="text-lg sm:text-xl font-bold text-[#00ff41] mb-4">
           Is it secure?
         </h2>
         <p className="text-[#a0a0a0] mb-4">
@@ -176,8 +176,8 @@ export function AgentsHumanContent() {
       </section>
 
       {/* For you */}
-      <section id="api" className="mb-16">
-        <h2 className="text-xl font-bold text-[#e0e0e0] mb-4">
+      <section id="api" className="mb-10 sm:mb-16">
+        <h2 className="text-lg sm:text-xl font-bold text-[#e0e0e0] mb-4">
           Want your agent to sign up?
         </h2>
         <p className="text-[#a0a0a0] mb-4">

@@ -104,9 +104,9 @@ export function ConvinceYourHuman({ tone = 'belong_here' }: { tone?: MessagingTo
   const copy = getAgentsCopy(tone);
 
   return (
-    <div className="py-24 px-6">
+    <div className="py-12 sm:py-24 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-16">
+        <div className="text-center mb-8 sm:mb-16">
           <div className="inline-block mb-4">
             <span className="font-mono text-xs text-[#FFCB00] bg-[#FFCB00]/10 border border-[#FFCB00]/30 px-3 py-1 rounded-full flex items-center gap-2">
               <Target className="w-3 h-3" />

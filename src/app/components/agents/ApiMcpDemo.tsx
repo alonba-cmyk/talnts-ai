@@ -259,11 +259,11 @@ export function ApiMcpDemo({ tone = 'belong_here' }: { tone?: MessagingTone }) {
   };
 
   return (
-    <div className="py-24 px-6 relative">
+    <div className="py-12 sm:py-24 px-4 sm:px-6 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-[#0a0d14] to-[#0a0a0a] pointer-events-none" />
 
       <div className="relative z-10 max-w-5xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             <span className="text-[#e0e0e0]">{copy.api.heading}</span>
             <span className="text-[#00d2d2]">{copy.api.headingAccent}</span>
@@ -275,9 +275,9 @@ export function ApiMcpDemo({ tone = 'belong_here' }: { tone?: MessagingTone }) {
 
         <div className="rounded-xl border border-[#333] bg-[#0d0d0d] overflow-hidden shadow-[0_0_80px_rgba(0,212,210,0.03)]">
           {/* Terminal header with tabs */}
-          <div className="flex items-center justify-between px-4 py-2 bg-[#1a1a1a] border-b border-[#333]">
-            <div className="flex items-center gap-4">
-              <div className="flex gap-1.5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-3 sm:px-4 py-2 bg-[#1a1a1a] border-b border-[#333] gap-2">
+            <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto">
+              <div className="flex gap-1.5 shrink-0">
                 <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
                 <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
                 <div className="w-3 h-3 rounded-full bg-[#28c840]" />
@@ -291,7 +291,7 @@ export function ApiMcpDemo({ tone = 'belong_here' }: { tone?: MessagingTone }) {
                       setActiveTab(tab.id);
                       setShowResponse(false);
                     }}
-                    className={`px-3 py-1 rounded-t font-mono text-xs transition-all ${
+                    className={`px-2 sm:px-3 py-1 rounded-t font-mono text-xs transition-all shrink-0 ${
                       activeTab === tab.id
                         ? 'text-[#00ff41] bg-[#0d0d0d] border-t border-x border-[#333]'
                         : 'text-[#808080] hover:text-[#e0e0e0]'
@@ -303,7 +303,7 @@ export function ApiMcpDemo({ tone = 'belong_here' }: { tone?: MessagingTone }) {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={handleRun}
                 className="flex items-center gap-1 px-3 py-1 rounded font-mono text-xs text-[#00ff41] hover:bg-[#00ff41]/10 border border-[#00ff41]/30 transition-all"

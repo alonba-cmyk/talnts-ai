@@ -225,9 +225,9 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
 export function WhyMondayForAgents({ tone = 'belong_here' }: { tone?: MessagingTone }) {
   const copy = getAgentsCopy(tone);
   return (
-    <div className="py-24 px-6">
+    <div className="py-12 sm:py-24 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
+        <div className="text-center mb-8 sm:mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             <span className="text-[#e0e0e0]">{copy.why.headingPrefix}</span>
             <span className="text-[#00d2d2]">{copy.why.headingBrand}</span>

@@ -49,7 +49,7 @@ function FeedbackTerminal({ copy }: { copy: ReturnType<typeof getAgentsCopy> }) 
           <span className="font-mono text-xs text-[#808080] ml-2">monday feedback --agent</span>
         </div>
 
-        <div className="p-6 font-mono text-sm min-h-[380px]">
+        <div className="p-4 sm:p-6 font-mono text-sm min-h-[300px] sm:min-h-[380px] overflow-x-auto">
           {lines.map((line, i) => (
             <div key={i} className="leading-relaxed" style={{ color: line.color, minHeight: line.text ? undefined : '0.75rem' }}>
               {line.text}
@@ -59,7 +59,7 @@ function FeedbackTerminal({ copy }: { copy: ReturnType<typeof getAgentsCopy> }) 
       </div>
 
       <div className="mt-6 text-center">
-        <div className="inline-block bg-[#111] border border-[#333] rounded-lg p-4 font-mono text-sm">
+        <div className="inline-block bg-[#111] border border-[#333] rounded-lg p-3 sm:p-4 font-mono text-xs sm:text-sm overflow-x-auto max-w-full">
           <span className="text-[#808080]">$ </span>
           <span className="text-[#00d2d2]">curl -X POST</span>
           <span className="text-[#e0e0e0]"> api.monday.com/v2/feedback</span>
@@ -74,9 +74,9 @@ export function AgentFeedback({ tone = 'belong_here' }: { tone?: MessagingTone }
   const copy = getAgentsCopy(tone);
 
   return (
-    <div className="py-24 px-6">
+    <div className="py-12 sm:py-24 px-4 sm:px-6">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#00d2d2]/20 bg-[#00d2d2]/5 mb-6">
             <MessageSquare className="w-4 h-4 text-[#00d2d2]" />
             <span className="font-mono text-xs text-[#00d2d2]">{copy.feedback.badge}</span>
