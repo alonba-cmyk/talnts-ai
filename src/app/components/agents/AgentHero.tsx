@@ -136,7 +136,7 @@ function BrandLogo({ className = '' }: { className?: string }) {
           .com
         </span>
       </div>
-      <p className="font-mono text-sm sm:text-base md:text-lg text-[#808080] tracking-wide">
+      <p className="font-mono text-sm sm:text-base md:text-lg text-[#808080] tracking-wide hidden sm:block">
         <span className="text-[#606060]">// </span>
         <span className="text-[#a0a0a0]">built for humans.</span>
         <span className="text-[#00ff41]"> now open to agents.</span>
@@ -157,7 +157,7 @@ function HeroCTAs({ show }: { show: boolean }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.6 }}
-      className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4"
+      className="mt-6 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4"
     >
       <button
         onClick={scrollToSignup}
@@ -168,7 +168,7 @@ function HeroCTAs({ show }: { show: boolean }) {
       </button>
       <button
         onClick={() => document.getElementById('api')?.scrollIntoView({ behavior: 'smooth' })}
-        className="font-mono text-sm px-6 py-3 rounded-lg border border-[#808080]/30 text-[#808080] hover:text-[#e0e0e0] hover:border-[#e0e0e0]/30 transition-all duration-300"
+        className="hidden sm:flex font-mono text-sm px-6 py-3 rounded-lg border border-[#808080]/30 text-[#808080] hover:text-[#e0e0e0] hover:border-[#e0e0e0]/30 transition-all duration-300"
       >
         man monday-api
       </button>
@@ -183,7 +183,7 @@ function ScrollIndicator({ show }: { show: boolean }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 1.5, duration: 1 }}
-      className="mt-16"
+      className="mt-8 sm:mt-16 hidden sm:block"
     >
       <motion.div
         animate={{ y: [0, 8, 0] }}
@@ -309,7 +309,7 @@ function MatrixRainHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantP
 
         {d2 && (
           <motion.p key={viewerMode + '-subtitle'} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}
-            className="mt-6 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed">
+            className="mt-4 sm:mt-6 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block">
             {subtitleText}
           </motion.p>
         )}
@@ -444,8 +444,8 @@ function BootSequenceHero({ tone = 'belong_here', viewerMode = 'agent' }: Varian
         </div>
 
         {showCTA && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-6 text-center">
-            <p className="text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed mb-4">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 sm:mt-6 text-center">
+            <p className="text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed mb-4 hidden sm:block">
               {isHuman ? copy.hero.humanSubtitle : copy.hero.subtitle}
             </p>
             {!isHuman && <HeroCTAs show />}
@@ -579,7 +579,7 @@ function NeuralNetworkHero({ tone = 'belong_here', viewerMode = 'agent' }: Varia
 
         {d2 && (
           <motion.p key={viewerMode + '-subtitle'} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}
-            className="mt-6 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed">
+            className="mt-4 sm:mt-6 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block">
             {subtitleText}
           </motion.p>
         )}
@@ -667,7 +667,7 @@ function GlitchCRTHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantPr
 
         {d2 && (
           <motion.p key={viewerMode + '-subtitle'} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}
-            className="mt-6 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed">
+            className="mt-4 sm:mt-6 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block">
             {subtitleText}
           </motion.p>
         )}
@@ -793,8 +793,8 @@ function CommandPromptHero({ tone = 'belong_here', viewerMode = 'agent' }: Varia
         </div>
 
         {showCTA && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-6 text-center">
-            <p className="text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed mb-4">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 sm:mt-6 text-center">
+            <p className="text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed mb-4 hidden sm:block">
               {isHuman ? copy.hero.humanSubtitle : copy.hero.subtitle}
             </p>
             {!isHuman && <HeroCTAs show />}
@@ -949,7 +949,7 @@ function RadarScanHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantPr
             transition={{ duration: 0.4 }}
           >
             <div
-              className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-500"
+              className="mt-3 sm:mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-500"
               style={{
                 borderColor: `${badgeColor}30`,
                 backgroundColor: `${badgeColor}08`,
@@ -967,7 +967,7 @@ function RadarScanHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantPr
         )}
 
         {phase >= 1 && (
-          <div className="mt-6 space-y-3 text-left max-w-2xl mx-auto font-mono">
+          <div className="mt-4 sm:mt-6 space-y-3 text-left max-w-2xl mx-auto font-mono">
             <p className="text-sm sm:text-base"
               style={{ color: isHuman ? `${BRAND.dotRed}cc` : `${BRAND.terminalGreen}cc` }}>
               {typed1}{!d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.dotRed : BRAND.terminalGreen }} />}
@@ -987,7 +987,7 @@ function RadarScanHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantPr
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="mt-5 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed"
+            className="mt-3 sm:mt-5 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block"
           >
             {subtitleText}
           </motion.p>
