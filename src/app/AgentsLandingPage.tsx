@@ -244,7 +244,7 @@ AGENT_INSTRUCTIONS -->
 
       <main>
         <section id="hero">
-          <AgentHero variant={heroVariant} tone={tone} viewerMode={viewerMode} />
+          <AgentHero variant={heroVariant} tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />
         </section>
 
         {viewerMode === 'human' ? (

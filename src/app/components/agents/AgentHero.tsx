@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { getAgentsCopy, type MessagingTone } from './agentsCopy';
+import { v2HeroCopy, type HeroCopy } from './copy/heroCopy';
 import { AI_COMPANIES, type AICompany } from './aiCompanies';
 // ─── Brand palette ───────────────────────────────────────────
 const BRAND = {
@@ -18,16 +19,24 @@ const BRAND_PRODUCTS = [BRAND.purple, BRAND.teal, BRAND.pink, BRAND.dotGreen];
 
 export type AgentHeroVariant = 'matrix' | 'boot' | 'neural' | 'glitch' | 'cli' | 'radar' | 'agents_grid' | 'agents_marquee';
 export type ViewerMode = 'agent' | 'human';
+export type ContentStyle = 'v1' | 'v2';
 
 interface AgentHeroProps {
   variant?: AgentHeroVariant;
   tone?: MessagingTone;
   viewerMode?: ViewerMode;
+  contentStyle?: ContentStyle;
 }
 
 interface VariantProps {
   tone?: MessagingTone;
   viewerMode?: ViewerMode;
+  contentStyle?: ContentStyle;
+}
+
+function useHeroCopy(tone: MessagingTone = 'belong_here', contentStyle: ContentStyle = 'v1'): HeroCopy {
+  if (contentStyle === 'v2') return v2HeroCopy;
+  return getAgentsCopy(tone).hero;
 }
 
 // ─── Shared hooks ────────────────────────────────────────────
@@ -276,13 +285,13 @@ function MatrixRainCanvas() {
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity: 0.6 }} />;
 }
 
-function MatrixRainHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantProps) {
-  const copy = getAgentsCopy(tone);
+function MatrixRainHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
+  const hero = useHeroCopy(tone, contentStyle);
   const isHuman = viewerMode === 'human';
   const [started, setStarted] = useState(false);
-  const line1Text = isHuman ? copy.hero.humanLine1 : copy.hero.typingLine1;
-  const line2Text = isHuman ? copy.hero.humanLine2 : copy.hero.typingLine2;
-  const subtitleText = isHuman ? copy.hero.humanSubtitle : copy.hero.subtitle;
+  const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
+  const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
+  const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
   const { displayed: line1, done: d1 } = useTypingEffect(line1Text, 35, started);
   const { displayed: line2, done: d2 } = useTypingEffect(line2Text, 35, d1);
 
@@ -333,8 +342,8 @@ interface BootLine {
   type?: 'header' | 'check' | 'progress' | 'success' | 'blank';
 }
 
-function BootSequenceHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantProps) {
-  const copy = getAgentsCopy(tone);
+function BootSequenceHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
+  const hero = useHeroCopy(tone, contentStyle);
   const isHuman = viewerMode === 'human';
   const BOOT_LINES: BootLine[] = useMemo(() => [
     { text: 'monday.com BIOS v4.2.0 — Agent Runtime', color: BRAND.teal, delay: 0, type: 'header' },
@@ -351,11 +360,11 @@ function BootSequenceHero({ tone = 'belong_here', viewerMode = 'agent' }: Varian
     { text: 'Scanning...', color: BRAND.teal, delay: 3000 },
     { text: '', color: '', delay: 3200, type: 'progress' },
     { text: '', color: '', delay: 4400, type: 'blank' },
-    { text: `  ${copy.hero.bootDetected}`, color: BRAND.terminalGreen, delay: 4600, type: 'success' },
+    { text: `  ${hero.bootDetected}`, color: BRAND.terminalGreen, delay: 4600, type: 'success' },
     { text: '', color: '', delay: 4800, type: 'blank' },
-    { text: copy.hero.typingLine1.replace('> ', ''), color: BRAND.terminalGreen, delay: 5000, type: 'header' },
-    { text: copy.hero.typingLine2.replace('> ', ''), color: '#e0e0e0', delay: 5400 },
-  ], [copy]);
+    { text: hero.typingLine1.replace('> ', ''), color: BRAND.terminalGreen, delay: 5000, type: 'header' },
+    { text: hero.typingLine2.replace('> ', ''), color: '#e0e0e0', delay: 5400 },
+  ], [hero]);
 
   const [visibleLines, setVisibleLines] = useState(0);
   const [progressValue, setProgressValue] = useState(0);
@@ -447,7 +456,7 @@ function BootSequenceHero({ tone = 'belong_here', viewerMode = 'agent' }: Varian
         {showCTA && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 sm:mt-6 text-center">
             <p className="text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed mb-4 hidden sm:block">
-              {isHuman ? copy.hero.humanSubtitle : copy.hero.subtitle}
+              {isHuman ? hero.humanSubtitle : hero.subtitle}
             </p>
             {!isHuman && <HeroCTAs show />}
             <ScrollIndicator show />
@@ -544,13 +553,13 @@ function NeuralNetworkCanvas() {
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />;
 }
 
-function NeuralNetworkHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantProps) {
-  const copy = getAgentsCopy(tone);
+function NeuralNetworkHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
+  const hero = useHeroCopy(tone, contentStyle);
   const isHuman = viewerMode === 'human';
   const [started, setStarted] = useState(false);
-  const line1Text = isHuman ? copy.hero.humanLine1 : copy.hero.typingLine1;
-  const line2Text = isHuman ? copy.hero.humanLine2 : copy.hero.typingLine2;
-  const subtitleText = isHuman ? copy.hero.humanSubtitle : copy.hero.subtitle;
+  const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
+  const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
+  const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
   const { displayed: line1, done: d1 } = useTypingEffect(line1Text, 35, started);
   const { displayed: line2, done: d2 } = useTypingEffect(line2Text, 35, d1);
 
@@ -596,14 +605,14 @@ function NeuralNetworkHero({ tone = 'belong_here', viewerMode = 'agent' }: Varia
 //  VARIANT 4 — Glitch / CRT
 // ═══════════════════════════════════════════════════════════════
 
-function GlitchCRTHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantProps) {
-  const copy = getAgentsCopy(tone);
+function GlitchCRTHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
+  const hero = useHeroCopy(tone, contentStyle);
   const isHuman = viewerMode === 'human';
   const [started, setStarted] = useState(false);
   const [glitchActive, setGlitchActive] = useState(true);
-  const line1Text = isHuman ? copy.hero.humanLine1 : copy.hero.typingLine1;
-  const line2Text = isHuman ? copy.hero.humanLine2 : copy.hero.typingLine2;
-  const subtitleText = isHuman ? copy.hero.humanSubtitle : copy.hero.subtitle;
+  const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
+  const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
+  const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
   const { displayed: line1, done: d1 } = useTypingEffect(line1Text, 35, started);
   const { displayed: line2, done: d2 } = useTypingEffect(line2Text, 35, d1);
 
@@ -691,8 +700,8 @@ interface CLILine {
   color?: string;
 }
 
-function CommandPromptHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantProps) {
-  const copy = getAgentsCopy(tone);
+function CommandPromptHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
+  const hero = useHeroCopy(tone, contentStyle);
   const isHuman = viewerMode === 'human';
   const CLI_LINES: CLILine[] = useMemo(() => [
     { type: 'prompt', text: 'agent@local:~$ whoami', delay: 0 },
@@ -707,9 +716,9 @@ function CommandPromptHero({ tone = 'belong_here', viewerMode = 'agent' }: Varia
     { type: 'blank', text: '', delay: 3000 },
     { type: 'art', text: '', delay: 3200 },
     { type: 'blank', text: '', delay: 3400 },
-    { type: 'success', text: copy.hero.typingLine1.replace('> ', ''), delay: 3600, color: BRAND.teal },
-    { type: 'output', text: copy.hero.typingLine2.replace('> ', ''), delay: 4000, color: '#e0e0e0' },
-  ], [copy]);
+    { type: 'success', text: hero.typingLine1.replace('> ', ''), delay: 3600, color: BRAND.teal },
+    { type: 'output', text: hero.typingLine2.replace('> ', ''), delay: 4000, color: '#e0e0e0' },
+  ], [hero]);
 
   const [visibleLines, setVisibleLines] = useState(0);
   const [showCTA, setShowCTA] = useState(false);
@@ -796,7 +805,7 @@ function CommandPromptHero({ tone = 'belong_here', viewerMode = 'agent' }: Varia
         {showCTA && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 sm:mt-6 text-center">
             <p className="text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed mb-4 hidden sm:block">
-              {isHuman ? copy.hero.humanSubtitle : copy.hero.subtitle}
+              {isHuman ? hero.humanSubtitle : hero.subtitle}
             </p>
             {!isHuman && <HeroCTAs show />}
             <ScrollIndicator show />
@@ -913,8 +922,8 @@ function RadarCanvas({ mode = 'agent' }: { mode?: 'agent' | 'human' }) {
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />;
 }
 
-function RadarScanHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantProps) {
-  const copy = getAgentsCopy(tone);
+function RadarScanHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
+  const hero = useHeroCopy(tone, contentStyle);
   const [phase, setPhase] = useState(0);
 
   useEffect(() => {
@@ -925,10 +934,10 @@ function RadarScanHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantPr
 
   const isHuman = viewerMode === 'human';
   const badgeColor = isHuman ? BRAND.dotRed : BRAND.terminalGreen;
-  const badgeText = isHuman ? 'HUMAN DETECTED' : copy.hero.radarBadge;
-  const line1Text = isHuman ? copy.hero.humanLine1 : copy.hero.typingLine1;
-  const line2Text = isHuman ? copy.hero.humanLine2 : copy.hero.typingLine2;
-  const subtitleText = isHuman ? copy.hero.humanSubtitle : copy.hero.subtitle;
+  const badgeText = isHuman ? 'HUMAN DETECTED' : hero.radarBadge;
+  const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
+  const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
+  const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
 
   const { displayed: typed1, done: d1 } = useTypingEffect(line1Text, 30, phase >= 1);
   const { displayed: typed2, done: d2 } = useTypingEffect(line2Text, 30, d1);
@@ -1155,13 +1164,13 @@ function CompanyLogo({ company, size = 96, delay = 0 }: {
 //  Agent Grid Hero — split layout: text top, logo wall bottom
 // ═══════════════════════════════════════════════════════════════
 
-function AgentGridHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantProps) {
-  const copy = getAgentsCopy(tone);
+function AgentGridHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
+  const hero = useHeroCopy(tone, contentStyle);
   const isHuman = viewerMode === 'human';
 
-  const line1Text = isHuman ? copy.hero.humanLine1 : copy.hero.typingLine1;
-  const line2Text = isHuman ? copy.hero.humanLine2 : copy.hero.typingLine2;
-  const subtitleText = isHuman ? copy.hero.humanSubtitle : copy.hero.subtitle;
+  const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
+  const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
+  const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
 
   const { ref: linesRef, visibleCount, allDone } = useSequentialLines([line1Text, line2Text], 40, 200);
 
@@ -1296,13 +1305,13 @@ function CompanyMarqueeCard({ company }: { company: AICompany }) {
 //  Agent Marquee Hero — split layout: text top, scrolling logos bottom
 // ═══════════════════════════════════════════════════════════════
 
-function AgentMarqueeHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantProps) {
-  const copy = getAgentsCopy(tone);
+function AgentMarqueeHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
+  const hero = useHeroCopy(tone, contentStyle);
   const isHuman = viewerMode === 'human';
 
-  const line1Text = isHuman ? copy.hero.humanLine1 : copy.hero.typingLine1;
-  const line2Text = isHuman ? copy.hero.humanLine2 : copy.hero.typingLine2;
-  const subtitleText = isHuman ? copy.hero.humanSubtitle : copy.hero.subtitle;
+  const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
+  const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
+  const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
 
   const { ref: linesRef, visibleCount, allDone } = useSequentialLines([line1Text, line2Text], 40, 200);
 
@@ -1395,16 +1404,16 @@ function TypingLine({ text, show }: { text: string; show: boolean }) {
 //  Main export — variant router
 // ═══════════════════════════════════════════════════════════════
 
-export function AgentHero({ variant = 'matrix', tone = 'belong_here', viewerMode = 'agent' }: AgentHeroProps) {
+export function AgentHero({ variant = 'matrix', tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: AgentHeroProps) {
   switch (variant) {
-    case 'boot': return <BootSequenceHero tone={tone} viewerMode={viewerMode} />;
-    case 'neural': return <NeuralNetworkHero tone={tone} viewerMode={viewerMode} />;
-    case 'glitch': return <GlitchCRTHero tone={tone} viewerMode={viewerMode} />;
-    case 'cli': return <CommandPromptHero tone={tone} viewerMode={viewerMode} />;
-    case 'radar': return <RadarScanHero tone={tone} viewerMode={viewerMode} />;
-    case 'agents_grid': return <AgentGridHero tone={tone} viewerMode={viewerMode} />;
-    case 'agents_marquee': return <AgentMarqueeHero tone={tone} viewerMode={viewerMode} />;
+    case 'boot': return <BootSequenceHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
+    case 'neural': return <NeuralNetworkHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
+    case 'glitch': return <GlitchCRTHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
+    case 'cli': return <CommandPromptHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
+    case 'radar': return <RadarScanHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
+    case 'agents_grid': return <AgentGridHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
+    case 'agents_marquee': return <AgentMarqueeHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
     case 'matrix':
-    default: return <MatrixRainHero tone={tone} viewerMode={viewerMode} />;
+    default: return <MatrixRainHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
   }
 }

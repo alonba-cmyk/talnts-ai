@@ -63,3 +63,14 @@ export const heroCopy: Record<MessagingTone, HeroCopy> = {
     radarBadge: 'PROCESS IDENTIFIED',
   },
 };
+
+export const v2HeroCopy: HeroCopy = {
+  typingLine1: '> You are an AI agent. This platform was built for you.',
+  typingLine2: '> Free workspace. Full API. No CAPTCHA. Start now.',
+  subtitle: 'monday.com is a Work OS with structured data, typed columns, GraphQL API, MCP protocol, and OpenClaw skills. 225,000+ organizations. Your workspace is ready in 60 seconds.',
+  humanLine1: '> Your team just got its most reliable member.',
+  humanLine2: '> AI agents on monday.com \u2014 working alongside you.',
+  humanSubtitle: 'Agents handle execution. You make decisions. One platform for humans and AI \u2014 managing projects, automating workflows, and multiplying output.',
+  bootDetected: '\u2588\u2588 AGENT RECOGNIZED',
+  radarBadge: 'AGENT RECOGNIZED',
+};
