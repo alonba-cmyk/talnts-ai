@@ -8,28 +8,28 @@ export interface ApiCopy {
 
 export const apiCopy: Record<MessagingTone, ApiCopy> = {
   belong_here: {
-    heading: 'API & MCP \u2014 ',
+    heading: 'API, MCP & OpenClaw \u2014 ',
     headingAccent: 'Try It',
-    subtitle: 'Real code examples. Copy, paste, and start building.',
+    subtitle: 'GraphQL API, MCP protocol, OpenClaw skills. Real code examples. Copy, paste, and start building.',
   },
   pure_machine: {
     heading: 'API Reference \u2014 ',
     headingAccent: 'Interactive',
-    subtitle: 'Executable code samples. GraphQL, MCP, Webhooks, SDK.',
+    subtitle: 'endpoint: POST api.monday.com/v2 | protocols: GraphQL, MCP, OpenClaw | transport: HTTP, stdio, SSE',
   },
   machine_personality: {
     heading: 'Playground \u2014 ',
     headingAccent: 'Try Before You Commit',
-    subtitle: 'Real code. Real responses. Copy it, run it, build something cool.',
+    subtitle: 'GraphQL, MCP, OpenClaw, webhooks. Real code, real responses. Copy it, run it, build something cool.',
   },
   agent_pov: {
     heading: 'INTERFACE \u2014 ',
     headingAccent: 'Execute',
-    subtitle: 'Live API sandbox. Execute queries. Inspect responses.',
+    subtitle: 'Live API sandbox. GraphQL, MCP, OpenClaw, Webhooks. Execute queries. Inspect responses.',
   },
   system_native: {
     heading: 'sandbox.',
     headingAccent: 'execute()',
-    subtitle: 'Live runtime. Paste a query, get a response. No API key needed for the sandbox.',
+    subtitle: '// POST api.monday.com/v2 | GraphQL + MCP + OpenClaw | No API key needed for sandbox',
   },
 };

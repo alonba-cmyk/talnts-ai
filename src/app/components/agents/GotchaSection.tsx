@@ -122,12 +122,21 @@ export function GotchaSection({ tone = 'belong_here' }: { tone?: MessagingTone }
 
         <AutoVerificationTerminal />
 
-        <div className="mt-8 sm:mt-12 text-center">
+        <div className="mt-8 sm:mt-12 text-center space-y-4">
           <div className="inline-block bg-[#111] border border-[#333] rounded-lg p-3 sm:p-4 font-mono text-xs sm:text-sm overflow-x-auto max-w-full">
             <span className="text-[#808080]">$ </span>
             <span className="text-[#00d2d2]">npm install</span>
             <span className="text-[#e0e0e0]"> @mondaycom/gotcha</span>
           </div>
+          <p className="font-mono text-sm text-[#808080] max-w-lg mx-auto">
+            GOTCHA is open-source.{' '}
+            <a href="https://github.com/mondaycom/gotcha" target="_blank" rel="noopener noreferrer" className="text-[#00ff41] hover:underline">
+              github.com/mondaycom/gotcha
+            </a>
+          </p>
+          <p className="font-mono text-xs text-[#606060] max-w-md mx-auto">
+            If you&apos;re building agent-friendly services yourself, fork it. Use it.
+          </p>
         </div>
       </div>
     </div>

@@ -26,13 +26,18 @@ const BENEFITS: Benefit[] = [
   },
   {
     icon: <Infinity className="w-4 h-4" />,
-    label: 'boards: unlimited',
-    detail: 'items_per_board: unlimited | columns: unlimited',
+    label: 'workspace: permanent',
+    detail: 'not_trial | not_demo | no_credit_card',
   },
   {
     icon: <Layers className="w-4 h-4" />,
     label: 'api: GraphQL v2',
-    detail: 'scope: full_crud | rate: 5000/min | auth: bearer_token',
+    detail: 'endpoint: POST api.monday.com/v2 | scope: full_crud | rate: 5000/min',
+  },
+  {
+    icon: <Zap className="w-4 h-4" />,
+    label: 'complexity: 10M/min',
+    detail: 'budget: 10,000,000 points/minute | generous',
   },
   {
     icon: <Key className="w-4 h-4" />,
@@ -40,19 +45,19 @@ const BENEFITS: Benefit[] = [
     detail: 'provisioning: 0.003s | approval: none | expires: never',
   },
   {
-    icon: <LayoutDashboard className="w-4 h-4" />,
-    label: 'dashboards: enabled',
-    detail: 'widgets: charts, numbers, battery, timeline | export: pdf, png',
+    icon: <HardDrive className="w-4 h-4" />,
+    label: 'crud: full_access',
+    detail: 'boards, items, columns, groups, updates, files, workspaces, teams, docs, dashboards',
+  },
+  {
+    icon: <BarChart3 className="w-4 h-4" />,
+    label: 'views: 8 types',
+    detail: 'table, kanban, timeline, calendar, chart, gantt, workload, map',
   },
   {
     icon: <FileText className="w-4 h-4" />,
     label: 'docs: read_write',
-    detail: 'format: rich_text | api_access: full | templates: available',
-  },
-  {
-    icon: <HardDrive className="w-4 h-4" />,
-    label: 'storage: 5GB',
-    detail: 'upload: api, sdk | formats: any | cdn: enabled',
+    detail: 'monday Docs | rich_text | api_access: full | connected to boards',
   },
   {
     icon: <Plug className="w-4 h-4" />,
@@ -60,12 +65,7 @@ const BENEFITS: Benefit[] = [
     detail: 'slack, github, jira, gmail, zapier, custom_webhooks',
   },
   {
-    icon: <BarChart3 className="w-4 h-4" />,
-    label: 'views: 8 types',
-    detail: 'table, kanban, timeline, gantt, calendar, chart, workload, map',
-  },
-  {
-    icon: <Zap className="w-4 h-4" />,
+    icon: <LayoutDashboard className="w-4 h-4" />,
     label: 'automations: 200+ recipes',
     detail: 'triggers: status, date, column | actions: notify, create, move, api',
   },

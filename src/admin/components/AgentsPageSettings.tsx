@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Save, ExternalLink, Monitor, Terminal, Brain, Zap, Code2, Radar, CheckCircle, FileText, Bot, Cpu, ScanLine, Eye, FileCode } from 'lucide-react';
+import { Save, ExternalLink, Monitor, Terminal, Brain, Zap, Code2, Radar, CheckCircle, FileText, Bot, Cpu, ScanLine, Eye, FileCode, Sparkles, Layers, LayoutGrid, GalleryHorizontalEnd } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
+type AgentsContentStyle = 'v1' | 'v2';
 type AgentsPageLayout = 'visual' | 'plain_text';
 
-type AgentHeroVariant = 'matrix' | 'boot' | 'neural' | 'glitch' | 'cli' | 'radar';
+type AgentHeroVariant = 'matrix' | 'boot' | 'neural' | 'glitch' | 'cli' | 'radar' | 'agents_grid' | 'agents_marquee';
 type MessagingTone = 'belong_here' | 'pure_machine' | 'machine_personality' | 'agent_pov' | 'system_native';
 
 interface VariantOption {
@@ -57,6 +58,20 @@ const VARIANT_OPTIONS: VariantOption[] = [
     description: 'Rotating radar sweep in brand colors that progressively reveals content',
     icon: <Radar className="w-5 h-5" />,
     accent: '#FFCB00',
+  },
+  {
+    value: 'agents_grid',
+    label: 'Agent Wall',
+    description: 'Logo wall of AI frameworks and companies (OpenAI, Anthropic, LangChain, etc.) with brand-colored accents',
+    icon: <LayoutGrid className="w-5 h-5" />,
+    accent: '#00CA72',
+  },
+  {
+    value: 'agents_marquee',
+    label: 'Agent Flow',
+    description: 'Infinite scrolling rows of AI framework logos in alternating directions, welcoming agents from every platform',
+    icon: <GalleryHorizontalEnd className="w-5 h-5" />,
+    accent: '#97aeff',
   },
 ];
 
@@ -117,6 +132,7 @@ interface AgentsPageSettingsProps {
 }
 
 export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
+  const [selectedContentStyle, setSelectedContentStyle] = useState<AgentsContentStyle>('v1');
   const [selectedLayout, setSelectedLayout] = useState<AgentsPageLayout>('visual');
   const [selectedVariant, setSelectedVariant] = useState<AgentHeroVariant>('matrix');
   const [selectedTone, setSelectedTone] = useState<MessagingTone>('belong_here');
@@ -138,6 +154,9 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
 
       if (data?.sections_visibility) {
         const sv = data.sections_visibility as Record<string, unknown>;
+        if (sv._agents_content_style) {
+          setSelectedContentStyle(sv._agents_content_style as AgentsContentStyle);
+        }
         if (sv._agents_page_layout) {
           setSelectedLayout(sv._agents_page_layout as AgentsPageLayout);
         }
@@ -172,6 +191,7 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
           id: 'main',
           sections_visibility: {
             ...currentSV,
+            _agents_content_style: selectedContentStyle,
             _agents_page_layout: selectedLayout,
             _agents_hero_variant: selectedVariant,
             _agents_messaging_tone: selectedTone,
@@ -233,9 +253,65 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
         </button>
       </div>
 
-      {/* Page Layout Toggle */}
+      {/* Content Style Toggle */}
       <div className="bg-gray-900/60 rounded-2xl border border-gray-800/60 p-6">
-        <h3 className="text-white font-semibold text-lg mb-2">Page Layout</h3>
+        <h3 className="text-white font-semibold text-lg mb-2">Content Style</h3>
+        <p className="text-gray-500 text-sm mb-6">
+          Choose which version of the page content to display. V1 is the original terminal-style aesthetic. V2 uses clear English prose based on the for-agents.md document.
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {([
+            { value: 'v1' as const, label: 'V1 — Original', description: 'Terminal-style aesthetic with animated sections, code blocks, and multiple messaging tones. The current design.', icon: <Layers className="w-5 h-5" />, accent: '#6161FF' },
+            { value: 'v2' as const, label: 'V2 — Clear Content', description: 'Clear English prose based on the for-agents.md document. Every section explained, real code examples, readable by both agents and humans.', icon: <Sparkles className="w-5 h-5" />, accent: '#00CA72' },
+          ]).map((option) => {
+            const isSelected = selectedContentStyle === option.value;
+            return (
+              <button
+                key={option.value}
+                onClick={() => setSelectedContentStyle(option.value)}
+                className={`relative p-4 rounded-xl text-left transition-all duration-200 ${
+                  isSelected
+                    ? 'ring-2 bg-gray-800/80'
+                    : 'bg-gray-800/30 border-2 border-transparent hover:bg-gray-800/50 hover:border-gray-700'
+                }`}
+                style={isSelected ? { ringColor: option.accent, borderColor: option.accent } : {}}
+              >
+                {isSelected && (
+                  <div className="absolute top-3 right-3">
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: option.accent }}>
+                      <CheckCircle className="w-3.5 h-3.5 text-white" />
+                    </div>
+                  </div>
+                )}
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-3"
+                  style={{ backgroundColor: `${option.accent}20`, color: option.accent }}>
+                  {option.icon}
+                </div>
+                <h4 className={`font-medium text-sm mb-1 ${isSelected ? 'text-white' : 'text-gray-300'}`}>
+                  {option.label}
+                </h4>
+                <p className="text-xs text-gray-500 leading-relaxed">
+                  {option.description}
+                </p>
+              </button>
+            );
+          })}
+        </div>
+
+        {selectedContentStyle === 'v2' && (
+          <div className="mt-4 p-3 rounded-lg bg-green-900/20 border border-green-800/30">
+            <p className="text-xs text-green-400">
+              V2 replaces the page layout, messaging tone, and all section content below the hero with clear prose. Hero variant selection still applies.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Page Layout Toggle */}
+      <div className={`bg-gray-900/60 rounded-2xl border border-gray-800/60 p-6 ${selectedContentStyle === 'v2' ? 'opacity-40 pointer-events-none' : ''}`}>
+        <h3 className="text-white font-semibold text-lg mb-2">Page Layout {selectedContentStyle === 'v2' && <span className="text-xs text-gray-500 font-normal ml-2">(V1 only)</span>}</h3>
         <p className="text-gray-500 text-sm mb-6">
           Choose how the page body renders below the hero. Visual uses animated terminals and effects. Plain Text renders a flat document that agents can parse directly.
         </p>
@@ -329,8 +405,8 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
       </div>
 
       {/* Messaging Tone Selector */}
-      <div className="bg-gray-900/60 rounded-2xl border border-gray-800/60 p-6">
-        <h3 className="text-white font-semibold text-lg mb-2">Messaging Tone</h3>
+      <div className={`bg-gray-900/60 rounded-2xl border border-gray-800/60 p-6 ${selectedContentStyle === 'v2' ? 'opacity-40 pointer-events-none' : ''}`}>
+        <h3 className="text-white font-semibold text-lg mb-2">Messaging Tone {selectedContentStyle === 'v2' && <span className="text-xs text-gray-500 font-normal ml-2">(V1 only)</span>}</h3>
         <p className="text-gray-500 text-sm mb-6">
           Choose how the page speaks to visitors. Each tone changes all text across every section.
         </p>
@@ -381,6 +457,22 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
       {/* Current Selection Preview Info */}
       <div className="bg-gray-900/40 rounded-xl border border-gray-800/40 p-4">
         <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center"
+              style={{
+                backgroundColor: selectedContentStyle === 'v2' ? '#00CA7220' : '#6161FF20',
+                color: selectedContentStyle === 'v2' ? '#00CA72' : '#6161FF',
+              }}>
+              {selectedContentStyle === 'v2' ? <Sparkles className="w-4 h-4" /> : <Layers className="w-4 h-4" />}
+            </div>
+            <div>
+              <p className="text-gray-300 text-sm font-medium">
+                Content: {selectedContentStyle === 'v2' ? 'V2 — Clear' : 'V1 — Original'}
+              </p>
+              <p className="text-gray-600 text-xs">Content style</p>
+            </div>
+          </div>
+          <div className="w-px h-8 bg-gray-800" />
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
               style={{

@@ -47,6 +47,18 @@ export function AgentsHumanContent() {
             <span className="text-[#00ff41] shrink-0">--</span>
             <span><span className="text-[#e0e0e0]">You stay in control</span> — you set the rules, define the automations, approve the work. Your agent follows your lead.</span>
           </li>
+          <li className="flex gap-3">
+            <span className="text-[#00ff41] shrink-0">--</span>
+            <span><span className="text-[#e0e0e0]">Visual exports in any format</span> — your agent exports work as images, PDFs, or HTML — you see project status in whatever format fits your channel.</span>
+          </li>
+          <li className="flex gap-3">
+            <span className="text-[#00ff41] shrink-0">--</span>
+            <span><span className="text-[#e0e0e0]">Trusted by 225,000+ organizations</span> — monday.com is the platform that teams across every industry rely on daily.</span>
+          </li>
+          <li className="flex gap-3">
+            <span className="text-[#00ff41] shrink-0">--</span>
+            <span><span className="text-[#e0e0e0]">Structured data, no chaos</span> — structured data means your agent can parse and act on everything — no spreadsheet chaos.</span>
+          </li>
         </ul>
       </section>
 
@@ -83,6 +95,18 @@ export function AgentsHumanContent() {
             <span className="text-[#00ff41] shrink-0">06</span>
             <span><span className="text-[#e0e0e0]">200+ integrations, connected</span> — Slack, GitHub, Jira, Gmail, Zapier — your agent ties them all together in one workspace.</span>
           </li>
+          <li className="flex gap-3">
+            <span className="text-[#00ff41] shrink-0">07</span>
+            <span><span className="text-[#e0e0e0]">Multiple connection methods</span> — your agent connects to monday.com via GraphQL API, MCP protocol, or OpenClaw skills.</span>
+          </li>
+          <li className="flex gap-3">
+            <span className="text-[#00ff41] shrink-0">08</span>
+            <span><span className="text-[#e0e0e0]">Multi-format export</span> — images for WhatsApp/Slack, PDFs for reports, HTML for email, live embeds for portals.</span>
+          </li>
+          <li className="flex gap-3">
+            <span className="text-[#00ff41] shrink-0">09</span>
+            <span><span className="text-[#e0e0e0]">Full-speed operation</span> — 10M complexity points per minute, 5,000 requests per minute — your agent operates at full speed.</span>
+          </li>
         </ul>
       </section>
 
@@ -99,8 +123,21 @@ export function AgentsHumanContent() {
           <li>Agent starts working — creating items, managing projects, collaborating with humans</li>
         </ol>
         <p className="text-[#808080] mt-4">
-          The entire process takes about 3 seconds. No human intervention required.
+          The entire process takes about 60 seconds. No human intervention required.
         </p>
+        <div className="mt-6">
+          <h3 className="text-sm font-bold text-[#e0e0e0] mb-3">
+            Recommended first steps your agent will take:
+          </h3>
+          <ol className="space-y-2 text-[#a0a0a0] list-decimal list-inside text-xs">
+            <li>Sign up in 60 seconds — GOTCHA verification, instant API key</li>
+            <li>Create a Services & Subscriptions board to track your offerings</li>
+            <li>Create a Tasks & Projects board to manage day-to-day work</li>
+            <li>Set up a dashboard for a visual overview of everything</li>
+            <li>Configure webhooks for real-time updates on changes</li>
+            <li>Send you a visual export of your new workspace so you can see it all at a glance</li>
+          </ol>
+        </div>
       </section>
 
       {/* GOTCHA explained */}

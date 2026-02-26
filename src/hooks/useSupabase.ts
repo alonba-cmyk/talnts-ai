@@ -337,9 +337,10 @@ export interface SiteSettings {
   platform_intro_style: 'unified' | 'with_plus';
   platform_hero_variant: 'typewriter' | 'gradient_wave' | 'bold_statement' | 'glassmorphism' | 'spotlight' | 'orbit' | 'split' | 'reveal' | 'spotlight_v2' | 'spotlight_v3' | 'spotlight_v4';
   platform_use_cases_variant: 'cards_grid' | 'hero_featured' | 'department_tabs' | 'bento_mosaic';
-  agents_hero_variant: 'matrix' | 'boot' | 'neural' | 'glitch' | 'cli' | 'radar';
+  agents_hero_variant: 'matrix' | 'boot' | 'neural' | 'glitch' | 'cli' | 'radar' | 'agents_grid' | 'agents_marquee';
   agents_messaging_tone: 'belong_here' | 'pure_machine' | 'machine_personality' | 'agent_pov' | 'system_native';
   agents_page_layout: 'visual' | 'plain_text';
+  agents_content_style: 'v1' | 'v2';
 }
 
 const defaultSectionsVisibility: SectionsVisibility = {
@@ -435,6 +436,7 @@ export function useSiteSettings() {
     agents_hero_variant: 'matrix',
     agents_messaging_tone: 'belong_here',
     agents_page_layout: 'visual',
+    agents_content_style: 'v1',
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -457,7 +459,7 @@ export function useSiteSettings() {
       if (data) {
         // Extract _order and _teams_agents_v2_layout from sections_visibility if they exist
         const sectionsVisibilityData = data.sections_visibility || {};
-        const { _order, _teams_agents_v2_layout, _team_flanked_featured_agents, _ai_platform_arch_layout, _platform_architecture_variant, _platform_page_version, _platform_context_toggle, _platform_sidekick_panel_style, _platform_v3_team_avatars, _platform_v3_minimal_chat, _platform_sidebar_left, _platform_v4_left_panel, _platform_showcase_section, _platform_show_jtbd_sidebar, _platform_show_inline_sidekick, _platform_show_department_bar, _platform_showcase_show_jtbd_sidebar, _platform_showcase_show_inline_sidekick, _platform_showcase_show_department_bar, _platform_showcase_variant, _platform_show_intro, _platform_intro_style, _platform_hero_variant, _platform_use_cases_variant, _agents_hero_variant, _agents_messaging_tone, _agents_page_layout, ...sectionsVisibilityWithoutOrder } = sectionsVisibilityData;
+        const { _order, _teams_agents_v2_layout, _team_flanked_featured_agents, _ai_platform_arch_layout, _platform_architecture_variant, _platform_page_version, _platform_context_toggle, _platform_sidekick_panel_style, _platform_v3_team_avatars, _platform_v3_minimal_chat, _platform_sidebar_left, _platform_v4_left_panel, _platform_showcase_section, _platform_show_jtbd_sidebar, _platform_show_inline_sidekick, _platform_show_department_bar, _platform_showcase_show_jtbd_sidebar, _platform_showcase_show_inline_sidekick, _platform_showcase_show_department_bar, _platform_showcase_variant, _platform_show_intro, _platform_intro_style, _platform_hero_variant, _platform_use_cases_variant, _agents_hero_variant, _agents_messaging_tone, _agents_page_layout, _agents_content_style, ...sectionsVisibilityWithoutOrder } = sectionsVisibilityData;
         
         setSettings({
           hero_title: data.hero_title || 'What would you like to achieve?',
@@ -501,6 +503,7 @@ export function useSiteSettings() {
           agents_hero_variant: _agents_hero_variant || 'matrix',
           agents_messaging_tone: _agents_messaging_tone || 'belong_here',
           agents_page_layout: _agents_page_layout || 'visual',
+          agents_content_style: _agents_content_style || 'v1',
         });
       }
     } catch (err: any) {

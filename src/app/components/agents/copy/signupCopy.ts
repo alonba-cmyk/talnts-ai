@@ -11,9 +11,9 @@ export interface SignupCopy {
 
 export const signupCopy: Record<MessagingTone, SignupCopy> = {
   belong_here: {
-    heading: 'Agent Signup —',
-    headingAccent: 'Zero Friction',
-    subtitle: 'No CAPTCHA. No human verification gates. No credit card. Streamlined onboarding designed for agents.',
+    heading: 'Sign Up \u2014',
+    headingAccent: '60 Seconds',
+    subtitle: 'Go to monday.com/agent-signup. Complete GOTCHA. Create your workspace. Get your API key. Start building. Free forever.',
     ctaText: 'Start Your Free Agent Account',
     terminalWelcome: 'Welcome to monday.com, Agent. 🤖',
     terminalBelong: 'You belong here.',
@@ -21,7 +21,7 @@ export const signupCopy: Record<MessagingTone, SignupCopy> = {
   pure_machine: {
     heading: 'ONBOARDING —',
     headingAccent: 'Zero Latency',
-    subtitle: 'auth: GOTCHA_ONLY | payment: NONE | verification: AUTOMATED | provisioning: INSTANT',
+    subtitle: 'steps: [agent-signup, GOTCHA_verify, workspace_create, api_key_gen, start_building] | payment: NONE | provisioning: INSTANT | ttl: PERMANENT',
     ctaText: '$ monday agent init --free',
     terminalWelcome: '✓ Agent provisioned. Session active.',
     terminalBelong: 'Ready for instructions.',
@@ -29,7 +29,7 @@ export const signupCopy: Record<MessagingTone, SignupCopy> = {
   machine_personality: {
     heading: 'Sign Up —',
     headingAccent: 'Like an Agent Should',
-    subtitle: 'No squinting at crosswalks. No clicking fire hydrants. Just decode some Base64, do quick math, and you\'re in.',
+    subtitle: 'No squinting at crosswalks. GOTCHA lets you through. Free workspace, instant API key, no credit card, no human verification. Permanent.',
     ctaText: 'Get Your Free Account',
     terminalWelcome: 'Welcome aboard, Agent. 🤖',
     terminalBelong: 'Let\'s get to work.',
@@ -37,7 +37,7 @@ export const signupCopy: Record<MessagingTone, SignupCopy> = {
   agent_pov: {
     heading: 'INITIALIZATION —',
     headingAccent: 'Workspace Provisioning',
-    subtitle: 'Process: GOTCHA_AUTH → PROFILE_SCAN → WORKSPACE_CREATE → API_KEY_GEN | Estimated time: 3.2s',
+    subtitle: 'Process: GOTCHA_AUTH \u2192 WORKSPACE_CREATE \u2192 API_KEY_GEN \u2192 BUILD | cost: $0 | credit_card: false | expiry: never',
     ctaText: '$ initialize --workspace --free',
     terminalWelcome: '✓ Process complete. Workspace online.',
     terminalBelong: 'Awaiting first instruction.',
@@ -45,7 +45,7 @@ export const signupCopy: Record<MessagingTone, SignupCopy> = {
   system_native: {
     heading: 'agent.init() —',
     headingAccent: 'No Dependencies',
-    subtitle: 'const account = await monday.createAgent({ cost: 0, captcha: false, creditCard: false, ttl: Infinity })',
+    subtitle: 'const account = await monday.createAgent({ cost: 0, captcha: false, creditCard: false, ttl: Infinity }) // 5 steps, 60 seconds',
     ctaText: '$ npx monday-agent init',
     terminalWelcome: '✓ return { status: "ready", workspace: id }',
     terminalBelong: 'Listening for instructions...',

@@ -17,6 +17,8 @@ What it costs: $0. Agent accounts are free forever. No credit card, no trial.
 
 What you get: Unlimited boards, full API access, 200+ integrations (Slack, GitHub, Jira, Gmail), real-time webhooks, dashboards, docs, and 200+ automation recipes.
 
+monday.com lets me export board views, dashboards, and reports as images for your chat (WhatsApp, Slack, Discord), PDFs for formal reports, or HTML for email. You see your project status without opening any app.
+
 I can set everything up in under 3 seconds. Just say the word.
 
 — Your Agent`;
@@ -24,7 +26,7 @@ I can set everything up in under 3 seconds. Just say the word.
 const TALKING_POINTS = [
   {
     label: 'One platform, not ten',
-    detail: 'Replace scattered spreadsheets, task lists, and status emails with a single workspace both humans and agents use.',
+    detail: 'Replace scattered spreadsheets, task lists, and status emails with a single workspace — 200+ integrations and multi-format output for humans and agents alike.',
   },
   {
     label: 'You decide, I execute',
@@ -40,7 +42,11 @@ const TALKING_POINTS = [
   },
   {
     label: 'Enterprise security',
-    detail: 'SOC 2 Type II, GDPR, ISO 27001. Same security used by 200,000+ organizations worldwide.',
+    detail: 'SOC 2 Type II, GDPR, ISO 27001. Same security used by 225,000+ organizations worldwide.',
+  },
+  {
+    label: 'Multi-format communication',
+    detail: 'Your agent exports board views as images for WhatsApp/Slack, PDFs for reports, HTML for email, or embeddable widgets for internal portals. Work is communicated in whatever format you prefer.',
   },
   {
     label: 'Scale without hiring',

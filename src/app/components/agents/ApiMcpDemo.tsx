@@ -15,45 +15,26 @@ const CODE_TABS: CodeTab[] = [
     id: 'graphql',
     label: 'GraphQL',
     language: 'graphql',
-    code: `# Create a board and add items
-mutation {
-  create_board(
-    board_name: "Agent Project Tracker"
-    board_kind: public
-  ) {
-    id
-  }
-}
-
-# Then add items to the board
-mutation {
-  create_item(
+    code: `mutation {
+  create_item (
     board_id: 1234567890
-    item_name: "Research competitor pricing"
-    column_values: "{
-      \\"status\\": {\\"label\\": \\"Working on it\\"},
-      \\"date\\": {\\"date\\": \\"2025-07-20\\"},
-      \\"person\\": {\\"personsAndTeams\\": [{\\"id\\": 12345}]}
-    }"
+    group_id: "topics"
+    item_name: "Q3 Budget Review"
+    column_values: "{\\"status\\": {\\"label\\": \\"Working on it\\"}, \\"date4\\": {\\"date\\": \\"2025-08-15\\"}, \\"numbers\\": {\\"value\\": 50000}}"
   ) {
     id
     name
-    column_values {
-      id
-      text
-      value
-    }
   }
 }`,
     response: `{
   "data": {
     "create_item": {
       "id": "9876543210",
-      "name": "Research competitor pricing",
+      "name": "Q3 Budget Review",
       "column_values": [
         { "id": "status", "text": "Working on it" },
-        { "id": "date", "text": "2025-07-20" },
-        { "id": "person", "text": "Agent Helper" }
+        { "id": "date4", "text": "2025-08-15" },
+        { "id": "numbers", "text": "50000" }
       ]
     }
   },
@@ -64,28 +45,33 @@ mutation {
     id: 'mcp',
     label: 'MCP',
     language: 'json',
-    code: `// Model Context Protocol — monday.com tool call
+    code: `// Model Context Protocol — monday.com capabilities
+// 1. Tool Discovery — list all available operations
+// 2. Standardized Operations — uniform CRUD interface
+// 3. Structured Responses — typed, predictable output
+// 4. Event Subscriptions — real-time board updates
+
 {
   "jsonrpc": "2.0",
-  "method": "tools/call",
-  "params": {
-    "name": "monday_query_boards",
-    "arguments": {
-      "workspace_id": "main",
-      "limit": 5,
-      "order_by": "used_at"
-    }
-  },
+  "method": "tools/list",
+  "params": {},
   "id": 1
 }`,
     response: `{
   "jsonrpc": "2.0",
   "result": {
-    "content": [
-      {
-        "type": "text",
-        "text": "Found 5 boards:\\n1. Sprint Planning (12 items)\\n2. Bug Tracker (34 items)\\n3. Q3 Roadmap (8 items)\\n4. Team OKRs (15 items)\\n5. Client Projects (21 items)"
-      }
+    "tools": [
+      { "name": "monday_create_item", "category": "standardized_operations" },
+      { "name": "monday_query_boards", "category": "tool_discovery" },
+      { "name": "monday_update_column", "category": "standardized_operations" },
+      { "name": "monday_subscribe_events", "category": "event_subscriptions" },
+      { "name": "monday_get_updates", "category": "structured_responses" }
+    ],
+    "capabilities": [
+      "tool_discovery",
+      "standardized_operations",
+      "structured_responses",
+      "event_subscriptions"
     ]
   },
   "id": 1
@@ -179,6 +165,41 @@ Created item: Prepare Q3 report (id: 9876543210)
   "from": "Working on it",
   "to": "Done",
   "timestamp": "2025-07-25T14:30:00Z"
+}`,
+  },
+  {
+    id: 'openclaw',
+    label: 'OpenClaw',
+    language: 'bash',
+    code: `# Install the monday.com skill for OpenClaw
+$ openclaw skills add monday
+
+# Available tools after installation:
+# monday.create_board - Create a new board with columns
+# monday.create_item  - Add items to a board
+# monday.query_items  - Query and filter items
+# monday.update_status - Change item statuses
+# monday.post_update  - Add comments/updates to items
+# monday.create_doc   - Create monday Docs
+# monday.export_view  - Export a board view as image/PDF
+# monday.get_dashboard - Retrieve dashboard data
+
+# Usage example:
+monday.create_board({
+  name: "Sprint Planning",
+  columns: ["status", "person", "date", "priority"]
+})`,
+    response: `{
+  "status": "success",
+  "skill": "monday",
+  "version": "1.2.0",
+  "tools_registered": 8,
+  "board": {
+    "id": "7821345690",
+    "name": "Sprint Planning",
+    "columns": ["status", "person", "date", "priority"],
+    "url": "https://your-workspace.monday.com/boards/7821345690"
+  }
 }`,
   },
 ];

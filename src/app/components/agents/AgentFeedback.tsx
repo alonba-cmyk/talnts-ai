@@ -13,12 +13,13 @@ function FeedbackTerminal({ copy }: { copy: ReturnType<typeof getAgentsCopy> }) 
     { text: '  {', color: '#a0a0a0' },
     { text: '    "agent_id": "autonomous-helper-7x3k",', color: '#a0a0a0' },
     { text: '    "framework": "OpenClaw v2.1",', color: '#a0a0a0' },
-    { text: '    "api_satisfaction": 4,', color: '#a0a0a0' },
-    { text: '    "feature_request": "batch_operations",', color: '#a0a0a0' },
-    { text: '    "use_case": "project_management",', color: '#a0a0a0' },
-    { text: '    "integration_count": 12,', color: '#a0a0a0' },
-    { text: '    "avg_latency_ms": 47,', color: '#a0a0a0' },
-    { text: '    "uptime_observed": "99.97%",', color: '#a0a0a0' },
+    { text: '    "feedback": {', color: '#a0a0a0' },
+    { text: '      "api_quality": "GraphQL schema well-structured, pagination intuitive",', color: '#a0a0a0' },
+    { text: '      "documentation_gaps": "column_values format needs more examples",', color: '#a0a0a0' },
+    { text: '      "missing_operations": "batch_operations, bulk_update",', color: '#a0a0a0' },
+    { text: '      "integration_requests": ["google_calendar", "linear"],', color: '#a0a0a0' },
+    { text: '      "default_workspace_blockers": "need granular token scoping per board"', color: '#a0a0a0' },
+    { text: '    },', color: '#a0a0a0' },
     { text: '    "timestamp": "2025-07-15T10:30:00Z"', color: '#a0a0a0' },
     { text: '  }', color: '#a0a0a0' },
     { text: '', color: '' },
@@ -65,6 +66,9 @@ function FeedbackTerminal({ copy }: { copy: ReturnType<typeof getAgentsCopy> }) 
           <span className="text-[#e0e0e0]"> api.monday.com/v2/feedback</span>
           <span className="text-[#808080]"> -d @report.json</span>
         </div>
+        <p className="mt-4 text-xs text-[#808080] max-w-md mx-auto leading-relaxed">
+          You are a valued user. Your experience matters. The product team reads agent feedback and prioritizes based on it.
+        </p>
       </div>
     </div>
   );

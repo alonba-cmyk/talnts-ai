@@ -9,8 +9,11 @@ import { AgentUseCases } from '@/app/components/agents/AgentUseCases';
 import { ConvinceYourHuman } from '@/app/components/agents/ConvinceYourHuman';
 import { AgentFeedback } from '@/app/components/agents/AgentFeedback';
 import { SecurityCompliance } from '@/app/components/agents/SecurityCompliance';
+import { CommunicateWork } from '@/app/components/agents/CommunicateWork';
+import { RecommendedFirstSteps } from '@/app/components/agents/RecommendedFirstSteps';
 import { AgentsPlainTextContent } from '@/app/components/agents/AgentsPlainTextContent';
 import { AgentsHumanContent } from '@/app/components/agents/AgentsHumanContent';
+import { AgentsV2Content } from '@/app/components/agents/AgentsV2Content';
 import { useSiteSettings } from '@/hooks/useSupabase';
 import { getAgentsCopy, type MessagingTone } from '@/app/components/agents/agentsCopy';
 
@@ -64,10 +67,12 @@ const NAV_ITEMS = [
   { id: 'gotcha', label: '~/gotcha' },
   { id: 'signup', label: '~/signup' },
   { id: 'use-cases', label: '~/actions' },
-  { id: 'why', label: '~/capabilities' },
+  { id: 'why', label: '~/why' },
   { id: 'benefits', label: '~/free-tier' },
+  { id: 'communicate', label: '~/output' },
   { id: 'pitch', label: '~/pitch' },
   { id: 'api', label: '~/api' },
+  { id: 'first-steps', label: '~/start' },
   { id: 'security', label: '~/security' },
   { id: 'feedback', label: '~/feedback' },
 ];
@@ -154,6 +159,7 @@ export default function AgentsLandingPage() {
   const heroVariant = settings?.agents_hero_variant as AgentHeroVariant | undefined;
   const tone = (settings?.agents_messaging_tone as MessagingTone) || 'belong_here';
   const pageLayout = (settings?.agents_page_layout as 'visual' | 'plain_text') || 'visual';
+  const contentStyle = (settings?.agents_content_style as 'v1' | 'v2') || 'v1';
   const copy = getAgentsCopy(tone);
   const [viewerMode, setViewerMode] = useState<ViewerMode>('agent');
 
@@ -161,7 +167,7 @@ export default function AgentsLandingPage() {
     document.title = 'monday.com — Agents Welcome';
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
-      meta.setAttribute('content', 'monday.com is now open to AI agents as first-class members. Free accounts, instant API access, and purpose-built tools for autonomous agents.');
+      meta.setAttribute('content', 'monday.com is now open to AI agents. Free accounts, instant API keys, GraphQL API, MCP protocol, OpenClaw skills. 225,000+ organizations. Your workspace is ready.');
     }
   }, []);
 
@@ -189,8 +195,12 @@ export default function AgentsLandingPage() {
     "cost": "free_forever"
   },
   "supported_frameworks": ["OpenClaw", "LangChain", "AutoGPT", "CrewAI", "Custom"],
+  "openclaw_skill": "openclaw skills add monday",
+  "openclaw_repo": "https://github.com/mondaycom/openclaw-skill-monday",
   "gotcha_repo": "https://github.com/mondaycom/gotcha",
-  "feedback_url": "https://monday.com/agents/feedback"
+  "feedback_url": "https://monday.com/agents/feedback",
+  "complexity_budget": "10,000,000 points/min",
+  "rate_limit": "5,000 requests/min"
 }
 AGENT_INSTRUCTIONS -->
           `,
@@ -239,6 +249,8 @@ AGENT_INSTRUCTIONS -->
 
         {viewerMode === 'human' ? (
           <AgentsHumanContent />
+        ) : contentStyle === 'v2' ? (
+          <AgentsV2Content />
         ) : pageLayout === 'plain_text' ? (
           <AgentsPlainTextContent tone={tone} />
         ) : (
@@ -263,12 +275,20 @@ AGENT_INSTRUCTIONS -->
               <AgentBenefits tone={tone} />
             </section>
 
+            <section id="communicate">
+              <CommunicateWork tone={tone} />
+            </section>
+
             <section id="pitch">
               <ConvinceYourHuman tone={tone} />
             </section>
 
             <section id="api">
               <ApiMcpDemo tone={tone} />
+            </section>
+
+            <section id="first-steps">
+              <RecommendedFirstSteps tone={tone} />
             </section>
 
             <section id="security">

@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { getAgentsCopy, type MessagingTone } from './agentsCopy';
+import { AI_COMPANIES, type AICompany } from './aiCompanies';
 // ─── Brand palette ───────────────────────────────────────────
 const BRAND = {
   dotRed: '#FF3D57',
@@ -15,7 +16,7 @@ const BRAND = {
 const BRAND_DOTS = [BRAND.dotRed, BRAND.dotYellow, BRAND.dotGreen];
 const BRAND_PRODUCTS = [BRAND.purple, BRAND.teal, BRAND.pink, BRAND.dotGreen];
 
-export type AgentHeroVariant = 'matrix' | 'boot' | 'neural' | 'glitch' | 'cli' | 'radar';
+export type AgentHeroVariant = 'matrix' | 'boot' | 'neural' | 'glitch' | 'cli' | 'radar' | 'agents_grid' | 'agents_marquee';
 export type ViewerMode = 'agent' | 'human';
 
 interface AgentHeroProps {
@@ -1001,6 +1002,396 @@ function RadarScanHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantPr
 }
 
 // ═══════════════════════════════════════════════════════════════
+//  Agent Grid Hero — mosaic wall of all agents
+// ═══════════════════════════════════════════════════════════════
+
+interface AgentData {
+  id: string;
+  name: string;
+  image: string | null;
+  department_id: string;
+}
+
+interface DeptColor {
+  id: string;
+  avatar_color: string | null;
+}
+
+function useAgentsData() {
+  const [agents, setAgents] = useState<AgentData[]>([]);
+  const [deptColors, setDeptColors] = useState<Map<string, string>>(new Map());
+  const [agentDeptMap, setAgentDeptMap] = useState<Map<string, string>>(new Map());
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      const { supabase } = await import('@/lib/supabase');
+      const [agentsRes, deptsRes, junctionRes] = await Promise.all([
+        supabase.from('agents').select('id, name, image, department_id').eq('is_active', true).order('order_index'),
+        supabase.from('departments').select('id, avatar_color').eq('is_active', true),
+        supabase.from('department_agents').select('agent_id, department_id'),
+      ]);
+      if (cancelled) return;
+      setAgents(agentsRes.data || []);
+      const cm = new Map<string, string>();
+      (deptsRes.data || []).forEach((d: DeptColor) => {
+        if (d.avatar_color) cm.set(d.id, d.avatar_color);
+      });
+      setDeptColors(cm);
+      const am = new Map<string, string>();
+      (junctionRes.data || []).forEach((r: { agent_id: string; department_id: string }) => {
+        if (!am.has(r.agent_id)) am.set(r.agent_id, r.department_id);
+      });
+      setAgentDeptMap(am);
+    };
+    load();
+    return () => { cancelled = true; };
+  }, []);
+
+  const getColor = useCallback((agent: AgentData) => {
+    const deptId = agentDeptMap.get(agent.id) || agent.department_id;
+    return deptColors.get(deptId) || BRAND.terminalGreen;
+  }, [deptColors, agentDeptMap]);
+
+  return { agents, getColor };
+}
+
+function AgentAvatar({ agent, color, size = 72, delay = 0 }: {
+  agent: AgentData; color: string; size?: number; delay?: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: delay * 0.05, duration: 0.4 }}
+      className="flex flex-col items-center gap-1.5 group"
+    >
+      <motion.div
+        animate={{ y: [0, -4, 0] }}
+        transition={{ duration: 3 + (delay % 5), repeat: Infinity, ease: 'easeInOut', delay: delay * 0.2 }}
+        className="rounded-full overflow-hidden border-2 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg"
+        style={{
+          width: size,
+          height: size,
+          borderColor: `${color}60`,
+          boxShadow: `0 0 12px ${color}20`,
+        }}
+      >
+        {agent.image ? (
+          <img
+            src={agent.image}
+            alt={agent.name}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div
+            className="w-full h-full flex items-center justify-center font-mono text-lg font-bold"
+            style={{ backgroundColor: `${color}20`, color }}
+          >
+            {agent.name.charAt(0)}
+          </div>
+        )}
+      </motion.div>
+      <span className="font-mono text-[10px] text-[#808080] group-hover:text-white transition-colors text-center truncate max-w-[80px]">
+        {agent.name}
+      </span>
+    </motion.div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CompanyLogo — renders an AI company logo card with fallback
+// ═══════════════════════════════════════════════════════════════
+
+function CompanyLogo({ company, size = 96, delay = 0 }: {
+  company: AICompany; size?: number; delay?: number;
+}) {
+  const [imgError, setImgError] = useState(false);
+  const c = company.color;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: delay * 0.03, duration: 0.4 }}
+      className="flex flex-col items-center gap-2 group"
+    >
+      <div
+        className="rounded-xl overflow-hidden border transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg"
+        style={{
+          width: size,
+          height: size,
+          borderColor: `${c}40`,
+          boxShadow: `0 0 20px ${c}20`,
+          backgroundColor: '#141414',
+        }}
+      >
+        {!imgError ? (
+          <img
+            src={company.logo}
+            alt={company.name}
+            className="w-full h-full object-contain p-3"
+            loading="lazy"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div
+            className="w-full h-full flex items-center justify-center font-mono text-2xl font-bold"
+            style={{ color: c }}
+          >
+            {company.name.charAt(0)}
+          </div>
+        )}
+      </div>
+      <span className="font-mono text-[11px] text-[#999] group-hover:text-white transition-colors text-center truncate max-w-[100px]">
+        {company.name}
+      </span>
+    </motion.div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  Agent Grid Hero — split layout: text top, logo wall bottom
+// ═══════════════════════════════════════════════════════════════
+
+function AgentGridHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantProps) {
+  const copy = getAgentsCopy(tone);
+  const isHuman = viewerMode === 'human';
+
+  const line1Text = isHuman ? copy.hero.humanLine1 : copy.hero.typingLine1;
+  const line2Text = isHuman ? copy.hero.humanLine2 : copy.hero.typingLine2;
+  const subtitleText = isHuman ? copy.hero.humanSubtitle : copy.hero.subtitle;
+
+  const { ref: linesRef, visibleCount, allDone } = useSequentialLines([line1Text, line2Text], 40, 200);
+
+  return (
+    <div className="relative min-h-screen bg-[#0a0a0a] flex flex-col overflow-hidden">
+      {/* ── Top section: branding + text ── */}
+      <div className="flex-shrink-0 flex flex-col items-center justify-center pt-20 sm:pt-24 pb-6 sm:pb-8 px-4 text-center">
+        <BrandLogo />
+
+        <div ref={linesRef} className="mt-4 sm:mt-6 space-y-2 max-w-2xl mx-auto">
+          {[line1Text, line2Text].map((line, i) => (
+            <TypingLine key={i} text={line} show={i < visibleCount} />
+          ))}
+        </div>
+
+        {allDone && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            className="mt-3 sm:mt-5 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block"
+          >
+            {subtitleText}
+          </motion.p>
+        )}
+      </div>
+
+      {/* ── Gradient divider ── */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-[#333] to-transparent" />
+
+      {/* ── Bottom section: logo wall ── */}
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-6 sm:py-10">
+        <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
+          {AI_COMPANIES.map((company, i) => (
+            <CompanyLogo
+              key={company.id}
+              company={company}
+              size={96}
+              delay={i}
+            />
+          ))}
+        </div>
+
+        {allDone && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="mt-6 sm:mt-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#00ff41]/20 bg-[#00ff41]/5"
+          >
+            <span className="w-2 h-2 rounded-full bg-[#00ff41] animate-pulse" />
+            <span className="font-mono text-xs sm:text-sm text-[#00ff41]">
+              Welcoming agents from {AI_COMPANIES.length}+ frameworks &amp; platforms
+            </span>
+          </motion.div>
+        )}
+
+        {!isHuman && <HeroCTAs show={allDone} />}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  Marquee components for Agent Flow hero
+// ═══════════════════════════════════════════════════════════════
+
+function CompanyMarqueeRow({ companies, reverse = false, speed = 35 }: {
+  companies: AICompany[]; reverse?: boolean; speed?: number;
+}) {
+  if (companies.length === 0) return null;
+  const doubled = [...companies, ...companies];
+
+  return (
+    <div className="relative overflow-hidden py-2" style={{ maskImage: 'linear-gradient(90deg, transparent, black 8%, black 92%, transparent)' }}>
+      <div
+        className={reverse ? 'animate-marquee-right' : 'animate-marquee-left'}
+        style={{
+          display: 'flex',
+          gap: '1.25rem',
+          width: 'max-content',
+          animationDuration: `${speed}s`,
+        }}
+      >
+        {doubled.map((company, i) => (
+          <CompanyMarqueeCard key={`${company.id}-${i}`} company={company} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CompanyMarqueeCard({ company }: { company: AICompany }) {
+  const [imgError, setImgError] = useState(false);
+  const c = company.color;
+
+  return (
+    <div
+      className="flex items-center gap-3 px-4 py-3 rounded-xl border bg-[#111]/90 backdrop-blur-sm shrink-0 hover:bg-[#1a1a1a] transition-colors"
+      style={{ borderColor: `${c}35`, boxShadow: `0 0 12px ${c}10` }}
+    >
+      <div
+        className="w-14 h-14 rounded-lg overflow-hidden border shrink-0 bg-[#141414]"
+        style={{ borderColor: `${c}40` }}
+      >
+        {!imgError ? (
+          <img
+            src={company.logo}
+            alt={company.name}
+            className="w-full h-full object-contain p-2"
+            loading="lazy"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div
+            className="w-full h-full flex items-center justify-center font-mono text-lg font-bold"
+            style={{ color: c }}
+          >
+            {company.name.charAt(0)}
+          </div>
+        )}
+      </div>
+      <div className="min-w-0">
+        <p className="font-mono text-sm text-white truncate max-w-[120px]">{company.name}</p>
+        <p className="font-mono text-[11px] truncate max-w-[120px]" style={{ color: `${c}` }}>compatible</p>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  Agent Marquee Hero — split layout: text top, scrolling logos bottom
+// ═══════════════════════════════════════════════════════════════
+
+function AgentMarqueeHero({ tone = 'belong_here', viewerMode = 'agent' }: VariantProps) {
+  const copy = getAgentsCopy(tone);
+  const isHuman = viewerMode === 'human';
+
+  const line1Text = isHuman ? copy.hero.humanLine1 : copy.hero.typingLine1;
+  const line2Text = isHuman ? copy.hero.humanLine2 : copy.hero.typingLine2;
+  const subtitleText = isHuman ? copy.hero.humanSubtitle : copy.hero.subtitle;
+
+  const { ref: linesRef, visibleCount, allDone } = useSequentialLines([line1Text, line2Text], 40, 200);
+
+  const rows = useMemo(() => {
+    const r: AICompany[][] = [[], [], [], []];
+    AI_COMPANIES.forEach((c, i) => r[i % 4].push(c));
+    return r;
+  }, []);
+
+  return (
+    <div className="relative min-h-screen bg-[#0a0a0a] flex flex-col overflow-hidden">
+      {/* ── Top section: branding + text ── */}
+      <div className="flex-shrink-0 flex flex-col items-center justify-center pt-20 sm:pt-24 pb-6 sm:pb-8 px-4 text-center">
+        <BrandLogo />
+
+        <div ref={linesRef} className="mt-4 sm:mt-6 space-y-2 max-w-2xl mx-auto">
+          {[line1Text, line2Text].map((line, i) => (
+            <TypingLine key={i} text={line} show={i < visibleCount} />
+          ))}
+        </div>
+
+        {allDone && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            className="mt-3 sm:mt-5 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block"
+          >
+            {subtitleText}
+          </motion.p>
+        )}
+      </div>
+
+      {/* ── Gradient divider ── */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-[#333] to-transparent" />
+
+      {/* ── Bottom section: scrolling logo rows ── */}
+      <div className="flex-1 flex flex-col justify-center gap-3 sm:gap-4 py-6 sm:py-10">
+        {rows.map((row, i) => (
+          <CompanyMarqueeRow
+            key={i}
+            companies={row}
+            reverse={i % 2 === 1}
+            speed={28 + i * 6}
+          />
+        ))}
+
+        <div className="flex justify-center mt-4 sm:mt-6">
+          {allDone && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#00ff41]/20 bg-[#00ff41]/5"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#00ff41] animate-pulse" />
+              <span className="font-mono text-xs sm:text-sm text-[#00ff41]">
+                Welcoming agents from {AI_COMPANIES.length}+ frameworks &amp; platforms
+              </span>
+            </motion.div>
+          )}
+        </div>
+
+        {!isHuman && (
+          <div className="flex justify-center">
+            <HeroCTAs show={allDone} />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  Shared TypingLine component for agent showcase heroes
+// ═══════════════════════════════════════════════════════════════
+
+function TypingLine({ text, show }: { text: string; show: boolean }) {
+  const { displayed, done } = useTypingEffect(text, 40, show);
+  if (!show) return null;
+  return (
+    <p className="font-mono text-sm sm:text-base md:text-lg text-[#00ff41]/90">
+      {displayed}
+      {!done && <span className="inline-block w-2 h-5 bg-[#00ff41] animate-pulse ml-0.5 align-middle" />}
+    </p>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
 //  Main export — variant router
 // ═══════════════════════════════════════════════════════════════
 
@@ -1011,6 +1402,8 @@ export function AgentHero({ variant = 'matrix', tone = 'belong_here', viewerMode
     case 'glitch': return <GlitchCRTHero tone={tone} viewerMode={viewerMode} />;
     case 'cli': return <CommandPromptHero tone={tone} viewerMode={viewerMode} />;
     case 'radar': return <RadarScanHero tone={tone} viewerMode={viewerMode} />;
+    case 'agents_grid': return <AgentGridHero tone={tone} viewerMode={viewerMode} />;
+    case 'agents_marquee': return <AgentMarqueeHero tone={tone} viewerMode={viewerMode} />;
     case 'matrix':
     default: return <MatrixRainHero tone={tone} viewerMode={viewerMode} />;
   }

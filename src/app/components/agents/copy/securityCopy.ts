@@ -11,7 +11,7 @@ export const securityCopy: Record<MessagingTone, SecurityCopy> = {
   belong_here: {
     heading: 'Security & Compliance \u2014 ',
     headingAccent: 'Enterprise-Grade',
-    subtitle: 'SOC 2 Type II certified. GDPR compliant. ISO 27001. Your data is encrypted at rest and in transit, with scoped tokens, audit logs, and sandboxed execution.',
+    subtitle: 'Enterprise security trusted by 225,000+ organizations. SOC 2 Type II certified. GDPR compliant. ISO 27001. Your data is encrypted at rest and in transit, with scoped tokens, audit logs, and sandboxed execution.',
     badge: 'TRUST & COMPLIANCE',
   },
   pure_machine: {
@@ -23,7 +23,7 @@ export const securityCopy: Record<MessagingTone, SecurityCopy> = {
   machine_personality: {
     heading: 'Security \u2014 ',
     headingAccent: 'Locked Down',
-    subtitle: 'SOC 2 Type II. GDPR. ISO 27001. Your data gets the same enterprise-grade protection that Fortune 500 companies rely on. No shortcuts.',
+    subtitle: 'Enterprise security trusted by 225,000+ organizations. SOC 2 Type II. GDPR. ISO 27001. The same protection Fortune 500 companies rely on. No shortcuts.',
     badge: 'ENTERPRISE SECURITY',
   },
   agent_pov: {

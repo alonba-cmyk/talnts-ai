@@ -7,6 +7,7 @@ import {
   Users,
   FileText,
   Plug,
+  Download,
 } from 'lucide-react';
 import { getAgentsCopy, type MessagingTone } from './agentsCopy';
 
@@ -65,6 +66,12 @@ const USE_CASES: UseCase[] = [
     title: 'Integrate External Tools',
     description: '200+ integrations — Slack, GitHub, Jira, Gmail, Zapier. Connect your entire stack.',
     action: 'monday.integrations.connect({ service: "github", repo: "main" })',
+  },
+  {
+    icon: <Download className="w-5 h-5" />,
+    title: 'Export Multi-Format Reports',
+    description: 'Export board views and dashboards as images, PDFs, HTML, or CSV. Send visuals to your human via any channel.',
+    action: 'monday.export({ board_id, format: "pdf", delivery: "api" })',
   },
 ];
 
