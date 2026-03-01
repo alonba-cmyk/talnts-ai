@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 type AgentsContentStyle = 'v1' | 'v2';
 type AgentsPageLayout = 'visual' | 'plain_text';
 
-type AgentHeroVariant = 'matrix' | 'radar' | 'mcp_connect' | 'orbital' | 'liquid' | 'depth_layers' | 'data_stream' | 'typography_kinetic' | 'ambient_orbs';
+type AgentHeroVariant = 'matrix' | 'radar' | 'mcp_connect' | 'openclaw' | 'orbital' | 'liquid' | 'depth_layers' | 'data_stream' | 'typography_kinetic' | 'ambient_orbs';
 type MessagingTone = 'belong_here' | 'pure_machine' | 'machine_personality' | 'agent_pov' | 'system_native';
 
 interface VariantOption {
@@ -37,6 +37,13 @@ const VARIANT_OPTIONS: VariantOption[] = [
     description: 'MCP READY badge with Works with AI framework logos strip',
     icon: <Plug className="w-5 h-5" />,
     accent: '#6161FF',
+  },
+  {
+    value: 'openclaw',
+    label: 'OpenClaw Skill',
+    description: 'CLI skill install: openclaw skills add monday — for OpenClaw users',
+    icon: <Terminal className="w-5 h-5" />,
+    accent: '#00CA72',
   },
   {
     value: 'orbital',

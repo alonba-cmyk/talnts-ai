@@ -17,7 +17,7 @@ const BRAND = {
 const BRAND_DOTS = [BRAND.dotRed, BRAND.dotYellow, BRAND.dotGreen];
 const BRAND_PRODUCTS = [BRAND.purple, BRAND.teal, BRAND.pink, BRAND.dotGreen];
 
-export type AgentHeroVariant = 'matrix' | 'radar' | 'mcp_connect' | 'orbital' | 'liquid' | 'depth_layers' | 'data_stream' | 'typography_kinetic' | 'ambient_orbs';
+export type AgentHeroVariant = 'matrix' | 'radar' | 'mcp_connect' | 'openclaw' | 'orbital' | 'liquid' | 'depth_layers' | 'data_stream' | 'typography_kinetic' | 'ambient_orbs';
 export type ViewerMode = 'agent' | 'human';
 export type ContentStyle = 'v1' | 'v2';
 
@@ -565,7 +565,117 @@ function CompanyLogoStrip({ company, size = 48 }: { company: AICompany; size?: n
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  VARIANT 3 — MCP Connect (with Works with logos strip)
+//  VARIANT 3 — OpenClaw Skill Install
+// ═══════════════════════════════════════════════════════════════
+
+function OpenClawHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
+  const [phase, setPhase] = useState(0);
+  const scrollToSignup = useCallback(() => {
+    document.getElementById('signup')?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setPhase(1), 600);
+    const t2 = setTimeout(() => setPhase(2), 2000);
+    const t3 = setTimeout(() => setPhase(3), 2800);
+    const t4 = setTimeout(() => setPhase(4), 3500);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
+  }, []);
+
+  const { displayed: cmdLine, done: cmdDone } = useTypingEffect('$ openclaw skills add monday', 40, phase >= 1);
+  const subtitle = 'Pre-configured tools for boards, items, updates, docs, export. No custom integration code.';
+
+  return (
+    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
+      <div className="relative z-20 w-full max-w-2xl mx-auto">
+        <BrandLogo />
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: phase >= 0 ? 1 : 0 }}
+          className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#00CA72]/30 bg-[#00CA72]/10"
+        >
+          <span className="font-mono text-xs" style={{ color: BRAND.dotGreen }}>OPENCLAW SKILL</span>
+        </motion.div>
+
+        <div className="mt-6 rounded-xl border border-[#333] bg-[#0d0d0d] overflow-hidden">
+          <div className="flex items-center gap-2 px-4 py-2 border-b border-[#333] bg-[#1a1a1a]">
+            <div className="flex gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: BRAND.dotRed }} />
+              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: BRAND.dotYellow }} />
+              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: BRAND.dotGreen }} />
+            </div>
+            <span className="font-mono text-xs text-[#808080]">terminal</span>
+          </div>
+
+          <div className="p-4 font-mono text-sm space-y-2">
+            <div>
+              <span className="text-[#00ff41]/80">{cmdLine}</span>
+              {phase >= 1 && !cmdDone && <span className="inline-block w-2 h-4 bg-[#00ff41] animate-pulse ml-0.5 align-middle" />}
+            </div>
+            {phase >= 2 && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[#808080]">
+                Fetching skill monday...
+              </motion.div>
+            )}
+            {phase >= 3 && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ color: BRAND.dotGreen }}>
+                ✓ monday skill installed
+              </motion.div>
+            )}
+          </div>
+        </div>
+
+        {phase >= 4 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mt-6 space-y-4"
+          >
+            <div className="space-y-2 text-left font-mono">
+              <p className="text-base" style={{ color: `${BRAND.terminalGreen}cc` }}>
+                &gt; One command. Full monday.com access.
+              </p>
+              <p className="text-base" style={{ color: `${BRAND.teal}cc` }}>
+                &gt; Skill installed. Tools ready.
+              </p>
+            </div>
+            <p className="text-sm text-[#a0a0a0] font-mono leading-relaxed hidden sm:block">
+              {subtitle}
+            </p>
+            <p className="text-xs text-[#606060] font-mono">
+              monday.create_board, monday.query_items, monday.export_view, and more.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+              <button
+                onClick={scrollToSignup}
+                className="group font-mono text-base px-8 py-3 rounded-lg border border-[#00ff41]/50 text-[#00ff41] bg-[#00ff41]/5 hover:bg-[#00ff41]/15 transition-all duration-300"
+              >
+                <span className="text-[#00ff41]/50 mr-2">$</span>
+                monday signup --agent --free
+              </button>
+              <a
+                href="https://github.com/mondaycom/openclaw-skill-monday"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-sm px-6 py-3 rounded-lg border border-[#808080]/30 text-[#808080] hover:text-[#e0e0e0] hover:border-[#e0e0e0]/30 transition-all duration-300"
+              >
+                View skill on GitHub
+              </a>
+            </div>
+          </motion.div>
+        )}
+
+        <ScrollIndicator show={phase >= 4} />
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  VARIANT 4 — MCP Connect (with Works with logos strip)
 // ═══════════════════════════════════════════════════════════════
 
 const MCP_LOGOS = AI_COMPANIES.slice(0, 10);
@@ -1058,6 +1168,7 @@ export function AgentHero({ variant = 'matrix', tone = 'belong_here', viewerMode
   switch (v) {
     case 'radar': return <RadarScanHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
     case 'mcp_connect': return <McpConnectHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
+    case 'openclaw': return <OpenClawHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
     case 'orbital': return <OrbitalHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
     case 'liquid': return <LiquidHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
     case 'depth_layers': return <DepthLayersHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;

@@ -6,6 +6,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
+    "deploy": "pnpm run build && vercel --prod",
     "backup": "node scripts/backup.cjs",
     "backup:save": "node scripts/backup.cjs save",
     "backup:list": "node scripts/backup.cjs list",

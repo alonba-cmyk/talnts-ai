@@ -337,7 +337,7 @@ export interface SiteSettings {
   platform_intro_style: 'unified' | 'with_plus';
   platform_hero_variant: 'typewriter' | 'gradient_wave' | 'bold_statement' | 'glassmorphism' | 'spotlight' | 'orbit' | 'split' | 'reveal' | 'spotlight_v2' | 'spotlight_v3' | 'spotlight_v4';
   platform_use_cases_variant: 'cards_grid' | 'hero_featured' | 'department_tabs' | 'bento_mosaic';
-  agents_hero_variant: 'matrix' | 'radar' | 'mcp_connect' | 'orbital' | 'liquid' | 'depth_layers' | 'data_stream' | 'typography_kinetic' | 'ambient_orbs';
+  agents_hero_variant: 'matrix' | 'radar' | 'mcp_connect' | 'openclaw' | 'orbital' | 'liquid' | 'depth_layers' | 'data_stream' | 'typography_kinetic' | 'ambient_orbs';
   agents_messaging_tone: 'belong_here' | 'pure_machine' | 'machine_personality' | 'agent_pov' | 'system_native';
   agents_page_layout: 'visual' | 'plain_text';
   agents_content_style: 'v1' | 'v2';

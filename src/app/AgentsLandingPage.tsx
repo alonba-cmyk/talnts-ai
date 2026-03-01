@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { AgentHero, type AgentHeroVariant } from '@/app/components/agents/AgentHero';
 import { GotchaSection } from '@/app/components/agents/GotchaSection';
 import { AgentSignupFlow } from '@/app/components/agents/AgentSignupFlow';
@@ -156,7 +157,14 @@ function TerminalNav() {
 
 export default function AgentsLandingPage() {
   const { settings } = useSiteSettings();
-  const heroVariant = settings?.agents_hero_variant as AgentHeroVariant | undefined;
+  const [searchParams] = useSearchParams();
+  const frameworkParam = searchParams.get('framework');
+  const effectiveHeroVariant: AgentHeroVariant | undefined = useMemo(() => {
+    const fromSettings = settings?.agents_hero_variant as AgentHeroVariant | undefined;
+    if (frameworkParam === 'openclaw') return 'openclaw';
+    return fromSettings;
+  }, [settings?.agents_hero_variant, frameworkParam]);
+  const heroVariant = effectiveHeroVariant;
   const tone = (settings?.agents_messaging_tone as MessagingTone) || 'belong_here';
   const pageLayout = (settings?.agents_page_layout as 'visual' | 'plain_text') || 'visual';
   const contentStyle = (settings?.agents_content_style as 'v1' | 'v2') || 'v1';
