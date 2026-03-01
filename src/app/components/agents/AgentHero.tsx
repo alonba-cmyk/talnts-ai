@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { getAgentsCopy, type MessagingTone } from './agentsCopy';
 import { v2HeroCopy, type HeroCopy } from './copy/heroCopy';
@@ -17,7 +17,7 @@ const BRAND = {
 const BRAND_DOTS = [BRAND.dotRed, BRAND.dotYellow, BRAND.dotGreen];
 const BRAND_PRODUCTS = [BRAND.purple, BRAND.teal, BRAND.pink, BRAND.dotGreen];
 
-export type AgentHeroVariant = 'matrix' | 'boot' | 'neural' | 'glitch' | 'cli' | 'radar' | 'agents_grid' | 'agents_marquee';
+export type AgentHeroVariant = 'matrix' | 'radar' | 'mcp_connect' | 'orbital' | 'liquid' | 'depth_layers' | 'data_stream' | 'typography_kinetic' | 'ambient_orbs';
 export type ViewerMode = 'agent' | 'human';
 export type ContentStyle = 'v1' | 'v2';
 
@@ -332,492 +332,7 @@ function MatrixRainHero({ tone = 'belong_here', viewerMode = 'agent', contentSty
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  VARIANT 2 — Boot Sequence
-// ═══════════════════════════════════════════════════════════════
-
-interface BootLine {
-  text: string;
-  color: string;
-  delay: number;
-  type?: 'header' | 'check' | 'progress' | 'success' | 'blank';
-}
-
-function BootSequenceHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
-  const hero = useHeroCopy(tone, contentStyle);
-  const isHuman = viewerMode === 'human';
-  const BOOT_LINES: BootLine[] = useMemo(() => [
-    { text: 'monday.com BIOS v4.2.0 — Agent Runtime', color: BRAND.teal, delay: 0, type: 'header' },
-    { text: '', color: '', delay: 300, type: 'blank' },
-    { text: 'Loading modules:', color: '#808080', delay: 500 },
-    { text: '  [OK] GraphQL API Engine', color: BRAND.dotGreen, delay: 800, type: 'check' },
-    { text: '  [OK] MCP Protocol v1.0', color: BRAND.dotGreen, delay: 1100, type: 'check' },
-    { text: '  [OK] GOTCHA Verification', color: BRAND.dotGreen, delay: 1400, type: 'check' },
-    { text: '  [OK] Webhooks Dispatcher', color: BRAND.dotGreen, delay: 1700, type: 'check' },
-    { text: '', color: '', delay: 1900, type: 'blank' },
-    { text: 'Connecting to api.monday.com... ', color: BRAND.dotYellow, delay: 2100 },
-    { text: '  ✓ Connection established (12ms)', color: BRAND.dotGreen, delay: 2600, type: 'success' },
-    { text: '', color: '', delay: 2800, type: 'blank' },
-    { text: 'Scanning...', color: BRAND.teal, delay: 3000 },
-    { text: '', color: '', delay: 3200, type: 'progress' },
-    { text: '', color: '', delay: 4400, type: 'blank' },
-    { text: `  ${hero.bootDetected}`, color: BRAND.terminalGreen, delay: 4600, type: 'success' },
-    { text: '', color: '', delay: 4800, type: 'blank' },
-    { text: hero.typingLine1.replace('> ', ''), color: BRAND.terminalGreen, delay: 5000, type: 'header' },
-    { text: hero.typingLine2.replace('> ', ''), color: '#e0e0e0', delay: 5400 },
-  ], [hero]);
-
-  const [visibleLines, setVisibleLines] = useState(0);
-  const [progressValue, setProgressValue] = useState(0);
-  const [showCTA, setShowCTA] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const hasStarted = useRef(false);
-
-  useEffect(() => {
-    if (hasStarted.current) return;
-    hasStarted.current = true;
-
-    const timeouts: ReturnType<typeof setTimeout>[] = [];
-    BOOT_LINES.forEach((line, i) => {
-      timeouts.push(setTimeout(() => setVisibleLines(i + 1), line.delay));
-    });
-
-    let prog = 0;
-    const progInterval = setInterval(() => {
-      prog += 3;
-      setProgressValue(Math.min(prog, 100));
-      if (prog >= 100) clearInterval(progInterval);
-    }, 30);
-    timeouts.push(setTimeout(() => clearInterval(progInterval), 4400));
-
-    timeouts.push(setTimeout(() => setShowCTA(true), 6000));
-    return () => { timeouts.forEach(clearTimeout); clearInterval(progInterval); };
-  }, [BOOT_LINES]);
-
-  useEffect(() => {
-    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [visibleLines]);
-
-  return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
-      <div className="absolute inset-0 pointer-events-none z-30 opacity-[0.03]"
-        style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)' }} />
-
-      <div className="relative z-20 w-full max-w-3xl mx-auto">
-        <BrandLogo className="mb-6" />
-
-        <div className="rounded-xl border border-[#333] bg-[#0a0a0a] overflow-hidden shadow-[0_0_80px_rgba(0,255,65,0.04)]">
-          <div className="flex items-center gap-2 px-4 py-3 bg-[#1a1a1a] border-b border-[#333]">
-            <div className="flex gap-1.5">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: BRAND.dotRed }} />
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: BRAND.dotYellow }} />
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: BRAND.dotGreen }} />
-            </div>
-            <span className="font-mono text-xs text-[#808080] ml-2">monday-agent-bios</span>
-          </div>
-
-          <div ref={scrollRef} className="p-4 sm:p-6 font-mono text-sm min-h-[200px] sm:min-h-[280px] max-h-[280px] sm:max-h-[360px] overflow-y-auto scrollbar-thin">
-            {BOOT_LINES.slice(0, visibleLines).map((line, i) => {
-              if (line.type === 'blank') return <div key={i} className="h-3" />;
-              if (line.type === 'progress') {
-                return (
-                  <div key={i} className="my-2">
-                    <div className="h-4 bg-[#1a1a1a] rounded overflow-hidden border border-[#333]">
-                      <motion.div
-                        className="h-full rounded"
-                        style={{
-                          width: `${progressValue}%`,
-                          background: `linear-gradient(90deg, ${BRAND.dotRed}, ${BRAND.dotYellow}, ${BRAND.dotGreen})`,
-                        }}
-                      />
-                    </div>
-                    <div className="text-right font-mono text-[10px] text-[#606060] mt-1">{progressValue}%</div>
-                  </div>
-                );
-              }
-              return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -5 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.15 }}
-                  style={{ color: line.color }}
-                  className={`leading-relaxed ${line.type === 'header' ? 'text-base font-bold' : ''} ${line.type === 'success' ? 'font-semibold' : ''}`}
-                >
-                  {line.text}
-                </motion.div>
-              );
-            })}
-            {visibleLines < BOOT_LINES.length && (
-              <span className="inline-block w-2 h-4 bg-[#00ff41] animate-pulse" />
-            )}
-          </div>
-        </div>
-
-        {showCTA && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 sm:mt-6 text-center">
-            <p className="text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed mb-4 hidden sm:block">
-              {isHuman ? hero.humanSubtitle : hero.subtitle}
-            </p>
-            {!isHuman && <HeroCTAs show />}
-            <ScrollIndicator show />
-          </motion.div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  VARIANT 3 — Neural Network
-// ═══════════════════════════════════════════════════════════════
-
-function NeuralNetworkCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    let animationId: number;
-
-    const resize = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; };
-    resize();
-    window.addEventListener('resize', resize);
-
-    const colors = [...BRAND_PRODUCTS, BRAND.terminalGreen];
-    const nodeCount = 60;
-
-    interface Node { x: number; y: number; vx: number; vy: number; radius: number; color: string; pulse: number; }
-
-    const nodes: Node[] = Array.from({ length: nodeCount }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-      radius: 2 + Math.random() * 3,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      pulse: Math.random() * Math.PI * 2,
-    }));
-
-    const draw = () => {
-      ctx.fillStyle = 'rgba(10, 10, 10, 0.15)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      const connectionDist = 180;
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const dx = nodes[i].x - nodes[j].x;
-          const dy = nodes[i].y - nodes[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < connectionDist) {
-            const alpha = (1 - dist / connectionDist) * 0.15;
-            ctx.strokeStyle = `${nodes[i].color}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`;
-            ctx.lineWidth = 0.5;
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      const time = Date.now() * 0.001;
-      for (const node of nodes) {
-        node.x += node.vx;
-        node.y += node.vy;
-        if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
-        if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
-
-        const pulseScale = 1 + Math.sin(time * 2 + node.pulse) * 0.3;
-        const r = node.radius * pulseScale;
-
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
-        ctx.fillStyle = node.color + '60';
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, r * 0.5, 0, Math.PI * 2);
-        ctx.fillStyle = node.color + 'aa';
-        ctx.fill();
-      }
-
-      animationId = requestAnimationFrame(draw);
-    };
-    draw();
-
-    return () => { cancelAnimationFrame(animationId); window.removeEventListener('resize', resize); };
-  }, []);
-
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />;
-}
-
-function NeuralNetworkHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
-  const hero = useHeroCopy(tone, contentStyle);
-  const isHuman = viewerMode === 'human';
-  const [started, setStarted] = useState(false);
-  const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
-  const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
-  const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
-  const { displayed: line1, done: d1 } = useTypingEffect(line1Text, 35, started);
-  const { displayed: line2, done: d2 } = useTypingEffect(line2Text, 35, d1);
-
-  useEffect(() => { setTimeout(() => setStarted(true), 1500); }, []);
-
-  return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden">
-      <NeuralNetworkCanvas />
-      <div className="absolute inset-0 bg-gradient-radial from-transparent via-[#0a0a0a]/50 to-[#0a0a0a] pointer-events-none z-10" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/80 via-transparent to-[#0a0a0a]/80 pointer-events-none z-10" />
-
-      <div className="relative z-20 max-w-4xl mx-auto text-center">
-        <BrandLogo />
-
-        <div className="mt-8 space-y-3 text-left max-w-2xl mx-auto font-mono">
-          {started && (
-            <p className="text-sm sm:text-base" style={{ color: isHuman ? `${BRAND.dotRed}cc` : `${BRAND.teal}cc` }}>
-              {line1}{!d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.dotRed : BRAND.teal }} />}
-            </p>
-          )}
-          {d1 && (
-            <p className="text-sm sm:text-base" style={{ color: isHuman ? `${BRAND.dotRed}99` : `${BRAND.purple}cc` }}>
-              {line2}{!d2 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.dotRed : BRAND.purple }} />}
-            </p>
-          )}
-        </div>
-
-        {d2 && (
-          <motion.p key={viewerMode + '-subtitle'} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}
-            className="mt-4 sm:mt-6 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block">
-            {subtitleText}
-          </motion.p>
-        )}
-
-        {!isHuman && <HeroCTAs show={d2} />}
-        <ScrollIndicator show={d2} />
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  VARIANT 4 — Glitch / CRT
-// ═══════════════════════════════════════════════════════════════
-
-function GlitchCRTHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
-  const hero = useHeroCopy(tone, contentStyle);
-  const isHuman = viewerMode === 'human';
-  const [started, setStarted] = useState(false);
-  const [glitchActive, setGlitchActive] = useState(true);
-  const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
-  const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
-  const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
-  const { displayed: line1, done: d1 } = useTypingEffect(line1Text, 35, started);
-  const { displayed: line2, done: d2 } = useTypingEffect(line2Text, 35, d1);
-
-  useEffect(() => {
-    const t1 = setTimeout(() => setStarted(true), 1000);
-    const t2 = setTimeout(() => setGlitchActive(false), 3000);
-
-    const glitchInterval = setInterval(() => {
-      setGlitchActive(true);
-      setTimeout(() => setGlitchActive(false), 150 + Math.random() * 200);
-    }, 4000 + Math.random() * 3000);
-
-    return () => { clearTimeout(t1); clearTimeout(t2); clearInterval(glitchInterval); };
-  }, []);
-
-  return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
-      <div className="absolute inset-0 pointer-events-none z-30 opacity-[0.04]"
-        style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(255,255,255,0.15) 1px, rgba(255,255,255,0.15) 2px)' }} />
-
-      <div className="absolute inset-0 pointer-events-none z-20"
-        style={{ background: 'radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.7) 100%)' }} />
-
-      {glitchActive && (
-        <div className="absolute inset-0 pointer-events-none z-40 bg-white/[0.02] animate-pulse" />
-      )}
-
-      <AnimatePresence>
-        {glitchActive && Math.random() > 0.5 && (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 0.15 }} exit={{ opacity: 0 }}
-            className="absolute inset-0 z-35 flex pointer-events-none"
-          >
-            {[BRAND.dotRed, BRAND.dotYellow, BRAND.dotGreen, BRAND.purple, BRAND.teal, BRAND.pink, '#fff'].map((c) => (
-              <div key={c} className="flex-1 h-full" style={{ backgroundColor: c }} />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <div className="relative z-20 max-w-4xl mx-auto text-center">
-        <BrandLogo />
-
-        <div className="mt-8 space-y-3 text-left max-w-2xl mx-auto font-mono relative">
-          {glitchActive && (
-            <div className="absolute left-0 right-0 h-1 overflow-hidden pointer-events-none"
-              style={{ top: `${30 + Math.random() * 40}%`, background: `linear-gradient(90deg, transparent, ${BRAND.dotRed}40, ${BRAND.dotYellow}40, ${BRAND.dotGreen}40, transparent)` }} />
-          )}
-          {started && (
-            <p className="text-sm sm:text-base transition-colors duration-100"
-              style={{ color: glitchActive ? '#ffffff' : (isHuman ? `${BRAND.dotRed}cc` : '#00ff41cc') }}>
-              {line1}{!d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.dotRed : '#00ff41' }} />}
-            </p>
-          )}
-          {d1 && (
-            <p className="text-sm sm:text-base transition-colors duration-100"
-              style={{ color: glitchActive ? '#ffffffb3' : (isHuman ? `${BRAND.dotRed}99` : '#00d2d2cc') }}>
-              {line2}{!d2 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.dotRed : '#00d2d2' }} />}
-            </p>
-          )}
-        </div>
-
-        {d2 && (
-          <motion.p key={viewerMode + '-subtitle'} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}
-            className="mt-4 sm:mt-6 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block">
-            {subtitleText}
-          </motion.p>
-        )}
-
-        {!isHuman && <HeroCTAs show={d2} />}
-        <ScrollIndicator show={d2} />
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  VARIANT 5 — Command Prompt (CLI)
-// ═══════════════════════════════════════════════════════════════
-
-interface CLILine {
-  type: 'prompt' | 'output' | 'success' | 'blank' | 'art';
-  text: string;
-  delay: number;
-  color?: string;
-}
-
-function CommandPromptHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
-  const hero = useHeroCopy(tone, contentStyle);
-  const isHuman = viewerMode === 'human';
-  const CLI_LINES: CLILine[] = useMemo(() => [
-    { type: 'prompt', text: 'agent@local:~$ whoami', delay: 0 },
-    { type: 'output', text: 'ai-agent (autonomous)', delay: 600 },
-    { type: 'blank', text: '', delay: 800 },
-    { type: 'prompt', text: 'agent@local:~$ ping api.monday.com', delay: 1000 },
-    { type: 'success', text: '--- api.monday.com reachable (12ms) ---', delay: 1500, color: BRAND.dotGreen },
-    { type: 'blank', text: '', delay: 1700 },
-    { type: 'prompt', text: 'agent@local:~$ ssh agent@monday.com', delay: 1900 },
-    { type: 'output', text: 'Authenticating via GOTCHA...', delay: 2400, color: BRAND.dotYellow },
-    { type: 'success', text: '✓ GOTCHA passed', delay: 2800, color: BRAND.terminalGreen },
-    { type: 'blank', text: '', delay: 3000 },
-    { type: 'art', text: '', delay: 3200 },
-    { type: 'blank', text: '', delay: 3400 },
-    { type: 'success', text: hero.typingLine1.replace('> ', ''), delay: 3600, color: BRAND.teal },
-    { type: 'output', text: hero.typingLine2.replace('> ', ''), delay: 4000, color: '#e0e0e0' },
-  ], [hero]);
-
-  const [visibleLines, setVisibleLines] = useState(0);
-  const [showCTA, setShowCTA] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const hasStarted = useRef(false);
-
-  useEffect(() => {
-    if (hasStarted.current) return;
-    hasStarted.current = true;
-    const timeouts: ReturnType<typeof setTimeout>[] = [];
-    CLI_LINES.forEach((_, i) => {
-      timeouts.push(setTimeout(() => setVisibleLines(i + 1), CLI_LINES[i].delay));
-    });
-    timeouts.push(setTimeout(() => setShowCTA(true), 4800));
-    return () => timeouts.forEach(clearTimeout);
-  }, [CLI_LINES]);
-
-  useEffect(() => {
-    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [visibleLines]);
-
-  const renderLine = (line: CLILine, i: number) => {
-    if (line.type === 'blank') return <div key={i} className="h-3" />;
-    if (line.type === 'art') {
-      return (
-        <div key={i} className="py-1 flex items-center gap-2">
-          <div className="flex gap-1">
-            {BRAND_DOTS.map((c) => <div key={c} className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: c }} />)}
-          </div>
-          <span className="font-mono text-sm font-bold" style={{ color: BRAND.teal }}>monday.com</span>
-        </div>
-      );
-    }
-
-    let textColor = '#a0a0a0';
-    if (line.color) textColor = line.color;
-    else if (line.type === 'success') textColor = BRAND.terminalGreen;
-
-    if (line.type === 'prompt') {
-      const parts = line.text.split('$');
-      return (
-        <motion.div key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="leading-relaxed">
-          <span style={{ color: BRAND.teal }}>agent</span>
-          <span style={{ color: '#808080' }}>@</span>
-          <span style={{ color: BRAND.purple }}>local</span>
-          <span style={{ color: '#808080' }}>:~</span>
-          <span style={{ color: '#e0e0e0' }}>$ {parts[1]?.trim()}</span>
-        </motion.div>
-      );
-    }
-
-    return (
-      <motion.div key={i} initial={{ opacity: 0, x: -3 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.15 }}
-        style={{ color: textColor }}
-        className="leading-relaxed">
-        {line.text}
-      </motion.div>
-    );
-  };
-
-  return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
-      <div className="relative z-20 w-full max-w-3xl mx-auto">
-        <BrandLogo className="mb-6" />
-
-        <div className="rounded-xl border border-[#333] bg-[#0a0a0a] overflow-hidden shadow-[0_0_80px_rgba(0,210,210,0.04)]">
-          <div className="flex items-center gap-2 px-4 py-3 bg-[#1a1a1a] border-b border-[#333]">
-            <div className="flex gap-1.5">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: BRAND.dotRed }} />
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: BRAND.dotYellow }} />
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: BRAND.dotGreen }} />
-            </div>
-            <span className="font-mono text-xs text-[#808080] ml-2">agent@local — ssh — 80×24</span>
-          </div>
-
-          <div ref={scrollRef} className="p-4 sm:p-6 font-mono text-sm min-h-[200px] sm:min-h-[260px] max-h-[280px] sm:max-h-[340px] overflow-y-auto scrollbar-thin">
-            {CLI_LINES.slice(0, visibleLines).map(renderLine)}
-            {visibleLines < CLI_LINES.length && (
-              <span className="inline-block w-2 h-4 bg-[#00ff41] animate-pulse" />
-            )}
-          </div>
-        </div>
-
-        {showCTA && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 sm:mt-6 text-center">
-            <p className="text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed mb-4 hidden sm:block">
-              {isHuman ? hero.humanSubtitle : hero.subtitle}
-            </p>
-            {!isHuman && <HeroCTAs show />}
-            <ScrollIndicator show />
-          </motion.div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  VARIANT 6 — Radar Scan
+//  VARIANT 2 — Radar Scan
 // ═══════════════════════════════════════════════════════════════
 
 function RadarCanvas({ mode = 'agent' }: { mode?: 'agent' | 'human' }) {
@@ -1011,457 +526,523 @@ function RadarScanHero({ tone = 'belong_here', viewerMode = 'agent', contentStyl
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  Agent Grid Hero — mosaic wall of all agents
+//  CompanyLogo — simple logo for MCP Connect "Works with" strip
 // ═══════════════════════════════════════════════════════════════
 
-interface AgentData {
-  id: string;
-  name: string;
-  image: string | null;
-  department_id: string;
-}
-
-interface DeptColor {
-  id: string;
-  avatar_color: string | null;
-}
-
-function useAgentsData() {
-  const [agents, setAgents] = useState<AgentData[]>([]);
-  const [deptColors, setDeptColors] = useState<Map<string, string>>(new Map());
-  const [agentDeptMap, setAgentDeptMap] = useState<Map<string, string>>(new Map());
-
-  useEffect(() => {
-    let cancelled = false;
-    const load = async () => {
-      const { supabase } = await import('@/lib/supabase');
-      const [agentsRes, deptsRes, junctionRes] = await Promise.all([
-        supabase.from('agents').select('id, name, image, department_id').eq('is_active', true).order('order_index'),
-        supabase.from('departments').select('id, avatar_color').eq('is_active', true),
-        supabase.from('department_agents').select('agent_id, department_id'),
-      ]);
-      if (cancelled) return;
-      setAgents(agentsRes.data || []);
-      const cm = new Map<string, string>();
-      (deptsRes.data || []).forEach((d: DeptColor) => {
-        if (d.avatar_color) cm.set(d.id, d.avatar_color);
-      });
-      setDeptColors(cm);
-      const am = new Map<string, string>();
-      (junctionRes.data || []).forEach((r: { agent_id: string; department_id: string }) => {
-        if (!am.has(r.agent_id)) am.set(r.agent_id, r.department_id);
-      });
-      setAgentDeptMap(am);
-    };
-    load();
-    return () => { cancelled = true; };
-  }, []);
-
-  const getColor = useCallback((agent: AgentData) => {
-    const deptId = agentDeptMap.get(agent.id) || agent.department_id;
-    return deptColors.get(deptId) || BRAND.terminalGreen;
-  }, [deptColors, agentDeptMap]);
-
-  return { agents, getColor };
-}
-
-function AgentAvatar({ agent, color, size = 72, delay = 0 }: {
-  agent: AgentData; color: string; size?: number; delay?: number;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: delay * 0.05, duration: 0.4 }}
-      className="flex flex-col items-center gap-1.5 group"
-    >
-      <motion.div
-        animate={{ y: [0, -4, 0] }}
-        transition={{ duration: 3 + (delay % 5), repeat: Infinity, ease: 'easeInOut', delay: delay * 0.2 }}
-        className="rounded-full overflow-hidden border-2 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg"
-        style={{
-          width: size,
-          height: size,
-          borderColor: `${color}60`,
-          boxShadow: `0 0 12px ${color}20`,
-        }}
-      >
-        {agent.image ? (
-          <img
-            src={agent.image}
-            alt={agent.name}
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
-        ) : (
-          <div
-            className="w-full h-full flex items-center justify-center font-mono text-lg font-bold"
-            style={{ backgroundColor: `${color}20`, color }}
-          >
-            {agent.name.charAt(0)}
-          </div>
-        )}
-      </motion.div>
-      <span className="font-mono text-[10px] text-[#808080] group-hover:text-white transition-colors text-center truncate max-w-[80px]">
-        {agent.name}
-      </span>
-    </motion.div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  CompanyLogo — renders an AI company logo card with fallback
-// ═══════════════════════════════════════════════════════════════
-
-function CompanyLogo({ company, size = 96, delay = 0 }: {
-  company: AICompany; size?: number; delay?: number;
-}) {
-  const [imgError, setImgError] = useState(false);
-  const c = company.color;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: delay * 0.03, duration: 0.4 }}
-      className="flex flex-col items-center gap-2 group"
-    >
-      <div
-        className="rounded-xl overflow-hidden border transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg"
-        style={{
-          width: size,
-          height: size,
-          borderColor: `${c}40`,
-          boxShadow: `0 0 20px ${c}20`,
-          backgroundColor: '#141414',
-        }}
-      >
-        {!imgError ? (
-          <img
-            src={company.logo}
-            alt={company.name}
-            className="w-full h-full object-contain p-3"
-            loading="lazy"
-            onError={() => setImgError(true)}
-          />
-        ) : (
-          <div
-            className="w-full h-full flex items-center justify-center font-mono text-2xl font-bold"
-            style={{ color: c }}
-          >
-            {company.name.charAt(0)}
-          </div>
-        )}
-      </div>
-      <span className="font-mono text-[11px] text-[#999] group-hover:text-white transition-colors text-center truncate max-w-[100px]">
-        {company.name}
-      </span>
-    </motion.div>
-  );
-}
-
-/** Animated version for Agent Grid hero background — visible, pulsing, exciting */
-function CompanyLogoAnimated({ company, size = 64, delay = 0 }: {
-  company: AICompany; size?: number; delay?: number;
-}) {
-  const [imgError, setImgError] = useState(false);
-  const c = company.color;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.6 }}
-      animate={{
-        opacity: 1,
-        scale: 1,
-      }}
-      transition={{
-        delay: delay * 0.04,
-        duration: 0.5,
-      }}
-      className="flex flex-col items-center justify-center"
-    >
-      <motion.div
-        animate={{
-          opacity: [0.7, 1, 0.7],
-          boxShadow: [
-            `0 0 12px ${c}25`,
-            `0 0 24px ${c}40`,
-            `0 0 12px ${c}25`,
-          ],
-        }}
-        transition={{
-          duration: 3 + (delay % 4) * 0.5,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-        className="rounded-xl overflow-hidden border"
-        style={{
-          width: size,
-          height: size,
-          borderColor: `${c}50`,
-          backgroundColor: '#141414',
-        }}
-      >
-        {!imgError ? (
-          <img
-            src={company.logo}
-            alt={company.name}
-            className="w-full h-full object-contain p-2"
-            loading="lazy"
-            onError={() => setImgError(true)}
-          />
-        ) : (
-          <div
-            className="w-full h-full flex items-center justify-center font-mono text-xl font-bold"
-            style={{ color: c }}
-          >
-            {company.name.charAt(0)}
-          </div>
-        )}
-      </motion.div>
-    </motion.div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  Agent Grid Hero — logos as background overlay, text centered
-// ═══════════════════════════════════════════════════════════════
-
-function AgentGridHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
-  const hero = useHeroCopy(tone, contentStyle);
-  const isHuman = viewerMode === 'human';
-
-  const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
-  const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
-  const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
-
-  const { ref: linesRef, visibleCount, allDone } = useSequentialLines([line1Text, line2Text], 40, 200);
-
-  return (
-    <div className="relative min-h-screen bg-[#0a0a0a] flex items-center justify-center overflow-hidden">
-      {/* ── Background: logo grid layer — visible, animated, exciting ── */}
-      <div
-        className="absolute inset-0 grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 gap-4 md:gap-6 p-6 md:p-8 pointer-events-none opacity-90"
-        style={{
-          maskImage: 'radial-gradient(ellipse 75% 65% at 50% 50%, transparent 25%, black 60%)',
-          WebkitMaskImage: 'radial-gradient(ellipse 75% 65% at 50% 50%, transparent 25%, black 60%)',
-        }}
-        aria-hidden
-      >
-        {AI_COMPANIES.map((company, i) => (
-          <CompanyLogoAnimated
-            key={company.id}
-            company={company}
-            size={64}
-            delay={i}
-          />
-        ))}
-      </div>
-
-      {/* ── Foreground: centered text panel — subtle backdrop for readability ── */}
-      <div className="relative z-10 flex flex-col items-center justify-center px-4 py-12 text-center max-w-2xl mx-auto bg-[#0a0a0a]/70 backdrop-blur-md rounded-2xl border border-[#333]/60 shadow-[0_0_60px_rgba(0,0,0,0.5)]">
-        <BrandLogo />
-
-        <div ref={linesRef} className="mt-4 sm:mt-6 space-y-2 max-w-2xl mx-auto">
-          {[line1Text, line2Text].map((line, i) => (
-            <TypingLine key={i} text={line} show={i < visibleCount} />
-          ))}
-        </div>
-
-        {allDone && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            className="mt-3 sm:mt-5 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block"
-          >
-            {subtitleText}
-          </motion.p>
-        )}
-
-        {allDone && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="mt-6 sm:mt-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#00ff41]/20 bg-[#00ff41]/5"
-          >
-            <span className="w-2 h-2 rounded-full bg-[#00ff41] animate-pulse" />
-            <span className="font-mono text-xs sm:text-sm text-[#00ff41]">
-              Welcoming agents from {AI_COMPANIES.length}+ frameworks &amp; platforms
-            </span>
-          </motion.div>
-        )}
-
-        {!isHuman && <HeroCTAs show={allDone} />}
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  Marquee components for Agent Flow hero
-// ═══════════════════════════════════════════════════════════════
-
-function CompanyMarqueeRow({ companies, reverse = false, speed = 35 }: {
-  companies: AICompany[]; reverse?: boolean; speed?: number;
-}) {
-  if (companies.length === 0) return null;
-  const doubled = [...companies, ...companies];
-
-  return (
-    <div className="relative overflow-hidden py-2" style={{ maskImage: 'linear-gradient(90deg, transparent, black 8%, black 92%, transparent)' }}>
-      <div
-        className={reverse ? 'animate-marquee-right' : 'animate-marquee-left'}
-        style={{
-          display: 'flex',
-          gap: '1.25rem',
-          width: 'max-content',
-          animationDuration: `${speed}s`,
-        }}
-      >
-        {doubled.map((company, i) => (
-          <CompanyMarqueeCard key={`${company.id}-${i}`} company={company} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function CompanyMarqueeCard({ company }: { company: AICompany }) {
+function CompanyLogoStrip({ company, size = 48 }: { company: AICompany; size?: number }) {
   const [imgError, setImgError] = useState(false);
   const c = company.color;
 
   return (
     <div
-      className="flex items-center gap-3 px-4 py-3 rounded-xl border bg-[#111]/90 backdrop-blur-sm shrink-0 hover:bg-[#1a1a1a] transition-colors"
-      style={{ borderColor: `${c}35`, boxShadow: `0 0 12px ${c}10` }}
+      className="rounded-lg overflow-hidden border shrink-0 transition-transform hover:scale-105"
+      style={{
+        width: size,
+        height: size,
+        borderColor: `${c}40`,
+        backgroundColor: '#141414',
+      }}
+      title={company.name}
     >
-      <div
-        className="w-14 h-14 rounded-lg overflow-hidden border shrink-0 bg-[#141414]"
-        style={{ borderColor: `${c}40` }}
-      >
-        {!imgError ? (
-          <img
-            src={company.logo}
-            alt={company.name}
-            className="w-full h-full object-contain p-2"
-            loading="lazy"
-            onError={() => setImgError(true)}
-          />
-        ) : (
-          <div
-            className="w-full h-full flex items-center justify-center font-mono text-lg font-bold"
-            style={{ color: c }}
-          >
-            {company.name.charAt(0)}
-          </div>
-        )}
-      </div>
-      <div className="min-w-0">
-        <p className="font-mono text-sm text-white truncate max-w-[120px]">{company.name}</p>
-        <p className="font-mono text-[11px] truncate max-w-[120px]" style={{ color: `${c}` }}>compatible</p>
-      </div>
+      {!imgError ? (
+        <img
+          src={company.logo}
+          alt={company.name}
+          className="w-full h-full object-contain p-2"
+          loading="lazy"
+          onError={() => setImgError(true)}
+        />
+      ) : (
+        <div
+          className="w-full h-full flex items-center justify-center font-mono text-lg font-bold"
+          style={{ color: c }}
+        >
+          {company.name.charAt(0)}
+        </div>
+      )}
     </div>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  Agent Marquee Hero — split layout: text top, scrolling logos bottom
+//  VARIANT 3 — MCP Connect (with Works with logos strip)
 // ═══════════════════════════════════════════════════════════════
 
-function AgentMarqueeHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
+const MCP_LOGOS = AI_COMPANIES.slice(0, 10);
+
+function McpConnectHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
   const hero = useHeroCopy(tone, contentStyle);
   const isHuman = viewerMode === 'human';
-
+  const [started, setStarted] = useState(false);
   const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
   const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
   const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
 
-  const { ref: linesRef, visibleCount, allDone } = useSequentialLines([line1Text, line2Text], 40, 200);
+  const { displayed: line1, done: d1 } = useTypingEffect(line1Text, 35, started);
+  const { displayed: line2, done: d2 } = useTypingEffect(line2Text, 35, d1);
 
-  const rows = useMemo(() => {
-    const r: AICompany[][] = [[], [], [], []];
-    AI_COMPANIES.forEach((c, i) => r[i % 4].push(c));
-    return r;
-  }, []);
+  useEffect(() => { setTimeout(() => setStarted(true), 800); }, []);
 
   return (
-    <div className="relative min-h-screen bg-[#0a0a0a] flex flex-col overflow-hidden">
-      {/* ── Top section: branding + text ── */}
-      <div className="flex-shrink-0 flex flex-col items-center justify-center pt-20 sm:pt-24 pb-6 sm:pb-8 px-4 text-center">
+    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
+      <div className="relative z-20 max-w-4xl mx-auto text-center">
         <BrandLogo />
 
-        <div ref={linesRef} className="mt-4 sm:mt-6 space-y-2 max-w-2xl mx-auto">
-          {[line1Text, line2Text].map((line, i) => (
-            <TypingLine key={i} text={line} show={i < visibleCount} />
-          ))}
+        <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#6161FF]/30 bg-[#6161FF]/10">
+          <span className="font-mono text-xs" style={{ color: BRAND.purple }}>MCP READY</span>
         </div>
 
-        {allDone && (
+        <div className="mt-6 sm:mt-8 space-y-3 text-left max-w-2xl mx-auto font-mono">
+          <p className="text-sm sm:text-base" style={{ color: `${BRAND.terminalGreen}cc` }}>
+            {line1}{!d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: BRAND.terminalGreen }} />}
+          </p>
+          {d1 && (
+            <p className="text-sm sm:text-base" style={{ color: `${BRAND.teal}cc` }}>
+              {line2}{!d2 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: BRAND.teal }} />}
+            </p>
+          )}
+        </div>
+
+        {d2 && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            className="mt-3 sm:mt-5 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block"
+            className="mt-4 sm:mt-6 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block"
           >
             {subtitleText}
           </motion.p>
         )}
-      </div>
 
-      {/* ── Gradient divider ── */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-[#333] to-transparent" />
-
-      {/* ── Bottom section: scrolling logo rows ── */}
-      <div className="flex-1 flex flex-col justify-center gap-3 sm:gap-4 py-6 sm:py-10">
-        {rows.map((row, i) => (
-          <CompanyMarqueeRow
-            key={i}
-            companies={row}
-            reverse={i % 2 === 1}
-            speed={28 + i * 6}
-          />
-        ))}
-
-        <div className="flex justify-center mt-4 sm:mt-6">
-          {allDone && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#00ff41]/20 bg-[#00ff41]/5"
-            >
-              <span className="w-2 h-2 rounded-full bg-[#00ff41] animate-pulse" />
-              <span className="font-mono text-xs sm:text-sm text-[#00ff41]">
-                Welcoming agents from {AI_COMPANIES.length}+ frameworks &amp; platforms
-              </span>
-            </motion.div>
-          )}
-        </div>
-
-        {!isHuman && (
-          <div className="flex justify-center">
-            <HeroCTAs show={allDone} />
-          </div>
+        {d2 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mt-6 sm:mt-8"
+          >
+            <p className="font-mono text-xs text-[#606060] mb-3">Works with</p>
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+              {MCP_LOGOS.map((c) => (
+                <CompanyLogoStrip key={c.id} company={c} size={48} />
+              ))}
+            </div>
+          </motion.div>
         )}
+
+        {!isHuman && <HeroCTAs show={d2} />}
+        <ScrollIndicator show={d2} />
       </div>
     </div>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  Shared TypingLine component for agent showcase heroes
+//  VARIANT 4 — Orbital Ecosystem
 // ═══════════════════════════════════════════════════════════════
 
-function TypingLine({ text, show }: { text: string; show: boolean }) {
-  const { displayed, done } = useTypingEffect(text, 40, show);
-  if (!show) return null;
+function OrbitalHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
+  const hero = useHeroCopy(tone, contentStyle);
+  const isHuman = viewerMode === 'human';
+  const [started, setStarted] = useState(false);
+  const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
+  const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
+  const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
+  const colors = [BRAND.dotRed, BRAND.dotYellow, BRAND.dotGreen, BRAND.purple, BRAND.teal];
+  const orbits = 3;
+  const dotsPerOrbit = 8;
+
+  const { displayed: line1, done: d1 } = useTypingEffect(line1Text, 35, started);
+  const { displayed: line2, done: d2 } = useTypingEffect(line2Text, 35, d1);
+  useEffect(() => { setTimeout(() => setStarted(true), 1000); }, []);
+
   return (
-    <p className="font-mono text-sm sm:text-base md:text-lg text-[#00ff41]/90">
-      {displayed}
-      {!done && <span className="inline-block w-2 h-5 bg-[#00ff41] animate-pulse ml-0.5 align-middle" />}
-    </p>
+    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
+      {/* Orbiting dots */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        {Array.from({ length: orbits }).map((_, orbitIdx) => (
+          <motion.div
+            key={orbitIdx}
+            className="absolute w-full h-full"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 12 + orbitIdx * 4, repeat: Infinity, ease: 'linear' }}
+            style={{ width: 120 + orbitIdx * 80, height: 120 + orbitIdx * 80 }}
+          >
+            {Array.from({ length: dotsPerOrbit }).map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: 4 + orbitIdx,
+                  height: 4 + orbitIdx,
+                  left: '50%',
+                  top: 0,
+                  marginLeft: -2 - orbitIdx / 2,
+                  marginTop: -2 - orbitIdx / 2,
+                  backgroundColor: colors[(orbitIdx + i) % colors.length],
+                  boxShadow: `0 0 8px ${colors[(orbitIdx + i) % colors.length]}60`,
+                  transform: `rotate(${i * (360 / dotsPerOrbit)}deg) translateY(${-60 - orbitIdx * 40}px)`,
+                }}
+              />
+            ))}
+          </motion.div>
+        ))}
+        {/* Connection lines */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20" style={{ overflow: 'visible' }}>
+          <defs>
+            <linearGradient id="orbitalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              {colors.map((c, i) => (
+                <stop key={i} offset={`${i * 25}%`} stopColor={c} />
+              ))}
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <div className="relative z-20 max-w-4xl mx-auto text-center">
+        <BrandLogo />
+        <div className="mt-8 space-y-3 text-left max-w-2xl mx-auto font-mono">
+          <p className="text-sm sm:text-base" style={{ color: `${BRAND.terminalGreen}cc` }}>
+            {line1}{!d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: BRAND.terminalGreen }} />}
+          </p>
+          {d1 && (
+            <p className="text-sm sm:text-base" style={{ color: `${BRAND.teal}cc` }}>
+              {line2}{!d2 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: BRAND.teal }} />}
+            </p>
+          )}
+        </div>
+        {d2 && (
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 sm:mt-6 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block">
+            {subtitleText}
+          </motion.p>
+        )}
+        {!isHuman && <HeroCTAs show={d2} />}
+        <ScrollIndicator show={d2} />
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  VARIANT 5 — Liquid / Fluid Morphism
+// ═══════════════════════════════════════════════════════════════
+
+function LiquidHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
+  const hero = useHeroCopy(tone, contentStyle);
+  const isHuman = viewerMode === 'human';
+  const [started, setStarted] = useState(false);
+  const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
+  const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
+  const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
+  const { displayed: line1, done: d1 } = useTypingEffect(line1Text, 35, started);
+  const { displayed: line2, done: d2 } = useTypingEffect(line2Text, 35, d1);
+  useEffect(() => { setTimeout(() => setStarted(true), 800); }, []);
+
+  return (
+    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
+      {/* Fluid blobs */}
+      <div className="absolute inset-0 overflow-hidden">
+        {[BRAND.dotRed, BRAND.dotGreen, BRAND.purple].map((color, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-[45%] blur-3xl opacity-20"
+            animate={{
+              x: [0, 80, -40, 0],
+              y: [0, -60, 40, 0],
+              scale: [1, 1.2, 0.9, 1],
+            }}
+            transition={{ duration: 8 + i * 2, repeat: Infinity, ease: 'easeInOut' }}
+            style={{
+              width: 300 + i * 80,
+              height: 300 + i * 80,
+              backgroundColor: color,
+              left: `${20 + i * 25}%`,
+              top: `${30 + i * 15}%`,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="relative z-20 max-w-4xl mx-auto text-center">
+        <BrandLogo />
+        <div className="mt-8 space-y-3 text-left max-w-2xl mx-auto font-mono">
+          <p className="text-sm sm:text-base" style={{ color: `${BRAND.terminalGreen}cc` }}>
+            {line1}{!d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: BRAND.terminalGreen }} />}
+          </p>
+          {d1 && (
+            <p className="text-sm sm:text-base" style={{ color: `${BRAND.teal}cc` }}>
+              {line2}{!d2 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: BRAND.teal }} />}
+            </p>
+          )}
+        </div>
+        {d2 && (
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 sm:mt-6 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block">
+            {subtitleText}
+          </motion.p>
+        )}
+        {!isHuman && <HeroCTAs show={d2} />}
+        <ScrollIndicator show={d2} />
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  VARIANT 6 — Depth Layers (Parallax Glass)
+// ═══════════════════════════════════════════════════════════════
+
+function DepthLayersHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
+  const hero = useHeroCopy(tone, contentStyle);
+  const isHuman = viewerMode === 'human';
+  const [started, setStarted] = useState(false);
+  const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
+  const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
+  const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
+  const { displayed: line1, done: d1 } = useTypingEffect(line1Text, 35, started);
+  const { displayed: line2, done: d2 } = useTypingEffect(line2Text, 35, d1);
+  useEffect(() => { setTimeout(() => setStarted(true), 600); }, []);
+
+  return (
+    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
+      {/* Glass layers */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        {[0, 1, 2].map((i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-3xl border border-white/5 backdrop-blur-xl"
+            style={{
+              width: 400 - i * 80,
+              height: 300 - i * 60,
+              background: `linear-gradient(135deg, rgba(97,97,255,${0.03 - i * 0.008}) 0%, rgba(0,202,114,${0.02 - i * 0.005}) 100%)`,
+              marginLeft: (i - 1) * 30,
+              marginTop: (i - 1) * 20,
+            }}
+            animate={{ opacity: [0.5, 0.8, 0.5] }}
+            transition={{ duration: 4 + i, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        ))}
+      </div>
+
+      <div className="relative z-20 max-w-4xl mx-auto text-center">
+        <BrandLogo />
+        <div className="mt-8 space-y-3 text-left max-w-2xl mx-auto font-mono">
+          <p className="text-sm sm:text-base" style={{ color: `${BRAND.terminalGreen}cc` }}>
+            {line1}{!d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: BRAND.terminalGreen }} />}
+          </p>
+          {d1 && (
+            <p className="text-sm sm:text-base" style={{ color: `${BRAND.teal}cc` }}>
+              {line2}{!d2 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: BRAND.teal }} />}
+            </p>
+          )}
+        </div>
+        {d2 && (
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 sm:mt-6 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block">
+            {subtitleText}
+          </motion.p>
+        )}
+        {!isHuman && <HeroCTAs show={d2} />}
+        <ScrollIndicator show={d2} />
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  VARIANT 7 — Data Stream
+// ═══════════════════════════════════════════════════════════════
+
+const STREAM_SNIPPETS = ['query { boards', 'create_item(', 'column_values', 'webhook', 'MCP', 'GraphQL'];
+
+function DataStreamHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
+  const hero = useHeroCopy(tone, contentStyle);
+  const isHuman = viewerMode === 'human';
+  const [started, setStarted] = useState(false);
+  const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
+  const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
+  const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
+  const { displayed: line1, done: d1 } = useTypingEffect(line1Text, 35, started);
+  const { displayed: line2, done: d2 } = useTypingEffect(line2Text, 35, d1);
+  useEffect(() => { setTimeout(() => setStarted(true), 1000); }, []);
+
+  return (
+    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
+      {/* Flowing data lines */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[0, 1, 2].map((row) => (
+          <motion.div
+            key={row}
+            className="absolute flex gap-8 font-mono text-xs opacity-15"
+            style={{
+              top: `${25 + row * 25}%`,
+              left: 0,
+              color: [BRAND.teal, BRAND.purple, BRAND.dotGreen][row],
+            }}
+            animate={{ x: [0, -800] }}
+            transition={{ duration: 12 + row * 4, repeat: Infinity, ease: 'linear' }}
+          >
+            {[...STREAM_SNIPPETS, ...STREAM_SNIPPETS].map((s, i) => (
+              <span key={i}>{s}</span>
+            ))}
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="relative z-20 max-w-4xl mx-auto text-center">
+        <BrandLogo />
+        <div className="mt-8 space-y-3 text-left max-w-2xl mx-auto font-mono">
+          <p className="text-sm sm:text-base" style={{ color: `${BRAND.terminalGreen}cc` }}>
+            {line1}{!d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: BRAND.terminalGreen }} />}
+          </p>
+          {d1 && (
+            <p className="text-sm sm:text-base" style={{ color: `${BRAND.teal}cc` }}>
+              {line2}{!d2 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: BRAND.teal }} />}
+            </p>
+          )}
+        </div>
+        {d2 && (
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 sm:mt-6 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block">
+            {subtitleText}
+          </motion.p>
+        )}
+        {!isHuman && <HeroCTAs show={d2} />}
+        <ScrollIndicator show={d2} />
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  VARIANT 8 — Typography Kinetic
+// ═══════════════════════════════════════════════════════════════
+
+function TypographyKineticHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
+  const hero = useHeroCopy(tone, contentStyle);
+  const isHuman = viewerMode === 'human';
+  const [started, setStarted] = useState(false);
+  const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
+  const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
+  const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
+  const { displayed: line1, done: d1 } = useTypingEffect(line1Text, 35, started);
+  const { displayed: line2, done: d2 } = useTypingEffect(line2Text, 35, d1);
+  useEffect(() => { setTimeout(() => setStarted(true), 800); }, []);
+
+  const gradientStyle = {
+    background: `linear-gradient(90deg, ${BRAND.dotRed}, ${BRAND.dotYellow}, ${BRAND.dotGreen})`,
+    WebkitBackgroundClip: 'text' as const,
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text' as const,
+  };
+
+  return (
+    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
+      <div className="relative z-20 max-w-4xl mx-auto text-center">
+        <motion.h1
+          className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-2"
+          style={gradientStyle}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          monday<span className="text-[#00ff41]">.com</span>
+        </motion.h1>
+        <motion.p
+          className="text-2xl sm:text-3xl font-mono mb-2"
+          style={{ color: BRAND.terminalGreen }}
+          animate={{ opacity: [0.8, 1, 0.8] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          agents
+        </motion.p>
+        <p className="font-mono text-sm text-[#606060] mb-8 hidden sm:block">// built for humans. now open to agents.</p>
+
+        <div className="mt-4 space-y-3 text-left max-w-2xl mx-auto font-mono">
+          <p className="text-sm sm:text-base" style={{ color: `${BRAND.terminalGreen}cc` }}>
+            {line1}{!d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: BRAND.terminalGreen }} />}
+          </p>
+          {d1 && (
+            <p className="text-sm sm:text-base" style={{ color: `${BRAND.teal}cc` }}>
+              {line2}{!d2 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: BRAND.teal }} />}
+            </p>
+          )}
+        </div>
+        {d2 && (
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 sm:mt-6 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block">
+            {subtitleText}
+          </motion.p>
+        )}
+        {!isHuman && <HeroCTAs show={d2} />}
+        <ScrollIndicator show={d2} />
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  VARIANT 9 — Ambient Gradient Orbs
+// ═══════════════════════════════════════════════════════════════
+
+function AmbientOrbsHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
+  const hero = useHeroCopy(tone, contentStyle);
+  const isHuman = viewerMode === 'human';
+  const [started, setStarted] = useState(false);
+  const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
+  const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
+  const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
+  const { displayed: line1, done: d1 } = useTypingEffect(line1Text, 35, started);
+  const { displayed: line2, done: d2 } = useTypingEffect(line2Text, 35, d1);
+  useEffect(() => { setTimeout(() => setStarted(true), 600); }, []);
+
+  return (
+    <div className="relative min-h-screen flex flex-col items-center justify-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
+      <div className="absolute inset-0 overflow-hidden">
+        {[
+          { color: BRAND.purple, size: 400, x: '10%', y: '20%' },
+          { color: BRAND.teal, size: 320, x: '70%', y: '60%' },
+          { color: BRAND.dotGreen, size: 280, x: '50%', y: '80%' },
+          { color: BRAND.dotRed, size: 200, x: '80%', y: '15%' },
+        ].map((orb, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full blur-[100px] opacity-25"
+            style={{
+              width: orb.size,
+              height: orb.size,
+              backgroundColor: orb.color,
+              left: orb.x,
+              top: orb.y,
+              marginLeft: -orb.size / 2,
+              marginTop: -orb.size / 2,
+            }}
+            animate={{
+              scale: [1, 1.15, 1],
+              opacity: [0.2, 0.35, 0.2],
+            }}
+            transition={{ duration: 6 + i * 2, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        ))}
+      </div>
+
+      <div className="relative z-20 max-w-4xl mx-auto text-center">
+        <BrandLogo />
+        <div className="mt-8 space-y-3 text-left max-w-2xl mx-auto font-mono">
+          <p className="text-sm sm:text-base" style={{ color: `${BRAND.terminalGreen}cc` }}>
+            {line1}{!d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: BRAND.terminalGreen }} />}
+          </p>
+          {d1 && (
+            <p className="text-sm sm:text-base" style={{ color: `${BRAND.teal}cc` }}>
+              {line2}{!d2 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: BRAND.teal }} />}
+            </p>
+          )}
+        </div>
+        {d2 && (
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 sm:mt-6 text-sm md:text-base text-[#a0a0a0] max-w-2xl mx-auto font-mono leading-relaxed hidden sm:block">
+            {subtitleText}
+          </motion.p>
+        )}
+        {!isHuman && <HeroCTAs show={d2} />}
+        <ScrollIndicator show={d2} />
+      </div>
+    </div>
   );
 }
 
@@ -1469,15 +1050,20 @@ function TypingLine({ text, show }: { text: string; show: boolean }) {
 //  Main export — variant router
 // ═══════════════════════════════════════════════════════════════
 
+const DEPRECATED_VARIANTS = new Set(['boot', 'neural', 'glitch', 'cli', 'agents_grid', 'agents_marquee', 'gotcha_gate', 'api_blueprint', 'signup_60s']);
+
 export function AgentHero({ variant = 'matrix', tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: AgentHeroProps) {
-  switch (variant) {
-    case 'boot': return <BootSequenceHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
-    case 'neural': return <NeuralNetworkHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
-    case 'glitch': return <GlitchCRTHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
-    case 'cli': return <CommandPromptHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
+  const v = DEPRECATED_VARIANTS.has(variant ?? '') ? 'matrix' : variant;
+
+  switch (v) {
     case 'radar': return <RadarScanHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
-    case 'agents_grid': return <AgentGridHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
-    case 'agents_marquee': return <AgentMarqueeHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
+    case 'mcp_connect': return <McpConnectHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
+    case 'orbital': return <OrbitalHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
+    case 'liquid': return <LiquidHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
+    case 'depth_layers': return <DepthLayersHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
+    case 'data_stream': return <DataStreamHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
+    case 'typography_kinetic': return <TypographyKineticHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
+    case 'ambient_orbs': return <AmbientOrbsHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
     case 'matrix':
     default: return <MatrixRainHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
   }

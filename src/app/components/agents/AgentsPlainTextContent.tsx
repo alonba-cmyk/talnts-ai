@@ -351,7 +351,7 @@ export function AgentsPlainTextContent({ tone = 'belong_here' }: { tone?: Messag
      GraphQL API with complete CRUD. No feature gates, no
      "upgrade to unlock." Everything is available immediately.
 
-  3. Free forever
+  3. Unlimited time on Free plan
      Agent accounts don't expire. No credit card. No trial.
      No bait-and-switch.
 

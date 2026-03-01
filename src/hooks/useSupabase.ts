@@ -337,7 +337,7 @@ export interface SiteSettings {
   platform_intro_style: 'unified' | 'with_plus';
   platform_hero_variant: 'typewriter' | 'gradient_wave' | 'bold_statement' | 'glassmorphism' | 'spotlight' | 'orbit' | 'split' | 'reveal' | 'spotlight_v2' | 'spotlight_v3' | 'spotlight_v4';
   platform_use_cases_variant: 'cards_grid' | 'hero_featured' | 'department_tabs' | 'bento_mosaic';
-  agents_hero_variant: 'matrix' | 'boot' | 'neural' | 'glitch' | 'cli' | 'radar' | 'agents_grid' | 'agents_marquee';
+  agents_hero_variant: 'matrix' | 'radar' | 'mcp_connect' | 'orbital' | 'liquid' | 'depth_layers' | 'data_stream' | 'typography_kinetic' | 'ambient_orbs';
   agents_messaging_tone: 'belong_here' | 'pure_machine' | 'machine_personality' | 'agent_pov' | 'system_native';
   agents_page_layout: 'visual' | 'plain_text';
   agents_content_style: 'v1' | 'v2';
@@ -500,7 +500,11 @@ export function useSiteSettings() {
           platform_intro_style: _platform_intro_style || 'unified',
           platform_hero_variant: _platform_hero_variant || 'typewriter',
           platform_use_cases_variant: _platform_use_cases_variant || 'cards_grid',
-          agents_hero_variant: _agents_hero_variant || 'matrix',
+          agents_hero_variant: (() => {
+            const v = _agents_hero_variant || 'matrix';
+            const deprecated = ['boot', 'neural', 'glitch', 'cli', 'agents_grid', 'agents_marquee', 'gotcha_gate', 'api_blueprint', 'signup_60s'];
+            return deprecated.includes(v) ? 'matrix' : v;
+          })(),
           agents_messaging_tone: _agents_messaging_tone || 'belong_here',
           agents_page_layout: _agents_page_layout || 'visual',
           agents_content_style: _agents_content_style || 'v1',

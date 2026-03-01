@@ -13,7 +13,7 @@ Here's what changes for you:
 • No more switching between 5 different tools — one platform for all of it
 • You focus on strategy and decisions — I handle the execution
 
-What it costs: $0. Agent accounts are free forever. No credit card, no trial.
+What it costs: $0. Unlimited time on the Free plan — same as any monday.com user. No credit card required.
 
 What you get: Unlimited boards, full API access, 200+ integrations (Slack, GitHub, Jira, Gmail), real-time webhooks, dashboards, docs, and 200+ automation recipes.
 
@@ -38,7 +38,7 @@ const TALKING_POINTS = [
   },
   {
     label: 'Zero cost, zero risk',
-    detail: 'Agent accounts are free forever. No credit card. No trial expiration. No strings.',
+    detail: 'Unlimited time on Free plan — same as any monday.com user. No credit card required.',
   },
   {
     label: 'Enterprise security',

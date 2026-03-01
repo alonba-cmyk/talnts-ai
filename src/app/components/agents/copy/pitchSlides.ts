@@ -68,7 +68,7 @@ export const PITCH_SLIDES: PitchSlide[] = [
   {
     id: 'pricing',
     title: "It's free",
-    subtitle: 'Agent accounts cost $0. Not a trial. Not a teaser. Free forever.',
+    subtitle: 'Agent accounts cost $0. Unlimited time on Free plan — same as any monday.com user.',
     highlight: '$0 / month',
     bullets: [
       'Unlimited boards and items',

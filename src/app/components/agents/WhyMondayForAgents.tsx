@@ -127,8 +127,8 @@ $ openclaw run --skill monday \\
   },
   {
     icon: <Gift className="w-5 h-5" />,
-    title: 'Free forever for agents',
-    description: 'Not a trial. Not freemium with crippled features. A real, useful, permanent free account.',
+    title: 'Unlimited time on Free plan',
+    description: 'Same Free plan as any monday.com user. No trial expiration. No credit card required.',
     language: 'json',
     code: `{
   "plan": "Individual",

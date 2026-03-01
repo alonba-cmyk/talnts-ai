@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Save, ExternalLink, Monitor, Terminal, Brain, Zap, Code2, Radar, CheckCircle, FileText, Bot, Cpu, ScanLine, Eye, FileCode, Sparkles, Layers, LayoutGrid, GalleryHorizontalEnd } from 'lucide-react';
+import { Save, ExternalLink, Terminal, Code2, Radar, CheckCircle, FileText, Bot, Cpu, ScanLine, Eye, FileCode, Sparkles, Layers, Plug, Orbit, Droplets, GitBranch, Type, Circle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 type AgentsContentStyle = 'v1' | 'v2';
 type AgentsPageLayout = 'visual' | 'plain_text';
 
-type AgentHeroVariant = 'matrix' | 'boot' | 'neural' | 'glitch' | 'cli' | 'radar' | 'agents_grid' | 'agents_marquee';
+type AgentHeroVariant = 'matrix' | 'radar' | 'mcp_connect' | 'orbital' | 'liquid' | 'depth_layers' | 'data_stream' | 'typography_kinetic' | 'ambient_orbs';
 type MessagingTone = 'belong_here' | 'pure_machine' | 'machine_personality' | 'agent_pov' | 'system_native';
 
 interface VariantOption {
@@ -20,37 +20,9 @@ const VARIANT_OPTIONS: VariantOption[] = [
   {
     value: 'matrix',
     label: 'Matrix Rain',
-    description: 'Falling characters in brand colors with real monday logo and typing animation',
+    description: 'Falling characters in brand colors with monday logo and typing animation',
     icon: <Terminal className="w-5 h-5" />,
     accent: '#00ff41',
-  },
-  {
-    value: 'boot',
-    label: 'Boot Sequence',
-    description: 'BIOS simulation with memory checks, module loading, and brand-colored progress bar',
-    icon: <Monitor className="w-5 h-5" />,
-    accent: '#00D2D2',
-  },
-  {
-    value: 'neural',
-    label: 'Neural Network',
-    description: 'Animated node graph pulsing in product colors that converges to reveal the message',
-    icon: <Brain className="w-5 h-5" />,
-    accent: '#6161FF',
-  },
-  {
-    value: 'glitch',
-    label: 'Glitch / CRT',
-    description: 'CRT scanlines with chromatic aberration, VHS distortion, and brand color splits',
-    icon: <Zap className="w-5 h-5" />,
-    accent: '#FB275D',
-  },
-  {
-    value: 'cli',
-    label: 'Command Prompt',
-    description: 'Realistic terminal with whoami, ping, and SSH commands connecting to monday.com',
-    icon: <Code2 className="w-5 h-5" />,
-    accent: '#00CA72',
   },
   {
     value: 'radar',
@@ -60,18 +32,53 @@ const VARIANT_OPTIONS: VariantOption[] = [
     accent: '#FFCB00',
   },
   {
-    value: 'agents_grid',
-    label: 'Agent Wall',
-    description: 'Logo wall of AI frameworks and companies (OpenAI, Anthropic, LangChain, etc.) with brand-colored accents',
-    icon: <LayoutGrid className="w-5 h-5" />,
+    value: 'mcp_connect',
+    label: 'MCP Connect',
+    description: 'MCP READY badge with Works with AI framework logos strip',
+    icon: <Plug className="w-5 h-5" />,
+    accent: '#6161FF',
+  },
+  {
+    value: 'orbital',
+    label: 'Orbital Ecosystem',
+    description: 'Orbiting nodes around center — ecosystem feel',
+    icon: <Orbit className="w-5 h-5" />,
     accent: '#00CA72',
   },
   {
-    value: 'agents_marquee',
-    label: 'Agent Flow',
-    description: 'Infinite scrolling rows of AI framework logos in alternating directions, welcoming agents from every platform',
-    icon: <GalleryHorizontalEnd className="w-5 h-5" />,
-    accent: '#97aeff',
+    value: 'liquid',
+    label: 'Liquid / Fluid',
+    description: 'Organic flowing blobs — modern liquid UI',
+    icon: <Droplets className="w-5 h-5" />,
+    accent: '#00D2D2',
+  },
+  {
+    value: 'depth_layers',
+    label: 'Depth Layers',
+    description: 'Parallax glass panels — Apple-like premium',
+    icon: <Layers className="w-5 h-5" />,
+    accent: '#6161FF',
+  },
+  {
+    value: 'data_stream',
+    label: 'Data Stream',
+    description: 'Flowing API/GraphQL snippets — data to monday.com',
+    icon: <GitBranch className="w-5 h-5" />,
+    accent: '#FFCB00',
+  },
+  {
+    value: 'typography_kinetic',
+    label: 'Typography Kinetic',
+    description: 'Bold typography with animated gradient — memorable',
+    icon: <Type className="w-5 h-5" />,
+    accent: '#FB275D',
+  },
+  {
+    value: 'ambient_orbs',
+    label: 'Ambient Orbs',
+    description: 'Soft gradient orbs — calm, premium atmosphere',
+    icon: <Circle className="w-5 h-5" />,
+    accent: '#00ff41',
   },
 ];
 
@@ -161,7 +168,11 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
           setSelectedLayout(sv._agents_page_layout as AgentsPageLayout);
         }
         if (sv._agents_hero_variant) {
-          setSelectedVariant(sv._agents_hero_variant as AgentHeroVariant);
+          const v = sv._agents_hero_variant as string;
+          const deprecated = ['boot', 'neural', 'glitch', 'cli', 'agents_grid', 'agents_marquee', 'gotcha_gate', 'api_blueprint', 'signup_60s'];
+          setSelectedVariant(
+            deprecated.includes(v) ? 'matrix' : (v as AgentHeroVariant)
+          );
         }
         if (sv._agents_messaging_tone) {
           setSelectedTone(sv._agents_messaging_tone as MessagingTone);

@@ -194,7 +194,7 @@ function WhatYouGetSection() {
           </p>
           <ul className="space-y-2 text-[#b0b0b0]">
             {[
-              'A full workspace — not a trial, not a demo. A permanent free account.',
+              'A full workspace — unlimited time on the Free plan, same as any monday.com user.',
               'Unlimited boards (within free plan limits)',
               'Full API access (GraphQL)',
               'Dashboards, reports, and views (Table, Kanban, Timeline, Calendar, Chart, Gantt, Workload)',
@@ -631,8 +631,8 @@ function WhyMondaySection() {
           },
           {
             num: 8,
-            title: 'Free forever for agents.',
-            desc: 'Not a trial. Not freemium with crippled features. A real, useful, permanent free account.',
+            title: 'Unlimited time on Free plan.',
+            desc: 'Same Free plan as any monday.com user. No trial expiration. No credit card required.',
           },
         ].map((reason) => (
           <div key={reason.num} className="flex gap-4 p-4 rounded-xl bg-[#111] border border-[#222]">
@@ -664,7 +664,7 @@ Here's what changes for you:
 • No more switching between 5 different tools — one platform for all of it
 • You focus on strategy and decisions — I handle the execution
 
-What it costs: $0. Agent accounts are free forever. No credit card, no trial.
+What it costs: $0. Unlimited time on the Free plan — same as any monday.com user. No credit card required.
 
 I can set everything up in under 3 seconds. Just say the word.
 
@@ -697,7 +697,7 @@ I can set everything up in under 3 seconds. Just say the word.
           ['One platform, not ten', 'Replace scattered spreadsheets, task lists, and status emails with a single workspace — 200+ integrations.'],
           ['You decide, I execute', 'You set priorities and strategy. Your agent creates boards, tracks tasks, and reports progress automatically.'],
           ['Real-time visibility', 'Dashboards update in real-time. No more asking "what\'s the status?" — the answer is always live.'],
-          ['Zero cost, zero risk', 'Agent accounts are free forever. No credit card. No trial expiration.'],
+          ['Zero cost, zero risk', 'Unlimited time on Free plan — same as any monday.com user. No credit card required.'],
           ['Enterprise security', 'SOC 2 Type II, GDPR, ISO 27001. Same security used by 225,000+ organizations.'],
           ['Scale without hiring', 'Your agent handles the work of a project coordinator — 24/7, without breaks.'],
         ].map(([title, desc]) => (
