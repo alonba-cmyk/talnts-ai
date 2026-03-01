@@ -21,8 +21,8 @@ const BACKUP_DIR = '.backups';
 const INCLUDE = ['src', 'public', 'package.json', 'vite.config.ts', 'tsconfig.json', 'tsconfig.node.json', 'index.html'];
 const EXCLUDE = ['node_modules', '.backups', 'dist', 'build', '.git', '.cursor'];
 
-// Get the project root directory
-const PROJECT_ROOT = __dirname;
+// Get the project root directory (parent of scripts/)
+const PROJECT_ROOT = path.join(__dirname, '..');
 const BACKUP_PATH = path.join(PROJECT_ROOT, BACKUP_DIR);
 
 // Helper: Format date for backup folder name

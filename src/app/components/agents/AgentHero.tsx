@@ -1160,8 +1160,71 @@ function CompanyLogo({ company, size = 96, delay = 0 }: {
   );
 }
 
+/** Animated version for Agent Grid hero background — visible, pulsing, exciting */
+function CompanyLogoAnimated({ company, size = 64, delay = 0 }: {
+  company: AICompany; size?: number; delay?: number;
+}) {
+  const [imgError, setImgError] = useState(false);
+  const c = company.color;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.6 }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+      }}
+      transition={{
+        delay: delay * 0.04,
+        duration: 0.5,
+      }}
+      className="flex flex-col items-center justify-center"
+    >
+      <motion.div
+        animate={{
+          opacity: [0.7, 1, 0.7],
+          boxShadow: [
+            `0 0 12px ${c}25`,
+            `0 0 24px ${c}40`,
+            `0 0 12px ${c}25`,
+          ],
+        }}
+        transition={{
+          duration: 3 + (delay % 4) * 0.5,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+        className="rounded-xl overflow-hidden border"
+        style={{
+          width: size,
+          height: size,
+          borderColor: `${c}50`,
+          backgroundColor: '#141414',
+        }}
+      >
+        {!imgError ? (
+          <img
+            src={company.logo}
+            alt={company.name}
+            className="w-full h-full object-contain p-2"
+            loading="lazy"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div
+            className="w-full h-full flex items-center justify-center font-mono text-xl font-bold"
+            style={{ color: c }}
+          >
+            {company.name.charAt(0)}
+          </div>
+        )}
+      </motion.div>
+    </motion.div>
+  );
+}
+
 // ═══════════════════════════════════════════════════════════════
-//  Agent Grid Hero — split layout: text top, logo wall bottom
+//  Agent Grid Hero — logos as background overlay, text centered
 // ═══════════════════════════════════════════════════════════════
 
 function AgentGridHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1' }: VariantProps) {
@@ -1175,9 +1238,28 @@ function AgentGridHero({ tone = 'belong_here', viewerMode = 'agent', contentStyl
   const { ref: linesRef, visibleCount, allDone } = useSequentialLines([line1Text, line2Text], 40, 200);
 
   return (
-    <div className="relative min-h-screen bg-[#0a0a0a] flex flex-col overflow-hidden">
-      {/* ── Top section: branding + text ── */}
-      <div className="flex-shrink-0 flex flex-col items-center justify-center pt-20 sm:pt-24 pb-6 sm:pb-8 px-4 text-center">
+    <div className="relative min-h-screen bg-[#0a0a0a] flex items-center justify-center overflow-hidden">
+      {/* ── Background: logo grid layer — visible, animated, exciting ── */}
+      <div
+        className="absolute inset-0 grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 gap-4 md:gap-6 p-6 md:p-8 pointer-events-none opacity-90"
+        style={{
+          maskImage: 'radial-gradient(ellipse 75% 65% at 50% 50%, transparent 25%, black 60%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 75% 65% at 50% 50%, transparent 25%, black 60%)',
+        }}
+        aria-hidden
+      >
+        {AI_COMPANIES.map((company, i) => (
+          <CompanyLogoAnimated
+            key={company.id}
+            company={company}
+            size={64}
+            delay={i}
+          />
+        ))}
+      </div>
+
+      {/* ── Foreground: centered text panel — subtle backdrop for readability ── */}
+      <div className="relative z-10 flex flex-col items-center justify-center px-4 py-12 text-center max-w-2xl mx-auto bg-[#0a0a0a]/70 backdrop-blur-md rounded-2xl border border-[#333]/60 shadow-[0_0_60px_rgba(0,0,0,0.5)]">
         <BrandLogo />
 
         <div ref={linesRef} className="mt-4 sm:mt-6 space-y-2 max-w-2xl mx-auto">
@@ -1196,23 +1278,6 @@ function AgentGridHero({ tone = 'belong_here', viewerMode = 'agent', contentStyl
             {subtitleText}
           </motion.p>
         )}
-      </div>
-
-      {/* ── Gradient divider ── */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-[#333] to-transparent" />
-
-      {/* ── Bottom section: logo wall ── */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-6 sm:py-10">
-        <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
-          {AI_COMPANIES.map((company, i) => (
-            <CompanyLogo
-              key={company.id}
-              company={company}
-              size={96}
-              delay={i}
-            />
-          ))}
-        </div>
 
         {allDone && (
           <motion.div

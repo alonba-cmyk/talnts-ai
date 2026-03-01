@@ -2,7 +2,7 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
-const LOGOS_DIR = path.join(__dirname, 'public', 'logos');
+const LOGOS_DIR = path.join(__dirname, '..', 'public', 'logos');
 if (!fs.existsSync(LOGOS_DIR)) fs.mkdirSync(LOGOS_DIR, { recursive: true });
 
 const SIMPLE_ICONS_MAP = [

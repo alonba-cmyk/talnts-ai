@@ -102,7 +102,7 @@ const shouldUpload = args.includes('--upload');
 const forceUpdate = args.includes('--force');
 
 // Local assets directory
-const ASSETS_DIR = path.join(__dirname, 'src', 'assets');
+const ASSETS_DIR = path.join(__dirname, '..', 'src', 'assets');
 
 async function listStorageFiles() {
   console.log('\n📂 Listing files in Agents bucket...\n');
