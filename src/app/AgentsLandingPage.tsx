@@ -24,7 +24,7 @@ function FloatingViewerToggle({ mode, onToggle }: { mode: ViewerMode; onToggle: 
   return (
     <button
       onClick={onToggle}
-      className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 font-mono text-xs border rounded-full px-1 py-1 flex items-center gap-0 backdrop-blur-md transition-all duration-500 hover:scale-105"
+      className="fixed bottom-6 right-6 z-50 font-mono text-xs border rounded-full px-1 py-1 hidden sm:flex items-center gap-0 backdrop-blur-md transition-all duration-500 hover:scale-105"
       style={{
         borderColor: isHuman ? '#FF3D5740' : '#00D2D240',
         backgroundColor: isHuman ? '#FF3D5708' : '#00D2D208',
@@ -36,18 +36,6 @@ function FloatingViewerToggle({ mode, onToggle }: { mode: ViewerMode; onToggle: 
       <span
         className="px-3 py-1.5 rounded-full transition-all duration-300"
         style={{
-          backgroundColor: isHuman ? '#FF3D5720' : 'transparent',
-          color: isHuman ? '#FF3D57' : '#606060',
-        }}
-      >
-        <span className="inline-flex items-center gap-1.5">
-          {isHuman && <span className="w-1.5 h-1.5 rounded-full bg-[#FF3D57] animate-pulse" />}
-          HUMAN
-        </span>
-      </span>
-      <span
-        className="px-3 py-1.5 rounded-full transition-all duration-300"
-        style={{
           backgroundColor: !isHuman ? '#00D2D220' : 'transparent',
           color: !isHuman ? '#00D2D2' : '#606060',
         }}
@@ -55,6 +43,18 @@ function FloatingViewerToggle({ mode, onToggle }: { mode: ViewerMode; onToggle: 
         <span className="inline-flex items-center gap-1.5">
           {!isHuman && <span className="w-1.5 h-1.5 rounded-full bg-[#00D2D2] animate-pulse" />}
           AGENT
+        </span>
+      </span>
+      <span
+        className="px-3 py-1.5 rounded-full transition-all duration-300"
+        style={{
+          backgroundColor: isHuman ? '#FF3D5720' : 'transparent',
+          color: isHuman ? '#FF3D57' : '#606060',
+        }}
+      >
+        <span className="inline-flex items-center gap-1.5">
+          {isHuman && <span className="w-1.5 h-1.5 rounded-full bg-[#FF3D57] animate-pulse" />}
+          HUMAN
         </span>
       </span>
     </button>

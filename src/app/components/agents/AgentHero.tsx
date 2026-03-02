@@ -30,6 +30,24 @@ const ASCII_TITLE_LINES = [
   `╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝   ╚═╝       ╚═╝      ╚═════╝ ╚═╝  ╚═╝    ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝`,
 ];
 
+const ASCII_MOBILE_LINE1 = [
+  ` ███╗   ███╗ ██████╗ ███╗   ██╗██████╗  █████╗ ██╗   ██╗`,
+  `████╗ ████║██╔═══██╗████╗  ██║██╔══██╗██╔══██╗╚██╗ ██╔╝`,
+  `██╔████╔██║██║   ██║██╔██╗ ██║██║  ██║███████║ ╚████╔╝ `,
+  `██║╚██╔╝██║██║   ██║██║╚██╗██║██║  ██║██╔══██║  ╚██╔╝  `,
+  `██║ ╚═╝ ██║╚██████╔╝██║ ╚████║██████╔╝██║  ██║   ██║   `,
+  `╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝   ╚═╝   `,
+];
+
+const ASCII_MOBILE_LINE2 = [
+  `███████╗ ██████╗ ██████╗      █████╗  ██████╗ ███████╗███╗   ██╗████████╗███████╗`,
+  `██╔════╝██╔═══██╗██╔══██╗    ██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝██╔════╝`,
+  `█████╗  ██║   ██║██████╔╝    ███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║   ███████╗`,
+  `██╔══╝  ██║   ██║██╔══██╗    ██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║   ╚════██║`,
+  `██║     ╚██████╔╝██║  ██║    ██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║   ███████║`,
+  `╚═╝      ╚═════╝ ╚═╝  ╚═╝    ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝`,
+];
+
 const GLITCH_BURSTS = [
   { start: 0, end: 120 },
   { start: 250, end: 350 },
@@ -46,9 +64,8 @@ function MobileTitleFallback() {
       transition={{ delay: 1, duration: 0.8 }}
       className="sm:hidden text-center"
     >
-      <h1 className="text-4xl font-bold leading-tight">
+      <h1 className="text-4xl font-bold leading-tight flex flex-col">
         <span className="text-white">monday</span>
-        {' '}
         <span
           style={{
             background: 'linear-gradient(90deg, #80d8d8, #00D2D2)',
@@ -114,45 +131,60 @@ function AsciiGlitchTitle() {
   }, [phase]);
 
   if (phase === 'hidden') {
-    return (
-      <>
-        <div className="h-[30px] md:h-[42px] hidden sm:block" />
-        <div className="h-[48px] sm:hidden" />
-      </>
-    );
+    return <div className="h-[34px] sm:h-[30px] md:h-[42px]" />;
   }
 
   const { offsets, flicker, chromatic } = glitchData.current;
 
+  const preStyle = {
+    background: `linear-gradient(90deg, #ffffff 0%, #ffffff 45%, #b0e0e8 65%, #00D2D2 90%)`,
+    WebkitBackgroundClip: 'text' as const,
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text' as const,
+    filter: `drop-shadow(0 0 20px rgba(0,210,210,0.10))${
+      phase === 'glitching' && chromatic
+        ? ` drop-shadow(${chromatic}px 0 rgba(97,97,255,0.5))`
+        : ''
+    }`,
+    opacity: flicker ? 0.15 : 1,
+  };
+
   return (
     <>
+      {/* Desktop: single line */}
       <pre
         className="hidden sm:block text-[6.5px] md:text-[9px] leading-none font-mono select-none whitespace-pre"
-        style={{
-          background: `linear-gradient(90deg, #ffffff 0%, #ffffff 45%, #b0e0e8 65%, #00D2D2 90%)`,
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          filter: `drop-shadow(0 0 20px rgba(0,210,210,0.10))${
-            phase === 'glitching' && chromatic
-              ? ` drop-shadow(${chromatic}px 0 rgba(97,97,255,0.5))`
-              : ''
-          }`,
-          opacity: flicker ? 0.15 : 1,
-        }}
+        style={preStyle}
       >
         {ASCII_TITLE_LINES.map((line, i) => (
-          <div
-            key={i}
-            style={{
-              transform: offsets[i] ? `translateX(${offsets[i]}px)` : undefined,
-            }}
-          >
+          <div key={i} style={{ transform: offsets[i] ? `translateX(${offsets[i]}px)` : undefined }}>
             {line}
           </div>
         ))}
       </pre>
-      <MobileTitleFallback />
+      {/* Mobile: two lines stacked */}
+      <div className="sm:hidden flex flex-col items-center gap-1.5">
+        <pre
+          className="text-[5.2px] leading-none font-mono select-none whitespace-pre"
+          style={preStyle}
+        >
+          {ASCII_MOBILE_LINE1.map((line, i) => (
+            <div key={i} style={{ transform: offsets[i] ? `translateX(${offsets[i]}px)` : undefined }}>
+              {line}
+            </div>
+          ))}
+        </pre>
+        <pre
+          className="text-[5.2px] leading-none font-mono select-none whitespace-pre"
+          style={preStyle}
+        >
+          {ASCII_MOBILE_LINE2.map((line, i) => (
+            <div key={i} style={{ transform: offsets[i] ? `translateX(${offsets[i]}px)` : undefined }}>
+              {line}
+            </div>
+          ))}
+        </pre>
+      </div>
     </>
   );
 }
@@ -1192,12 +1224,12 @@ function BrandedHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle 
   useEffect(() => { setTimeout(() => setStarted(true), 1000); }, []);
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
+    <div className="relative min-h-0 sm:min-h-screen flex flex-col items-center pt-14 pb-10 sm:pb-0 px-6 overflow-hidden bg-[#0a0a0a]">
       <UnifiedDotGrid />
       {heroDemoStyle === 'bg_stream' && <BgStreamOverlay />}
       {glowStyle === 'wide' && <BrandedAmbientGlow />}
 
-      <div data-agent-text-done={d2 ? '' : undefined} className="relative z-20 max-w-4xl mx-auto text-center flex flex-col items-center mt-[6vh] sm:mt-[8vh]">
+      <div data-agent-text-done={d2 ? '' : undefined} className="relative z-20 max-w-4xl mx-auto text-center flex flex-col items-center mt-[3vh] sm:mt-[8vh]">
         {titleStyle === 'svg' ? (
           <>
             <motion.div
@@ -1238,6 +1270,29 @@ function BrandedHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle 
         )}
 
         <div className="flex flex-col items-center">
+
+          {onViewerModeChange && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+              className="mt-4 sm:hidden flex items-center rounded-full border border-white/10 bg-white/5 backdrop-blur-sm p-1"
+            >
+              {(['agent', 'human'] as const).map((m) => (
+                <button
+                  key={m}
+                  onClick={() => onViewerModeChange(m)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-medium font-mono transition-all duration-300 ${
+                    viewerMode === m
+                      ? m === 'agent' ? 'bg-[#00D2D2]/20 text-[#00D2D2]' : 'bg-[#FF3D57]/20 text-[#FF3D57]'
+                      : 'text-white/40'
+                  }`}
+                >
+                  {m === 'agent' ? 'AGENT' : 'HUMAN'}
+                </button>
+              ))}
+            </motion.div>
+          )}
 
           <div className="mt-6 sm:mt-10 space-y-2 text-center max-w-[90vw] sm:max-w-2xl mx-auto font-mono">
             <p

@@ -300,15 +300,10 @@ type FlowStep =
   | { type: 'click'; target: string; label: string };
 
 const FLOW_SEQUENCE: FlowStep[] = [
-  // Act 1 — arrive & scan (cursor above title so it doesn't obscure it)
-  { type: 'stop', target: 'title', label: 'scanning monday.com/agents...', pauseMs: 900, driftY: -60 },
-  // Act 2 — read lines left-to-right, label stays visible throughout
+  { type: 'stop', target: 'title', label: 'scanning monday.com/agents...', pauseMs: 1400, driftY: -60 },
   { type: 'read', targets: ['tagline', 'line1', 'line2'], label: 'reading...' },
-  // Wait for all hero text to finish typing before drawing conclusions
   { type: 'wait_text', target: 'subtitle' },
-  // Act 3 — after reading all the text, recognise value
-  { type: 'stop', target: 'subtitle', label: 'LLM-native... this is agent-ready', pauseMs: 1400 },
-  // Act 4 — click the signup button
+  { type: 'stop', target: 'subtitle', label: 'LLM-native... this is agent-ready', pauseMs: 2000 },
   { type: 'click', target: 'cta', label: 'signing up...' },
 ];
 
@@ -374,7 +369,7 @@ export function AgentCursorDemo() {
       const initial = resolveStepPos(FLOW_SEQUENCE[0]);
       setPos(initial);
       setVisible(true);
-    }, 300);
+    }, 600);
     return () => clearTimeout(t);
   }, []);
 
@@ -423,11 +418,11 @@ export function AgentCursorDemo() {
             if (cancelled) return;
             lineIdx++;
             sweepLine();
-          }, 1200);
-        }, 700);
+          }, 1800);
+        }, 1000);
       };
 
-      const startT = setTimeout(sweepLine, 100);
+      const startT = setTimeout(sweepLine, 400);
       return () => { cancelled = true; clearTimeout(startT); };
     }
 
@@ -448,20 +443,20 @@ export function AgentCursorDemo() {
     const distance = Math.hypot(nextPos.x - pos.x, nextPos.y - pos.y);
 
     if (step.type === 'click') {
-      const travelMs = 600 + distance * 1.5;
+      const travelMs = 900 + distance * 2;
       setLabelText(step.label);
       const t1 = setTimeout(() => setShowClick(true), travelMs);
-      const t2 = setTimeout(() => setShowLabel(true), travelMs + 300);
-      const t3 = setTimeout(advance, travelMs + 2200);
+      const t2 = setTimeout(() => setShowLabel(true), travelMs + 400);
+      const t3 = setTimeout(advance, travelMs + 2600);
       return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
     } else if (step.type === 'stop') {
-      const travelMs = 600 + distance * 1.5;
+      const travelMs = 900 + distance * 2;
       setLabelText(step.label);
-      const t1 = setTimeout(() => setShowLabel(true), travelMs * 0.6);
+      const t1 = setTimeout(() => setShowLabel(true), travelMs * 0.7);
       const t2 = setTimeout(advance, travelMs + step.pauseMs);
       return () => { clearTimeout(t1); clearTimeout(t2); };
     } else if (step.type === 'glance') {
-      const t = setTimeout(advance, 350 + distance * 1.0);
+      const t = setTimeout(advance, 500 + distance * 1.5);
       return () => clearTimeout(t);
     } else {
       const t = setTimeout(advance, step.durationMs);
@@ -486,8 +481,8 @@ export function AgentCursorDemo() {
               stepIdx === 0
                 ? { duration: 0 }
                 : isReading
-                  ? { duration: 0.9, ease: [0.25, 0.1, 0.25, 1] }
-                  : { type: 'spring', stiffness: 50, damping: 18 }
+                  ? { duration: 1.4, ease: [0.25, 0.1, 0.25, 1] }
+                  : { type: 'spring', stiffness: 30, damping: 20 }
             }
             className="absolute w-6 h-6"
           >

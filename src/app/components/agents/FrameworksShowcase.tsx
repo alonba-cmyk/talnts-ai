@@ -12,7 +12,7 @@ export function FrameworksShowcase() {
   );
 
   return (
-    <section className="relative py-16 sm:py-20 px-4 sm:px-6 overflow-hidden">
+    <section className="relative py-10 sm:py-20 px-4 sm:px-6 overflow-hidden">
       <div className="absolute inset-0 bg-[#0a0a0a]" />
 
       <div className="relative max-w-[1100px] mx-auto">
@@ -23,10 +23,8 @@ export function FrameworksShowcase() {
           transition={{ duration: 0.5 }}
           className="text-center mb-10 sm:mb-12"
         >
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white leading-snug">
-            Welcoming agents from
-            <br />
-            {AI_COMPANIES.length}+ frameworks & platforms
+          <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-white leading-snug max-w-[280px] sm:max-w-none mx-auto">
+            Welcoming agents from {AI_COMPANIES.length}+ frameworks & platforms
           </h2>
         </motion.div>
 
