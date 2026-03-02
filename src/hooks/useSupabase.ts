@@ -344,6 +344,7 @@ export interface SiteSettings {
   agents_show_frameworks: boolean;
   agents_branded_title_style: 'svg' | 'ascii';
   agents_branded_glow_style: 'wide' | 'logo';
+  agents_hero_demo: 'none' | 'floating_terminal' | 'toasts' | 'typing_agent' | 'bg_stream' | 'agent_cursor';
 }
 
 const defaultSectionsVisibility: SectionsVisibility = {
@@ -443,6 +444,7 @@ export function useSiteSettings() {
     agents_show_frameworks: false,
     agents_branded_title_style: 'ascii',
     agents_branded_glow_style: 'wide',
+    agents_hero_demo: 'none',
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -465,7 +467,7 @@ export function useSiteSettings() {
       if (data) {
         // Extract _order and _teams_agents_v2_layout from sections_visibility if they exist
         const sectionsVisibilityData = data.sections_visibility || {};
-        const { _order, _teams_agents_v2_layout, _team_flanked_featured_agents, _ai_platform_arch_layout, _platform_architecture_variant, _platform_page_version, _platform_context_toggle, _platform_sidekick_panel_style, _platform_v3_team_avatars, _platform_v3_minimal_chat, _platform_sidebar_left, _platform_v4_left_panel, _platform_showcase_section, _platform_show_jtbd_sidebar, _platform_show_inline_sidekick, _platform_show_department_bar, _platform_showcase_show_jtbd_sidebar, _platform_showcase_show_inline_sidekick, _platform_showcase_show_department_bar, _platform_showcase_variant, _platform_show_intro, _platform_intro_style, _platform_hero_variant, _platform_use_cases_variant, _agents_hero_variant, _agents_messaging_tone, _agents_page_layout, _agents_content_style, _agents_show_frameworks, _agents_branded_title_style, _agents_branded_glow_style, ...sectionsVisibilityWithoutOrder } = sectionsVisibilityData;
+        const { _order, _teams_agents_v2_layout, _team_flanked_featured_agents, _ai_platform_arch_layout, _platform_architecture_variant, _platform_page_version, _platform_context_toggle, _platform_sidekick_panel_style, _platform_v3_team_avatars, _platform_v3_minimal_chat, _platform_sidebar_left, _platform_v4_left_panel, _platform_showcase_section, _platform_show_jtbd_sidebar, _platform_show_inline_sidekick, _platform_show_department_bar, _platform_showcase_show_jtbd_sidebar, _platform_showcase_show_inline_sidekick, _platform_showcase_show_department_bar, _platform_showcase_variant, _platform_show_intro, _platform_intro_style, _platform_hero_variant, _platform_use_cases_variant, _agents_hero_variant, _agents_messaging_tone, _agents_page_layout, _agents_content_style, _agents_show_frameworks, _agents_branded_title_style, _agents_branded_glow_style, _agents_hero_demo, ...sectionsVisibilityWithoutOrder } = sectionsVisibilityData;
         
         setSettings({
           hero_title: data.hero_title || 'What would you like to achieve?',
@@ -517,6 +519,10 @@ export function useSiteSettings() {
           agents_show_frameworks: _agents_show_frameworks ?? false,
           agents_branded_title_style: _agents_branded_title_style || 'ascii',
           agents_branded_glow_style: _agents_branded_glow_style || 'wide',
+          agents_hero_demo: (() => {
+            const d = _agents_hero_demo || 'none';
+            return d === 'scroll_reveal' ? 'none' : d;
+          })(),
         });
       }
     } catch (err: any) {
