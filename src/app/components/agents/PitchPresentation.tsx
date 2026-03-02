@@ -15,7 +15,7 @@ import { PITCH_SLIDES, slidesToText, type PitchSlide } from './copy/pitchSlides'
 const BRAND = {
   red: '#FF3D57',
   yellow: '#FFCB00',
-  green: '#00CA72',
+  green: '#00D2D2',
   blue: '#579BFC',
   purple: '#A25DDC',
 };
@@ -43,7 +43,7 @@ function SlideCapabilities({ slide }: { slide: PitchSlide }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {slide.bullets?.map((b) => (
           <div key={b} className="flex items-start gap-3 bg-gray-50 rounded-lg p-3">
-            <span className="mt-0.5 text-[#00CA72] font-bold shrink-0">+</span>
+            <span className="mt-0.5 text-[#00D2D2] font-bold shrink-0">+</span>
             <span className="text-gray-700 text-sm">{b}</span>
           </div>
         ))}
@@ -63,7 +63,7 @@ function SlideBeforeAfter({ slide }: { slide: PitchSlide }) {
               {c.before}
             </div>
             <ArrowRight className="w-4 h-4 text-gray-400 shrink-0 self-center rotate-90 sm:rotate-0" />
-            <div className="flex-1 bg-green-50 border border-green-100 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-green-700">
+            <div className="flex-1 bg-[#00D2D2]/10 border border-[#00D2D2]/20 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-[#00D2D2]">
               {c.after}
             </div>
           </div>
@@ -89,7 +89,7 @@ function SlideSecurity({ slide }: { slide: PitchSlide }) {
       <ul className="space-y-2">
         {slide.bullets?.map((b) => (
           <li key={b} className="flex items-start gap-3 text-sm">
-            <Check className="w-4 h-4 text-[#00CA72] mt-0.5 shrink-0" />
+            <Check className="w-4 h-4 text-[#00D2D2] mt-0.5 shrink-0" />
             <span className="text-gray-700">{b}</span>
           </li>
         ))}
@@ -113,7 +113,7 @@ function SlidePricing({ slide }: { slide: PitchSlide }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {slide.bullets?.map((b) => (
           <div key={b} className="flex items-start gap-2 text-sm">
-            <Check className="w-4 h-4 text-[#00CA72] mt-0.5 shrink-0" />
+            <Check className="w-4 h-4 text-[#00D2D2] mt-0.5 shrink-0" />
             <span className="text-gray-700">{b}</span>
           </div>
         ))}
@@ -185,9 +185,9 @@ function ActionButton({
       onClick={handleClick}
       className="flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-all duration-300"
       style={{
-        borderColor: done ? '#00CA72' : '#e0e0e0',
-        backgroundColor: done ? '#00CA7210' : '#fafafa',
-        color: done ? '#00CA72' : '#555',
+        borderColor: done ? '#00D2D2' : '#e0e0e0',
+        backgroundColor: done ? '#00D2D210' : '#fafafa',
+        color: done ? '#00D2D2' : '#555',
       }}
     >
       {done ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
@@ -247,8 +247,8 @@ export function PitchPresentation() {
   .comp-arrow { color: #999; font-size: 18px; }
   .badge { display: inline-flex; align-items: center; gap: 8px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 20px; padding: 6px 16px; margin: 4px; font-size: 14px; font-weight: 600; color: #1e40af; }
   .check-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; font-size: 15px; color: #444; }
-  .check-mark { color: #00CA72; font-weight: bold; flex-shrink: 0; }
-  .highlight { text-align: center; font-size: 72px; font-weight: 700; color: #00CA72; margin: 24px 0; }
+  .check-mark { color: #00D2D2; font-weight: bold; flex-shrink: 0; }
+  .highlight { text-align: center; font-size: 72px; font-weight: 700; color: #00D2D2; margin: 24px 0; }
   .highlight-sub { text-align: center; color: #888; font-size: 16px; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .cta { display: inline-block; margin-top: 24px; padding: 14px 32px; background: linear-gradient(135deg, #FF3D57, #A25DDC); color: white; border-radius: 30px; font-size: 18px; font-weight: 600; text-decoration: none; text-align: center; }
@@ -258,7 +258,7 @@ export function PitchPresentation() {
 
     PITCH_SLIDES.forEach((s, i) => {
       win.document.write('<div class="slide">');
-      win.document.write('<div class="brand"><span class="dot" style="background:#FF3D57"></span><span class="dot" style="background:#FFCB00"></span><span class="dot" style="background:#00CA72"></span><span class="brand-name">monday.com</span></div>');
+      win.document.write('<div class="brand"><span class="dot" style="background:#FF3D57"></span><span class="dot" style="background:#FFCB00"></span><span class="dot" style="background:#00D2D2"></span><span class="brand-name">monday.com</span></div>');
       win.document.write('<h2>' + s.title + '</h2>');
       if (s.subtitle) win.document.write('<p class="subtitle">' + s.subtitle + '</p>');
       if (s.highlight) {

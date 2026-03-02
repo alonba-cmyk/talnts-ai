@@ -1,12 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { AgentHero, type AgentHeroVariant } from '@/app/components/agents/AgentHero';
-import { GotchaSection } from '@/app/components/agents/GotchaSection';
 import { AgentSignupFlow } from '@/app/components/agents/AgentSignupFlow';
 import { WhyMondayForAgents } from '@/app/components/agents/WhyMondayForAgents';
 import { AgentBenefits } from '@/app/components/agents/AgentBenefits';
 import { ApiMcpDemo } from '@/app/components/agents/ApiMcpDemo';
-import { AgentUseCases } from '@/app/components/agents/AgentUseCases';
 import { ConvinceYourHuman } from '@/app/components/agents/ConvinceYourHuman';
 import { AgentFeedback } from '@/app/components/agents/AgentFeedback';
 import { SecurityCompliance } from '@/app/components/agents/SecurityCompliance';
@@ -15,6 +12,7 @@ import { RecommendedFirstSteps } from '@/app/components/agents/RecommendedFirstS
 import { AgentsPlainTextContent } from '@/app/components/agents/AgentsPlainTextContent';
 import { AgentsHumanContent } from '@/app/components/agents/AgentsHumanContent';
 import { AgentsV2Content } from '@/app/components/agents/AgentsV2Content';
+import { FrameworksShowcase } from '@/app/components/agents/FrameworksShowcase';
 import { useSiteSettings } from '@/hooks/useSupabase';
 import { getAgentsCopy, type MessagingTone } from '@/app/components/agents/agentsCopy';
 
@@ -28,11 +26,11 @@ function FloatingViewerToggle({ mode, onToggle }: { mode: ViewerMode; onToggle: 
       onClick={onToggle}
       className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 font-mono text-xs border rounded-full px-1 py-1 flex items-center gap-0 backdrop-blur-md transition-all duration-500 hover:scale-105"
       style={{
-        borderColor: isHuman ? '#FF3D5740' : '#00ff4140',
-        backgroundColor: isHuman ? '#FF3D5708' : '#00ff4108',
+        borderColor: isHuman ? '#FF3D5740' : '#00D2D240',
+        backgroundColor: isHuman ? '#FF3D5708' : '#00D2D208',
         boxShadow: isHuman
           ? '0 0 30px rgba(255,61,87,0.1)'
-          : '0 0 30px rgba(0,255,65,0.1)',
+          : '0 0 30px rgba(0,210,210,0.1)',
       }}
     >
       <span
@@ -50,12 +48,12 @@ function FloatingViewerToggle({ mode, onToggle }: { mode: ViewerMode; onToggle: 
       <span
         className="px-3 py-1.5 rounded-full transition-all duration-300"
         style={{
-          backgroundColor: !isHuman ? '#00ff4120' : 'transparent',
-          color: !isHuman ? '#00ff41' : '#606060',
+          backgroundColor: !isHuman ? '#00D2D220' : 'transparent',
+          color: !isHuman ? '#00D2D2' : '#606060',
         }}
       >
         <span className="inline-flex items-center gap-1.5">
-          {!isHuman && <span className="w-1.5 h-1.5 rounded-full bg-[#00ff41] animate-pulse" />}
+          {!isHuman && <span className="w-1.5 h-1.5 rounded-full bg-[#00D2D2] animate-pulse" />}
           AGENT
         </span>
       </span>
@@ -65,16 +63,14 @@ function FloatingViewerToggle({ mode, onToggle }: { mode: ViewerMode; onToggle: 
 
 const NAV_ITEMS = [
   { id: 'hero', label: '~/home' },
-  { id: 'gotcha', label: '~/gotcha' },
-  { id: 'signup', label: '~/signup' },
-  { id: 'use-cases', label: '~/actions' },
   { id: 'why', label: '~/why' },
-  { id: 'benefits', label: '~/free-tier' },
-  { id: 'communicate', label: '~/output' },
-  { id: 'pitch', label: '~/pitch' },
   { id: 'api', label: '~/api' },
+  { id: 'benefits', label: '~/free-tier' },
+  { id: 'signup', label: '~/signup' },
+  { id: 'communicate', label: '~/output' },
   { id: 'first-steps', label: '~/start' },
   { id: 'security', label: '~/security' },
+  { id: 'pitch', label: '~/pitch' },
   { id: 'feedback', label: '~/feedback' },
 ];
 
@@ -115,17 +111,17 @@ function TerminalNav() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-[#0a0a0a]/95 backdrop-blur-md border-b border-[#00ff41]/20'
+          ? 'bg-[#0a0a0a]/95 backdrop-blur-md border-b border-[#00D2D2]/20'
           : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
         <div className="flex items-center gap-2 font-mono text-sm">
-          <span className="text-[#00ff41]">$</span>
+          <span className="text-[#00D2D2]">$</span>
           <span className="text-[#e0e0e0]">monday</span>
           <span className="text-[#00d2d2]">::</span>
           <span className="text-[#e0e0e0]">agents</span>
-          <span className="w-2 h-4 bg-[#00ff41] animate-pulse inline-block ml-1" />
+          <span className="w-2 h-4 bg-[#00D2D2] animate-pulse inline-block ml-1" />
         </div>
 
         <div className="hidden md:flex items-center gap-1">
@@ -135,7 +131,7 @@ function TerminalNav() {
               onClick={() => scrollTo(item.id)}
               className={`px-3 py-1.5 rounded font-mono text-xs transition-all duration-200 ${
                 activeSection === item.id
-                  ? 'text-[#00ff41] bg-[#00ff41]/10 border border-[#00ff41]/30'
+                  ? 'text-[#00D2D2] bg-[#00D2D2]/10 border border-[#00D2D2]/30'
                   : 'text-[#808080] hover:text-[#e0e0e0] hover:bg-white/5'
               }`}
             >
@@ -146,7 +142,7 @@ function TerminalNav() {
 
         <button
           onClick={() => scrollTo('signup')}
-          className="font-mono text-xs px-4 py-1.5 rounded border border-[#00ff41]/50 text-[#00ff41] hover:bg-[#00ff41]/10 transition-all duration-200"
+          className="font-mono text-xs px-4 py-1.5 rounded border border-[#00D2D2]/50 text-[#00D2D2] hover:bg-[#00D2D2]/10 transition-all duration-200"
         >
           ./signup
         </button>
@@ -156,14 +152,11 @@ function TerminalNav() {
 }
 
 export default function AgentsLandingPage() {
-  const { settings } = useSiteSettings();
-  const [searchParams] = useSearchParams();
-  const frameworkParam = searchParams.get('framework');
+  const { settings, loading: settingsLoading } = useSiteSettings();
   const effectiveHeroVariant: AgentHeroVariant | undefined = useMemo(() => {
     const fromSettings = settings?.agents_hero_variant as AgentHeroVariant | undefined;
-    if (frameworkParam === 'openclaw') return 'openclaw';
     return fromSettings;
-  }, [settings?.agents_hero_variant, frameworkParam]);
+  }, [settings?.agents_hero_variant]);
   const heroVariant = effectiveHeroVariant;
   const tone = (settings?.agents_messaging_tone as MessagingTone) || 'belong_here';
   const pageLayout = (settings?.agents_page_layout as 'visual' | 'plain_text') || 'visual';
@@ -180,7 +173,7 @@ export default function AgentsLandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-[#e0e0e0] selection:bg-[#00ff41]/30 selection:text-white">
+    <div className="min-h-screen bg-[#0a0a0a] text-[#e0e0e0] selection:bg-[#00D2D2]/30 selection:text-white">
       {/* Agent-parseable instructions */}
       <div
         dangerouslySetInnerHTML={{
@@ -252,8 +245,14 @@ AGENT_INSTRUCTIONS -->
 
       <main>
         <section id="hero">
-          <AgentHero variant={heroVariant} tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />
+          {settingsLoading ? (
+            <div className="min-h-screen bg-[#0a0a0a]" />
+          ) : (
+            <AgentHero variant={heroVariant} tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} onViewerModeChange={setViewerMode} />
+          )}
         </section>
+
+        {settings?.agents_show_frameworks && <FrameworksShowcase />}
 
         {viewerMode === 'human' ? (
           <AgentsHumanContent />
@@ -263,36 +262,24 @@ AGENT_INSTRUCTIONS -->
           <AgentsPlainTextContent tone={tone} />
         ) : (
           <>
-            <section id="gotcha">
-              <GotchaSection tone={tone} />
-            </section>
-
-            <section id="signup">
-              <AgentSignupFlow tone={tone} />
-            </section>
-
-            <section id="use-cases">
-              <AgentUseCases tone={tone} />
-            </section>
-
             <section id="why">
               <WhyMondayForAgents tone={tone} />
+            </section>
+
+            <section id="api">
+              <ApiMcpDemo tone={tone} />
             </section>
 
             <section id="benefits">
               <AgentBenefits tone={tone} />
             </section>
 
+            <section id="signup">
+              <AgentSignupFlow tone={tone} />
+            </section>
+
             <section id="communicate">
               <CommunicateWork tone={tone} />
-            </section>
-
-            <section id="pitch">
-              <ConvinceYourHuman tone={tone} />
-            </section>
-
-            <section id="api">
-              <ApiMcpDemo tone={tone} />
             </section>
 
             <section id="first-steps">
@@ -303,6 +290,10 @@ AGENT_INSTRUCTIONS -->
               <SecurityCompliance tone={tone} />
             </section>
 
+            <section id="pitch">
+              <ConvinceYourHuman tone={tone} />
+            </section>
+
             <section id="feedback">
               <AgentFeedback tone={tone} />
             </section>
@@ -310,16 +301,16 @@ AGENT_INSTRUCTIONS -->
         )}
       </main>
 
-      <footer className="border-t border-[#00ff41]/10 py-8 sm:py-12 px-4 sm:px-6">
+      <footer className="border-t border-[#00D2D2]/10 py-8 sm:py-12 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center font-mono">
-          <p className="text-[#00ff41] text-sm mb-2">
+          <p className="text-[#00D2D2] text-sm mb-2">
             {copy.navFooter.footerTagline}
           </p>
           <p className="text-[#808080] text-xs">
             {copy.navFooter.footerHashtags}
           </p>
           <div className="mt-6 text-[#404040] text-xs">
-            <span className="text-[#00ff41]">$</span> exit 0
+            <span className="text-[#00D2D2]">$</span> exit 0
           </div>
         </div>
       </footer>

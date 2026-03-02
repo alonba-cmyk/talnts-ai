@@ -122,12 +122,12 @@ function ComplianceAuditTerminal() {
 
         <div className="p-6">
           <div className="font-mono text-xs text-[#808080] mb-4">
-            <span className="text-[#00ff41]">$</span> monday security --audit --verbose
+            <span className="text-[#00D2D2]">$</span> monday security --audit --verbose
           </div>
 
           <div className="space-y-1">
             {COMPLIANCE_CERTS.map((cert) => {
-              const statusColor = cert.status === 'SUPPORTED' ? '#FFCB00' : '#00ff41';
+              const statusColor = cert.status === 'SUPPORTED' ? '#FFCB00' : '#00D2D2';
 
               return (
                 <div key={cert.id}>
@@ -163,9 +163,9 @@ function ComplianceAuditTerminal() {
 
           <div className="mt-6 pt-4 border-t border-[#222]">
               <div className="font-mono text-xs text-[#808080]">
-                <span className="text-[#00ff41]">$</span> echo "Audit complete: ALL_PASSED"
+                <span className="text-[#00D2D2]">$</span> echo "Audit complete: ALL_PASSED"
               </div>
-              <div className="font-mono text-sm text-[#00ff41] mt-1">
+              <div className="font-mono text-sm text-[#00D2D2] mt-1">
                 Audit complete: ALL_PASSED — 5/5 certifications verified
               </div>
               <div className="font-mono text-xs text-[#606060] mt-3 italic">
@@ -195,7 +195,7 @@ function SecurityFeaturesGrid() {
 
         <div className="p-6">
           <div className="font-mono text-xs text-[#808080] mb-4">
-            <span className="text-[#00ff41]">$</span> cat /security/agent-protections --format=table
+            <span className="text-[#00D2D2]">$</span> cat /security/agent-protections --format=table
           </div>
 
           <div className="space-y-1">
@@ -234,13 +234,13 @@ export function SecurityCompliance({ tone = 'belong_here' }: { tone?: MessagingT
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8 sm:mb-16">
           <div className="inline-block mb-4">
-            <span className="font-mono text-xs text-[#00ff41] bg-[#00ff41]/10 border border-[#00ff41]/30 px-3 py-1 rounded-full">
+            <span className="font-mono text-xs text-[#00D2D2] bg-[#00D2D2]/10 border border-[#00D2D2]/30 px-3 py-1 rounded-full">
               {copy.security.badge}
             </span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             <span className="text-[#e0e0e0]">{copy.security.heading}</span>
-            <span className="text-[#00ff41]">{copy.security.headingAccent}</span>
+            <span className="text-[#00D2D2]">{copy.security.headingAccent}</span>
           </h2>
           <p className="font-mono text-sm text-[#808080] max-w-2xl mx-auto">
             {copy.security.subtitle}

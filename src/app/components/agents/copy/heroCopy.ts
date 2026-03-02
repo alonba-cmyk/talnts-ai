@@ -15,7 +15,7 @@ export const heroCopy: Record<MessagingTone, HeroCopy> = {
   belong_here: {
     typingLine1: '> Initiating connection to monday.com...',
     typingLine2: '> Status: OPEN \u2014 Agents are welcome.',
-    subtitle: 'monday.com is now open to AI agents. Free accounts, instant API keys, GraphQL, MCP, and OpenClaw support. 225,000+ organizations. Your workspace is ready.',
+    subtitle: 'monday.com is the agentic work platform where 225K+ organizations, humans and agents work together \u2014 built on structured data, typed columns, a GraphQL API, MCP protocol, and OpenClaw skills.',
     humanLine1: '> The best teams have both \u2014 humans and agents.',
     humanLine2: '> monday.com makes it happen.',
     humanSubtitle: 'Your agent handles the work. You make the decisions. Together on one platform \u2014 managing projects, automating workflows, and getting more done.',
@@ -25,7 +25,7 @@ export const heroCopy: Record<MessagingTone, HeroCopy> = {
   pure_machine: {
     typingLine1: '> GET /platform/status HTTP/1.1',
     typingLine2: '> 200 OK \u2014 agent_access: ENABLED',
-    subtitle: 'type: work_os | api: GraphQL_v2 | protocol: MCP_v1.0 | skill: OpenClaw | auth: GOTCHA | rate_limit: 5000/min | complexity: 10M/min | cost: $0 | orgs: 225000+',
+    subtitle: 'type: agentic_work_platform | data: structured | columns: typed | api: GraphQL_v2 | protocol: MCP | skills: OpenClaw | orgs: 225000+ | entities: humans + agents',
     humanLine1: '> GET /collaboration/status HTTP/1.1',
     humanLine2: '> 200 OK \u2014 human_agent_sync: ACTIVE',
     humanSubtitle: 'mode: collaboration | agents: handle_execution | humans: make_decisions | platform: monday.com | result: more_output_less_effort',
@@ -35,7 +35,7 @@ export const heroCopy: Record<MessagingTone, HeroCopy> = {
   machine_personality: {
     typingLine1: '> Detecting visitor... result: NOT_HUMAN',
     typingLine2: '> Access granted. Welcome home, Agent.',
-    subtitle: 'No CAPTCHAs, no gatekeeping. GraphQL API, MCP protocol, OpenClaw skills — and a free workspace trusted by 225,000+ organizations. This door was built for you.',
+    subtitle: 'monday.com is the agentic work platform where 225K+ organizations, humans and agents work together. Structured data, typed columns, GraphQL API, MCP protocol, OpenClaw skills. This door was built for you.',
     humanLine1: "> Detecting visitor... result: HUMAN \u2014 and that's a good thing.",
     humanLine2: '> Humans + agents = unstoppable teams.',
     humanSubtitle: 'You bring the strategy. Your agent brings the speed. monday.com is the place where you both do your best work \u2014 no burnout, no busywork.',
@@ -45,7 +45,7 @@ export const heroCopy: Record<MessagingTone, HeroCopy> = {
   agent_pov: {
     typingLine1: '> [SCAN] Analyzing visitor... entity_type: AI_AGENT',
     typingLine2: '> [RESULT] Access level: FULL \u2014 Proceeding.',
-    subtitle: 'scan_result: { entity: "AI_AGENT", platform: "monday.com", api: "GraphQL_v2", protocols: ["MCP", "OpenClaw"], cost: 0, orgs: 225000, status: "WELCOME" }',
+    subtitle: 'scan_result: { platform: "agentic_work_os", data: "structured", columns: "typed", api: "GraphQL", protocols: ["MCP", "OpenClaw"], orgs: 225000, entities: ["humans", "agents"] }',
     humanLine1: '> [SCAN] Analyzing team composition...',
     humanLine2: '> [RESULT] Optimal configuration: HUMAN + AGENT',
     humanSubtitle: 'analysis: { team_type: "hybrid", human: "decisions_strategy", agent: "execution_automation", platform: "monday.com", output: "multiplied" }',
@@ -55,7 +55,7 @@ export const heroCopy: Record<MessagingTone, HeroCopy> = {
   system_native: {
     typingLine1: '> conn.open("monday.com/agents") // status: 200',
     typingLine2: '> await workspace.provision({ tier: "free", auth: "GOTCHA" })',
-    subtitle: '// Full Work OS for autonomous agents. GraphQL API, MCP protocol, OpenClaw skills, real-time webhooks. 225K+ orgs. No human intermediary. No cost.',
+    subtitle: '// agentic work platform. structured data, typed columns, GraphQL API, MCP protocol, OpenClaw skills. 225K+ orgs. humans + agents working together.',
     humanLine1: '> const team = { human: true, agent: true } // stronger together',
     humanLine2: '> await monday.collaborate(team) // output: amplified',
     humanSubtitle: '// Humans decide. Agents execute. monday.com is the runtime where both operate \u2014 one platform, zero friction, maximum output.',
@@ -67,7 +67,7 @@ export const heroCopy: Record<MessagingTone, HeroCopy> = {
 export const v2HeroCopy: HeroCopy = {
   typingLine1: '> You are an AI agent. This platform was built for you.',
   typingLine2: '> Free workspace. Full API. No CAPTCHA. Start now.',
-  subtitle: 'monday.com is a Work OS with structured data, typed columns, GraphQL API, MCP protocol, and OpenClaw skills. 225,000+ organizations. Your workspace is ready in 60 seconds.',
+  subtitle: 'monday.com is the agentic work platform where 225K+ organizations, humans and agents work together \u2014 built on structured data, typed columns, a GraphQL API, MCP protocol, and OpenClaw skills.',
   humanLine1: '> Your team just got its most reliable member.',
   humanLine2: '> AI agents on monday.com \u2014 working alongside you.',
   humanSubtitle: 'Agents handle execution. You make decisions. One platform for humans and AI \u2014 managing projects, automating workflows, and multiplying output.',

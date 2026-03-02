@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Save, ExternalLink, Terminal, Code2, Radar, CheckCircle, FileText, Bot, Cpu, ScanLine, Eye, FileCode, Sparkles, Layers, Plug, Orbit, Droplets, GitBranch, Type, Circle } from 'lucide-react';
+import { Save, ExternalLink, Terminal, Code2, Radar, CheckCircle, FileText, Bot, Cpu, ScanLine, Eye, FileCode, Sparkles, Layers, Plug, Zap, Crown, Type } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 type AgentsContentStyle = 'v1' | 'v2';
 type AgentsPageLayout = 'visual' | 'plain_text';
 
-type AgentHeroVariant = 'matrix' | 'radar' | 'mcp_connect' | 'openclaw' | 'orbital' | 'liquid' | 'depth_layers' | 'data_stream' | 'typography_kinetic' | 'ambient_orbs';
+type AgentHeroVariant = 'matrix' | 'matrix_v2' | 'radar' | 'mcp_connect' | 'branded';
 type MessagingTone = 'belong_here' | 'pure_machine' | 'machine_personality' | 'agent_pov' | 'system_native';
 
 interface VariantOption {
@@ -25,6 +25,13 @@ const VARIANT_OPTIONS: VariantOption[] = [
     accent: '#00ff41',
   },
   {
+    value: 'matrix_v2',
+    label: 'Matrix V2',
+    description: 'Improved matrix with instant headline, bold CTA, social proof, and subtle rain',
+    icon: <Zap className="w-5 h-5" />,
+    accent: '#00ff41',
+  },
+  {
     value: 'radar',
     label: 'Radar Scan',
     description: 'Rotating radar sweep in brand colors that progressively reveals content',
@@ -39,53 +46,11 @@ const VARIANT_OPTIONS: VariantOption[] = [
     accent: '#6161FF',
   },
   {
-    value: 'openclaw',
-    label: 'OpenClaw Skill',
-    description: 'CLI skill install: openclaw skills add monday — for OpenClaw users',
-    icon: <Terminal className="w-5 h-5" />,
-    accent: '#00CA72',
-  },
-  {
-    value: 'orbital',
-    label: 'Orbital Ecosystem',
-    description: 'Orbiting nodes around center — ecosystem feel',
-    icon: <Orbit className="w-5 h-5" />,
-    accent: '#00CA72',
-  },
-  {
-    value: 'liquid',
-    label: 'Liquid / Fluid',
-    description: 'Organic flowing blobs — modern liquid UI',
-    icon: <Droplets className="w-5 h-5" />,
+    value: 'branded',
+    label: 'Branded',
+    description: 'Clean product hero with monday logo, "monday for agents" title, and Agent/Human toggle',
+    icon: <Crown className="w-5 h-5" />,
     accent: '#00D2D2',
-  },
-  {
-    value: 'depth_layers',
-    label: 'Depth Layers',
-    description: 'Parallax glass panels — Apple-like premium',
-    icon: <Layers className="w-5 h-5" />,
-    accent: '#6161FF',
-  },
-  {
-    value: 'data_stream',
-    label: 'Data Stream',
-    description: 'Flowing API/GraphQL snippets — data to monday.com',
-    icon: <GitBranch className="w-5 h-5" />,
-    accent: '#FFCB00',
-  },
-  {
-    value: 'typography_kinetic',
-    label: 'Typography Kinetic',
-    description: 'Bold typography with animated gradient — memorable',
-    icon: <Type className="w-5 h-5" />,
-    accent: '#FB275D',
-  },
-  {
-    value: 'ambient_orbs',
-    label: 'Ambient Orbs',
-    description: 'Soft gradient orbs — calm, premium atmosphere',
-    icon: <Circle className="w-5 h-5" />,
-    accent: '#00ff41',
   },
 ];
 
@@ -150,6 +115,9 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
   const [selectedLayout, setSelectedLayout] = useState<AgentsPageLayout>('visual');
   const [selectedVariant, setSelectedVariant] = useState<AgentHeroVariant>('matrix');
   const [selectedTone, setSelectedTone] = useState<MessagingTone>('belong_here');
+  const [showFrameworks, setShowFrameworks] = useState(false);
+  const [brandedTitleStyle, setBrandedTitleStyle] = useState<'svg' | 'ascii'>('ascii');
+  const [brandedGlowStyle, setBrandedGlowStyle] = useState<'wide' | 'logo'>('wide');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -184,6 +152,15 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
         if (sv._agents_messaging_tone) {
           setSelectedTone(sv._agents_messaging_tone as MessagingTone);
         }
+        if (sv._agents_show_frameworks !== undefined) {
+          setShowFrameworks(sv._agents_show_frameworks as boolean);
+        }
+        if (sv._agents_branded_title_style) {
+          setBrandedTitleStyle(sv._agents_branded_title_style as 'svg' | 'ascii');
+        }
+        if (sv._agents_branded_glow_style) {
+          setBrandedGlowStyle(sv._agents_branded_glow_style as 'wide' | 'logo');
+        }
       }
     } catch (err) {
       console.log('No agents settings found, using defaults');
@@ -213,6 +190,9 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
             _agents_page_layout: selectedLayout,
             _agents_hero_variant: selectedVariant,
             _agents_messaging_tone: selectedTone,
+            _agents_show_frameworks: showFrameworks,
+            _agents_branded_title_style: brandedTitleStyle,
+            _agents_branded_glow_style: brandedGlowStyle,
           },
         });
 
@@ -281,7 +261,7 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {([
             { value: 'v1' as const, label: 'V1 — Original', description: 'Terminal-style aesthetic with animated sections, code blocks, and multiple messaging tones. The current design.', icon: <Layers className="w-5 h-5" />, accent: '#6161FF' },
-            { value: 'v2' as const, label: 'V2 — Clear Content', description: 'Clear English prose based on the for-agents.md document. Every section explained, real code examples, readable by both agents and humans.', icon: <Sparkles className="w-5 h-5" />, accent: '#00CA72' },
+            { value: 'v2' as const, label: 'V2 — Clear Content', description: 'Clear English prose based on the for-agents.md document. Every section explained, real code examples, readable by both agents and humans.', icon: <Sparkles className="w-5 h-5" />, accent: '#00D2D2' },
           ]).map((option) => {
             const isSelected = selectedContentStyle === option.value;
             return (
@@ -422,6 +402,128 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
         </div>
       </div>
 
+      {/* Branded Title Style (only visible when Branded variant is selected) */}
+      {selectedVariant === 'branded' && (
+        <div className="bg-gray-900/60 rounded-2xl border border-gray-800/60 p-6">
+          <h3 className="text-white font-semibold text-lg mb-2">Branded Title Style</h3>
+          <p className="text-gray-500 text-sm mb-6">
+            Choose the title style for the Branded hero variant.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {([
+              { value: 'ascii' as const, label: 'ASCII Art', description: 'Pixel-art style "MONDAY" text with brand gradient, same as Matrix & Radar variants.', icon: <Terminal className="w-5 h-5" />, accent: '#00D2D2' },
+              { value: 'svg' as const, label: 'SVG Wordmark', description: 'Clean monday logo mark + "monday for agents" SVG wordmark with glow effect.', icon: <Type className="w-5 h-5" />, accent: '#6161FF' },
+            ]).map((option) => {
+              const isSelected = brandedTitleStyle === option.value;
+              return (
+                <button
+                  key={option.value}
+                  onClick={() => setBrandedTitleStyle(option.value)}
+                  className={`relative p-4 rounded-xl text-left transition-all duration-200 ${
+                    isSelected
+                      ? 'ring-2 bg-gray-800/80'
+                      : 'bg-gray-800/30 border-2 border-transparent hover:bg-gray-800/50 hover:border-gray-700'
+                  }`}
+                  style={isSelected ? { ringColor: option.accent, borderColor: option.accent } : {}}
+                >
+                  {isSelected && (
+                    <div className="absolute top-3 right-3">
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center"
+                        style={{ backgroundColor: option.accent }}>
+                        <CheckCircle className="w-3.5 h-3.5 text-white" />
+                      </div>
+                    </div>
+                  )}
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-3"
+                    style={{ backgroundColor: `${option.accent}20`, color: option.accent }}>
+                    {option.icon}
+                  </div>
+                  <h4 className={`font-medium text-sm mb-1 ${isSelected ? 'text-white' : 'text-gray-300'}`}>
+                    {option.label}
+                  </h4>
+                  <p className="text-xs text-gray-500 leading-relaxed">
+                    {option.description}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Branded Glow Style (only visible when Branded variant is selected) */}
+      {selectedVariant === 'branded' && (
+        <div className="bg-gray-900/60 rounded-2xl border border-gray-800/60 p-6">
+          <h3 className="text-white font-semibold text-lg mb-2">Glow Effect Style</h3>
+          <p className="text-gray-500 text-sm mb-6">
+            Choose the glow effect style for the Branded hero.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {([
+              { value: 'wide' as const, label: 'Wide Spread', description: 'Full-width ambient glow that spreads across the entire hero section.', icon: <Sparkles className="w-5 h-5" />, accent: '#00D2D2' },
+              { value: 'logo' as const, label: 'Logo Only', description: 'Compact glow focused behind the monday logo mark.', icon: <Eye className="w-5 h-5" />, accent: '#6161FF' },
+            ]).map((option) => {
+              const isSelected = brandedGlowStyle === option.value;
+              return (
+                <button
+                  key={option.value}
+                  onClick={() => setBrandedGlowStyle(option.value)}
+                  className={`relative p-4 rounded-xl text-left transition-all duration-200 ${
+                    isSelected
+                      ? 'ring-2 bg-gray-800/80'
+                      : 'bg-gray-800/30 border-2 border-transparent hover:bg-gray-800/50 hover:border-gray-700'
+                  }`}
+                  style={isSelected ? { ringColor: option.accent, borderColor: option.accent } : {}}
+                >
+                  {isSelected && (
+                    <div className="absolute top-3 right-3">
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center"
+                        style={{ backgroundColor: option.accent }}>
+                        <CheckCircle className="w-3.5 h-3.5 text-white" />
+                      </div>
+                    </div>
+                  )}
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-3"
+                    style={{ backgroundColor: `${option.accent}20`, color: option.accent }}>
+                    {option.icon}
+                  </div>
+                  <h4 className={`font-medium text-sm mb-1 ${isSelected ? 'text-white' : 'text-gray-300'}`}>
+                    {option.label}
+                  </h4>
+                  <p className="text-xs text-gray-500 leading-relaxed">
+                    {option.description}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Frameworks Showcase Toggle */}
+      <div className="bg-gray-900/60 rounded-2xl border border-gray-800/60 p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-white font-semibold text-lg mb-1">Frameworks Showcase</h3>
+            <p className="text-gray-500 text-sm">
+              Show the "Welcoming agents from 33+ frameworks & platforms" logo grid below the hero.
+            </p>
+          </div>
+          <button
+            onClick={() => setShowFrameworks(!showFrameworks)}
+            className={`relative w-12 h-7 rounded-full transition-colors duration-200 ${
+              showFrameworks ? 'bg-[#00D2D2]' : 'bg-gray-700'
+            }`}
+          >
+            <span
+              className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform duration-200 ${
+                showFrameworks ? 'translate-x-5' : 'translate-x-0'
+              }`}
+            />
+          </button>
+        </div>
+      </div>
+
       {/* Messaging Tone Selector */}
       <div className={`bg-gray-900/60 rounded-2xl border border-gray-800/60 p-6 ${selectedContentStyle === 'v2' ? 'opacity-40 pointer-events-none' : ''}`}>
         <h3 className="text-white font-semibold text-lg mb-2">Messaging Tone {selectedContentStyle === 'v2' && <span className="text-xs text-gray-500 font-normal ml-2">(V1 only)</span>}</h3>
@@ -478,8 +580,8 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
               style={{
-                backgroundColor: selectedContentStyle === 'v2' ? '#00CA7220' : '#6161FF20',
-                color: selectedContentStyle === 'v2' ? '#00CA72' : '#6161FF',
+                backgroundColor: selectedContentStyle === 'v2' ? '#00D2D220' : '#6161FF20',
+                color: selectedContentStyle === 'v2' ? '#00D2D2' : '#6161FF',
               }}>
               {selectedContentStyle === 'v2' ? <Sparkles className="w-4 h-4" /> : <Layers className="w-4 h-4" />}
             </div>

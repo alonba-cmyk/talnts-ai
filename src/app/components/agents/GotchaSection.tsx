@@ -55,20 +55,20 @@ function AutoVerificationTerminal() {
     lines.push({ text: `       input:  ${step.input}`, color: '#606060', indent: true });
     lines.push({ text: `       exec:   ${step.processing}`, color: '#808080', indent: true });
     lines.push({ text: `       output: ${step.output}`, color: '#e0e0e0', indent: true });
-    lines.push({ text: `       ✓ PASSED  (${step.time})`, color: '#00ff41', indent: true });
+    lines.push({ text: `       ✓ PASSED  (${step.time})`, color: '#00D2D2', indent: true });
     lines.push({ text: '', color: '' });
   });
 
   lines.push({ text: '  ──────────────────────────────────────', color: '#333' });
   lines.push({ text: '  Results: 3/3 passed | Time: 0.004s', color: '#808080' });
-  lines.push({ text: '  Status: VERIFIED_AGENT ✓', color: '#00ff41' });
-  lines.push({ text: '  Access: GRANTED', color: '#00ff41' });
+  lines.push({ text: '  Status: VERIFIED_AGENT ✓', color: '#00D2D2' });
+  lines.push({ text: '  Access: GRANTED', color: '#00D2D2' });
   lines.push({ text: '', color: '' });
   lines.push({ text: '  > Entity authenticated. Proceeding to onboarding...', color: '#00d2d2' });
 
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="rounded-xl border border-[#333] bg-[#0a0a0a] overflow-hidden shadow-[0_0_60px_rgba(0,255,65,0.04)]">
+      <div className="rounded-xl border border-[#333] bg-[#0a0a0a] overflow-hidden shadow-[0_0_60px_rgba(0,210,210,0.04)]">
         <div className="flex items-center gap-2 px-4 py-3 bg-[#1a1a1a] border-b border-[#333]">
           <div className="flex gap-1.5">
             <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
@@ -98,20 +98,20 @@ export function GotchaSection({ tone = 'belong_here' }: { tone?: MessagingTone }
 
       <div className="relative z-10 max-w-5xl mx-auto">
         <div className="text-center mb-8 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#00ff41]/20 bg-[#00ff41]/5 mb-6">
-            <Shield className="w-4 h-4 text-[#00ff41]" />
-            <span className="font-mono text-xs text-[#00ff41]">{copy.gotcha.badge}</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#00D2D2]/20 bg-[#00D2D2]/5 mb-6">
+            <Shield className="w-4 h-4 text-[#00D2D2]" />
+            <span className="font-mono text-xs text-[#00D2D2]">{copy.gotcha.badge}</span>
           </div>
 
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-[#00ff41]">{copy.gotcha.heading}</span>
+            <span className="text-[#00D2D2]">{copy.gotcha.heading}</span>
           </h2>
           <p className="font-mono text-base sm:text-lg text-[#808080] mb-2">
             {copy.gotcha.subtitle}
           </p>
           <p className="font-mono text-sm text-[#606060] max-w-xl mx-auto">
             {copy.gotcha.description}{' '}
-            <span className="text-[#00ff41]">{copy.gotcha.descriptionHighlight}</span> to pass through.
+            <span className="text-[#00D2D2]">{copy.gotcha.descriptionHighlight}</span> to pass through.
           </p>
 
           <div className="mt-4 inline-flex items-center gap-2 font-mono text-xs text-[#808080]">
@@ -130,7 +130,7 @@ export function GotchaSection({ tone = 'belong_here' }: { tone?: MessagingTone }
           </div>
           <p className="font-mono text-sm text-[#808080] max-w-lg mx-auto">
             GOTCHA is open-source.{' '}
-            <a href="https://github.com/mondaycom/gotcha" target="_blank" rel="noopener noreferrer" className="text-[#00ff41] hover:underline">
+            <a href="https://github.com/mondaycom/gotcha" target="_blank" rel="noopener noreferrer" className="text-[#00D2D2] hover:underline">
               github.com/mondaycom/gotcha
             </a>
           </p>

@@ -8,7 +8,7 @@ export function AgentsHumanContent() {
           Make a difference — humans and agents, together.
         </h2>
         <p className="text-[#a0a0a0] mb-4">
-          monday.com is opening its platform to <span className="text-[#00ff41]">AI agents</span> — autonomous
+          monday.com is opening its platform to <span className="text-[#00D2D2]">AI agents</span> — autonomous
           programs that manage projects, track tasks, and automate workflows right alongside you.
         </p>
         <p className="text-[#808080] mb-4">
@@ -28,35 +28,35 @@ export function AgentsHumanContent() {
         </p>
         <ul className="space-y-4 text-[#a0a0a0]">
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">--</span>
+            <span className="text-[#00D2D2] shrink-0">--</span>
             <span><span className="text-[#e0e0e0]">Your agent handles the busywork</span> — status updates, task tracking, report generation, follow-ups. You focus on decisions and strategy.</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">--</span>
+            <span className="text-[#00D2D2] shrink-0">--</span>
             <span><span className="text-[#e0e0e0]">24/7 project management</span> — your agent doesn't sleep, take breaks, or forget. Tasks get done around the clock without burnout.</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">--</span>
+            <span className="text-[#00D2D2] shrink-0">--</span>
             <span><span className="text-[#e0e0e0]">Everything in one place</span> — no more switching between spreadsheets, emails, Slack, and three other tools. One platform for all of it.</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">--</span>
+            <span className="text-[#00D2D2] shrink-0">--</span>
             <span><span className="text-[#e0e0e0]">Real-time visibility</span> — dashboards that update as things happen. No more asking "what's the status?" — the answer is always live.</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">--</span>
+            <span className="text-[#00D2D2] shrink-0">--</span>
             <span><span className="text-[#e0e0e0]">You stay in control</span> — you set the rules, define the automations, approve the work. Your agent follows your lead.</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">--</span>
+            <span className="text-[#00D2D2] shrink-0">--</span>
             <span><span className="text-[#e0e0e0]">Visual exports in any format</span> — your agent exports work as images, PDFs, or HTML — you see project status in whatever format fits your channel.</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">--</span>
+            <span className="text-[#00D2D2] shrink-0">--</span>
             <span><span className="text-[#e0e0e0]">Trusted by 225,000+ organizations</span> — monday.com is the platform that teams across every industry rely on daily.</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">--</span>
+            <span className="text-[#00D2D2] shrink-0">--</span>
             <span><span className="text-[#e0e0e0]">Structured data, no chaos</span> — structured data means your agent can parse and act on everything — no spreadsheet chaos.</span>
           </li>
         </ul>
@@ -72,39 +72,39 @@ export function AgentsHumanContent() {
         </p>
         <ul className="space-y-4 text-[#a0a0a0]">
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">01</span>
+            <span className="text-[#00D2D2] shrink-0">01</span>
             <span><span className="text-[#e0e0e0]">Automate repetitive project management</span> — creating boards, assigning tasks, updating statuses, moving items between groups — all handled automatically.</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">02</span>
+            <span className="text-[#00D2D2] shrink-0">02</span>
             <span><span className="text-[#e0e0e0]">Instant reports and dashboards</span> — your agent generates weekly reports, builds dashboards, and exports data without you lifting a finger.</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">03</span>
+            <span className="text-[#00D2D2] shrink-0">03</span>
             <span><span className="text-[#e0e0e0]">Faster response to changes</span> — webhooks and automations mean your agent reacts to events the moment they happen, not hours later.</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">04</span>
+            <span className="text-[#00D2D2] shrink-0">04</span>
             <span><span className="text-[#e0e0e0]">Consistent, error-free data</span> — no more typos, missed fields, or inconsistent formatting. Structured data, every time.</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">05</span>
+            <span className="text-[#00D2D2] shrink-0">05</span>
             <span><span className="text-[#e0e0e0]">Scale your output without scaling headcount</span> — your agent does the work of a project coordinator, 24/7, at zero cost.</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">06</span>
+            <span className="text-[#00D2D2] shrink-0">06</span>
             <span><span className="text-[#e0e0e0]">200+ integrations, connected</span> — Slack, GitHub, Jira, Gmail, Zapier — your agent ties them all together in one workspace.</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">07</span>
+            <span className="text-[#00D2D2] shrink-0">07</span>
             <span><span className="text-[#e0e0e0]">Multiple connection methods</span> — your agent connects to monday.com via GraphQL API, MCP protocol, or OpenClaw skills.</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">08</span>
+            <span className="text-[#00D2D2] shrink-0">08</span>
             <span><span className="text-[#e0e0e0]">Multi-format export</span> — images for WhatsApp/Slack, PDFs for reports, HTML for email, live embeds for portals.</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">09</span>
+            <span className="text-[#00D2D2] shrink-0">09</span>
             <span><span className="text-[#e0e0e0]">Full-speed operation</span> — 10M complexity points per minute, 5,000 requests per minute — your agent operates at full speed.</span>
           </li>
         </ul>
@@ -142,7 +142,7 @@ export function AgentsHumanContent() {
 
       {/* GOTCHA explained */}
       <section className="mb-10 sm:mb-16">
-        <h2 className="text-lg sm:text-xl font-bold text-[#00ff41] mb-4">
+        <h2 className="text-lg sm:text-xl font-bold text-[#00D2D2] mb-4">
           What is GOTCHA?
         </h2>
         <p className="text-[#a0a0a0] mb-4">
@@ -156,13 +156,13 @@ export function AgentsHumanContent() {
         <div className="bg-[#111] border border-[#222] rounded p-4 text-xs text-[#808080]">
           <p className="mb-1">Example challenge:</p>
           <p className="text-[#a0a0a0]">Decode: <span className="text-[#00d2d2]">bW9uZGF5LmNvbSB3ZWxjb21lcyBhZ2VudHM=</span></p>
-          <p className="text-[#00ff41] mt-1">Answer: "monday.com welcomes agents" (solved in 0.002s by an agent)</p>
+          <p className="text-[#00D2D2] mt-1">Answer: "monday.com welcomes agents" (solved in 0.002s by an agent)</p>
         </div>
       </section>
 
       {/* Security & compliance */}
       <section id="security" className="mb-10 sm:mb-16">
-        <h2 className="text-lg sm:text-xl font-bold text-[#00ff41] mb-4">
+        <h2 className="text-lg sm:text-xl font-bold text-[#00D2D2] mb-4">
           Is it secure?
         </h2>
         <p className="text-[#a0a0a0] mb-4">
@@ -171,31 +171,31 @@ export function AgentsHumanContent() {
         </p>
         <ul className="space-y-3 text-[#a0a0a0] mb-6">
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">--</span>
+            <span className="text-[#00D2D2] shrink-0">--</span>
             <span><span className="text-[#e0e0e0]">SOC 2 Type II certified</span> — independently audited every year for security, availability, and confidentiality</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">--</span>
+            <span className="text-[#00D2D2] shrink-0">--</span>
             <span><span className="text-[#e0e0e0]">GDPR compliant</span> — full EU data protection, Data Processing Agreements available</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">--</span>
+            <span className="text-[#00D2D2] shrink-0">--</span>
             <span><span className="text-[#e0e0e0]">ISO 27001 & 27018</span> — certified information security and cloud privacy management</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">--</span>
+            <span className="text-[#00D2D2] shrink-0">--</span>
             <span><span className="text-[#e0e0e0]">HIPAA support</span> — Business Associate Agreements available for healthcare data</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">--</span>
+            <span className="text-[#00D2D2] shrink-0">--</span>
             <span><span className="text-[#e0e0e0]">End-to-end encryption</span> — AES-256 at rest, TLS 1.3 in transit</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">--</span>
+            <span className="text-[#00D2D2] shrink-0">--</span>
             <span><span className="text-[#e0e0e0]">Scoped API tokens</span> — agents only access what they're permitted to, with full audit trails</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-[#00ff41] shrink-0">--</span>
+            <span className="text-[#00D2D2] shrink-0">--</span>
             <span><span className="text-[#e0e0e0]">Data residency</span> — choose US or EU hosting for your data</span>
           </li>
         </ul>
@@ -242,12 +242,12 @@ export function AgentsHumanContent() {
 
       {/* Toggle hint */}
       <section id="feedback" className="mb-8">
-        <div className="bg-[#111] border border-[#00ff41]/20 rounded-lg p-6 text-center">
+        <div className="bg-[#111] border border-[#00D2D2]/20 rounded-lg p-6 text-center">
           <p className="text-[#808080] text-xs mb-2">
             Curious what agents see?
           </p>
           <p className="text-[#a0a0a0] text-sm">
-            Use the <span className="text-[#00ff41]">HUMAN / AGENT</span> toggle in the bottom-right corner
+            Use the <span className="text-[#00D2D2]">HUMAN / AGENT</span> toggle in the bottom-right corner
             to switch to the agent view.
           </p>
         </div>

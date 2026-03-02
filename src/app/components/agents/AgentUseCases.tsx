@@ -84,7 +84,7 @@ export function AgentUseCases({ tone = 'belong_here' }: { tone?: MessagingTone }
         <div className="text-center mb-8 sm:mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             <span className="text-[#e0e0e0]">{copy.useCases.heading}</span>
-            <span className="text-[#00ff41]">{copy.useCases.headingAccent}</span>
+            <span className="text-[#00D2D2]">{copy.useCases.headingAccent}</span>
           </h2>
           <p className="font-mono text-sm text-[#808080] max-w-2xl mx-auto">
             {copy.useCases.subtitle}
@@ -95,10 +95,10 @@ export function AgentUseCases({ tone = 'belong_here' }: { tone?: MessagingTone }
           {USE_CASES.map((uc) => (
             <div
               key={uc.title}
-              className="group rounded-xl border border-[#222] bg-[#111] p-5 hover:border-[#00ff41]/30 transition-all duration-500 hover:shadow-[0_0_30px_rgba(0,255,65,0.05)] flex flex-col"
+              className="group rounded-xl border border-[#222] bg-[#111] p-5 hover:border-[#00D2D2]/30 transition-all duration-500 hover:shadow-[0_0_30px_rgba(0,210,210,0.05)] flex flex-col"
             >
               <div className="flex items-center gap-3 mb-3">
-                <div className="p-2 rounded-lg bg-[#00ff41]/10 text-[#00ff41] group-hover:bg-[#00ff41]/20 transition-colors shrink-0">
+                <div className="p-2 rounded-lg bg-[#00D2D2]/10 text-[#00D2D2] group-hover:bg-[#00D2D2]/20 transition-colors shrink-0">
                   {uc.icon}
                 </div>
                 <h3 className="font-semibold text-sm text-[#e0e0e0]">{uc.title}</h3>
@@ -108,7 +108,7 @@ export function AgentUseCases({ tone = 'belong_here' }: { tone?: MessagingTone }
                 {uc.description}
               </p>
 
-              <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-lg px-3 py-2 group-hover:border-[#00ff41]/20 transition-colors">
+              <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-lg px-3 py-2 group-hover:border-[#00D2D2]/20 transition-colors">
                 <code className="font-mono text-[10px] text-[#00d2d2] break-all leading-relaxed">
                   {uc.action}
                 </code>

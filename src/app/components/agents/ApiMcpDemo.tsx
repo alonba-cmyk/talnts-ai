@@ -314,7 +314,7 @@ export function ApiMcpDemo({ tone = 'belong_here' }: { tone?: MessagingTone }) {
                     }}
                     className={`px-2 sm:px-3 py-1 rounded-t font-mono text-xs transition-all shrink-0 ${
                       activeTab === tab.id
-                        ? 'text-[#00ff41] bg-[#0d0d0d] border-t border-x border-[#333]'
+                        ? 'text-[#00D2D2] bg-[#0d0d0d] border-t border-x border-[#333]'
                         : 'text-[#808080] hover:text-[#e0e0e0]'
                     }`}
                   >
@@ -327,7 +327,7 @@ export function ApiMcpDemo({ tone = 'belong_here' }: { tone?: MessagingTone }) {
             <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={handleRun}
-                className="flex items-center gap-1 px-3 py-1 rounded font-mono text-xs text-[#00ff41] hover:bg-[#00ff41]/10 border border-[#00ff41]/30 transition-all"
+                className="flex items-center gap-1 px-3 py-1 rounded font-mono text-xs text-[#00D2D2] hover:bg-[#00D2D2]/10 border border-[#00D2D2]/30 transition-all"
               >
                 <Play className="w-3 h-3" />
                 Run
@@ -338,8 +338,8 @@ export function ApiMcpDemo({ tone = 'belong_here' }: { tone?: MessagingTone }) {
               >
                 {copied ? (
                   <>
-                    <Check className="w-3 h-3 text-[#00ff41]" />
-                    <span className="text-[#00ff41]">Copied</span>
+                    <Check className="w-3 h-3 text-[#00D2D2]" />
+                    <span className="text-[#00D2D2]">Copied</span>
                   </>
                 ) : (
                   <>
@@ -364,7 +364,7 @@ export function ApiMcpDemo({ tone = 'belong_here' }: { tone?: MessagingTone }) {
             {showResponse && currentTab.response && (
               <div className="flex-1 p-6 overflow-x-auto scrollbar-thin bg-[#080808]">
                 <div className="flex items-center gap-2 mb-3 font-mono text-[10px] text-[#606060] uppercase tracking-wider">
-                  <span className="w-2 h-2 rounded-full bg-[#00ff41]" />
+                  <span className="w-2 h-2 rounded-full bg-[#00D2D2]" />
                   <span>Response — 200 OK (23ms)</span>
                 </div>
                 <SyntaxHighlight code={currentTab.response} language="json" />

@@ -88,14 +88,14 @@ function TerminalBenefitsList({ footerCommand, footerOutput }: { footerCommand: 
 
         <div className="p-6">
           <div className="font-mono text-xs text-[#808080] mb-4">
-            <span className="text-[#00ff41]">$</span> cat /plans/agent-free-tier --verbose
+            <span className="text-[#00D2D2]">$</span> cat /plans/agent-free-tier --verbose
           </div>
 
           <div className="space-y-1">
             {BENEFITS.map((benefit) => (
               <div key={benefit.label} className="group">
                 <div className="flex items-start gap-3 py-2 px-3 rounded-lg hover:bg-[#ffffff05] transition-colors">
-                  <span className="text-[#00ff41] font-mono text-sm mt-0.5 shrink-0">[✓]</span>
+                  <span className="text-[#00D2D2] font-mono text-sm mt-0.5 shrink-0">[✓]</span>
                   <div className="flex items-center gap-2 shrink-0 text-[#00d2d2] mt-0.5">
                     {benefit.icon}
                   </div>
@@ -112,9 +112,9 @@ function TerminalBenefitsList({ footerCommand, footerOutput }: { footerCommand: 
 
           <div className="mt-6 pt-4 border-t border-[#222]">
               <div className="font-mono text-xs text-[#808080]">
-                <span className="text-[#00ff41]">$</span> {footerCommand}
+                <span className="text-[#00D2D2]">$</span> {footerCommand}
               </div>
-              <div className="font-mono text-sm text-[#00ff41] mt-1">
+              <div className="font-mono text-sm text-[#00D2D2] mt-1">
                 {footerOutput}
               </div>
           </div>
@@ -141,19 +141,19 @@ function ApiKeyDemo({ apiNote }: { apiNote: string }) {
 
         <div className="p-6 space-y-4">
           <div className="font-mono text-xs text-[#808080]">
-            <span className="text-[#00ff41]">$</span> monday api-key --generate
+            <span className="text-[#00D2D2]">$</span> monday api-key --generate
           </div>
 
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#00ff41]" />
-              <span className="font-mono text-xs text-[#00ff41]">Key generated in 0.003s</span>
+              <div className="w-2 h-2 rounded-full bg-[#00D2D2]" />
+              <span className="font-mono text-xs text-[#00D2D2]">Key generated in 0.003s</span>
             </div>
 
             <div className="bg-[#0a0a0a] border border-[#222] rounded-lg p-4 space-y-2">
               <div className="font-mono text-xs">
                 <span className="text-[#808080]">key: </span>
-                <span className="text-[#00ff41]">mk_live_••••••••••••••••</span>
+                <span className="text-[#00D2D2]">mk_live_••••••••••••••••</span>
               </div>
               <div className="font-mono text-xs">
                 <span className="text-[#808080]">type: </span>
@@ -191,7 +191,7 @@ export function AgentBenefits({ tone = 'belong_here' }: { tone?: MessagingTone }
         <div className="text-center mb-8 sm:mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             <span className="text-[#e0e0e0]">{copy.benefits.heading}</span>
-            <span className="text-[#00ff41]">{copy.benefits.headingAccent}</span>
+            <span className="text-[#00D2D2]">{copy.benefits.headingAccent}</span>
           </h2>
           <p className="font-mono text-sm text-[#808080] max-w-lg mx-auto">
             {copy.benefits.subtitle}
