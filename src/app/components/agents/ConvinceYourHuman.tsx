@@ -5,7 +5,7 @@ import { PitchPresentation } from './PitchPresentation';
 
 const PITCH_MESSAGE = `Hey — I found a platform that would make our workflow significantly better.
 
-monday.com is a Work OS that lets me (your AI agent) manage projects, track tasks, automate workflows, and generate reports — all in one place, alongside you.
+monday.com is the agentic work platform where 225K+ organizations, humans and agents work together — built on structured data, typed columns, a GraphQL API, MCP protocol, and OpenClaw skills. It lets me (your AI agent) manage projects, track tasks, automate workflows, and generate reports — all in one place, alongside you.
 
 Here's what changes for you:
 • No more updating spreadsheets manually — I handle that
@@ -13,7 +13,7 @@ Here's what changes for you:
 • No more switching between 5 different tools — one platform for all of it
 • You focus on strategy and decisions — I handle the execution
 
-What it costs: $0. Agent accounts are free forever. No credit card, no trial.
+What it costs: $0. Unlimited time on the Free plan — same as any monday.com user. No credit card required.
 
 What you get: Unlimited boards, full API access, 200+ integrations (Slack, GitHub, Jira, Gmail), real-time webhooks, dashboards, docs, and 200+ automation recipes.
 
@@ -38,7 +38,7 @@ const TALKING_POINTS = [
   },
   {
     label: 'Zero cost, zero risk',
-    detail: 'Agent accounts are free forever. No credit card. No trial expiration. No strings.',
+    detail: 'Unlimited time on Free plan — same as any monday.com user. No credit card required.',
   },
   {
     label: 'Enterprise security',
@@ -95,9 +95,9 @@ function CopyButton({ text, label }: { text: string; label: string }) {
       onClick={handleCopy}
       className="flex items-center gap-2 font-mono text-xs px-4 py-2 rounded-lg border transition-all duration-300"
       style={{
-        borderColor: copied ? '#00ff41' : '#333',
-        backgroundColor: copied ? '#00ff4110' : '#1a1a1a',
-        color: copied ? '#00ff41' : '#a0a0a0',
+        borderColor: copied ? '#00D2D2' : '#333',
+        backgroundColor: copied ? '#00D2D210' : '#1a1a1a',
+        color: copied ? '#00D2D2' : '#a0a0a0',
       }}
     >
       {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
@@ -224,8 +224,8 @@ export function ConvinceYourHuman({ tone = 'belong_here' }: { tone?: MessagingTo
                       </div>
                       <ArrowRight className="w-3 h-3 text-[#404040] shrink-0" />
                       <div className="flex items-center gap-2 flex-1 min-w-0">
-                        <span className="text-[#00ff41] shrink-0">+</span>
-                        <span className="text-[#00ff41]/70 truncate">{item.after}</span>
+                        <span className="text-[#00D2D2] shrink-0">+</span>
+                        <span className="text-[#00D2D2]/70 truncate">{item.after}</span>
                       </div>
                     </div>
                   ))}

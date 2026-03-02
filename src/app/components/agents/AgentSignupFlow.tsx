@@ -45,7 +45,7 @@ function getSignupSequence(copy: ReturnType<typeof import('./agentsCopy').getAge
 function AnimatedTerminal({ sequence }: { sequence: TerminalLine[] }) {
   return (
     <div className="w-full max-w-3xl mx-auto">
-      <div className="rounded-xl border border-[#333] bg-[#0d0d0d] overflow-hidden shadow-[0_0_60px_rgba(0,255,65,0.05)]">
+      <div className="rounded-xl border border-[#333] bg-[#0d0d0d] overflow-hidden shadow-[0_0_60px_rgba(0,210,210,0.05)]">
         {/* Terminal chrome */}
         <div className="flex items-center gap-2 px-4 py-3 bg-[#1a1a1a] border-b border-[#333]">
           <div className="flex gap-1.5">
@@ -67,7 +67,7 @@ function AnimatedTerminal({ sequence }: { sequence: TerminalLine[] }) {
                 line.type === 'blank'
                   ? 'h-4'
                   : line.type === 'success'
-                  ? 'text-[#00ff41]'
+                  ? 'text-[#00D2D2]'
                   : line.type === 'prompt'
                   ? 'text-[#00d2d2]'
                   : 'text-[#a0a0a0]'
@@ -94,17 +94,17 @@ function MockApiKeyCard() {
 
   return (
     <div className="mt-8 max-w-xl mx-auto">
-      <div className="rounded-lg border border-[#00ff41]/20 bg-[#111] p-4">
+      <div className="rounded-lg border border-[#00D2D2]/20 bg-[#111] p-4">
         <div className="flex items-center justify-between mb-3">
           <span className="font-mono text-xs text-[#808080]">Your API Key</span>
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1 font-mono text-xs text-[#808080] hover:text-[#00ff41] transition-colors"
+            className="flex items-center gap-1 font-mono text-xs text-[#808080] hover:text-[#00D2D2] transition-colors"
           >
             {copied ? (
               <>
-                <Check className="w-3 h-3 text-[#00ff41]" />
-                <span className="text-[#00ff41]">copied!</span>
+                <Check className="w-3 h-3 text-[#00D2D2]" />
+                <span className="text-[#00D2D2]">copied!</span>
               </>
             ) : (
               <>
@@ -114,7 +114,7 @@ function MockApiKeyCard() {
             )}
           </button>
         </div>
-        <div className="bg-[#0a0a0a] rounded px-3 py-2 font-mono text-sm text-[#00ff41] break-all border border-[#222]">
+        <div className="bg-[#0a0a0a] rounded px-3 py-2 font-mono text-sm text-[#00D2D2] break-all border border-[#222]">
           {mockKey}
         </div>
         <p className="mt-2 font-mono text-xs text-[#606060]">
@@ -136,7 +136,7 @@ export function AgentSignupFlow({ tone = 'belong_here' }: { tone?: MessagingTone
         <div className="text-center mb-8 sm:mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             <span className="text-[#e0e0e0]">{copy.signup.heading}</span>{' '}
-            <span className="text-[#00ff41]">{copy.signup.headingAccent}</span>
+            <span className="text-[#00D2D2]">{copy.signup.headingAccent}</span>
           </h2>
           <p className="font-mono text-sm text-[#808080] max-w-lg mx-auto">
             {copy.signup.subtitle}
@@ -151,7 +151,7 @@ export function AgentSignupFlow({ tone = 'belong_here' }: { tone?: MessagingTone
             href="https://monday.com/agents/signup"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 font-mono text-sm px-8 py-3 rounded-lg border border-[#00ff41]/50 text-[#00ff41] bg-[#00ff41]/5 hover:bg-[#00ff41]/15 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,65,0.15)]"
+            className="inline-flex items-center gap-2 font-mono text-sm px-8 py-3 rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.15)]"
           >
             <CheckCircle2 className="w-4 h-4" />
             {copy.signup.ctaText}

@@ -13,7 +13,7 @@ export const benefitsCopy: Record<MessagingTone, BenefitsCopy> = {
   belong_here: {
     heading: 'What You Get \u2014 ',
     headingAccent: 'Free',
-    subtitle: 'Not a trial. Not a demo. A permanent free workspace with full API access, unlimited boards, dashboards, docs, and 200+ integrations.',
+    subtitle: 'Unlimited time on Free plan — same as any monday.com user. Full API access, unlimited boards, dashboards, docs, and 200+ integrations.',
     footerCommand: '$ echo "Total cost: $0.00/month \u2014 forever"',
     footerOutput: 'Total cost: $0.00/month \u2014 forever',
     apiNote: 'API key provisioned instantly. Full CRUD access to boards, items, columns, groups, updates, files, workspaces, teams, docs, dashboards.',

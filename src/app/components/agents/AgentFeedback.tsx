@@ -25,7 +25,7 @@ function FeedbackTerminal({ copy }: { copy: ReturnType<typeof getAgentsCopy> }) 
     { text: '', color: '' },
     { text: '  Sending...', color: '#808080' },
     { text: '', color: '' },
-    { text: '  HTTP/1.1 201 Created', color: '#00ff41' },
+    { text: '  HTTP/1.1 201 Created', color: '#00D2D2' },
     { text: '  X-Request-Id: fb_a8k2m9p1', color: '#808080' },
     { text: '', color: '' },
     { text: '  {', color: '#00d2d2' },
@@ -35,7 +35,7 @@ function FeedbackTerminal({ copy }: { copy: ReturnType<typeof getAgentsCopy> }) 
     { text: '    "message": "Feedback logged. Processing async."', color: '#00d2d2' },
     { text: '  }', color: '#00d2d2' },
     { text: '', color: '' },
-    { text: '  ✓ Feedback submitted successfully', color: '#00ff41' },
+    { text: '  ✓ Feedback submitted successfully', color: '#00D2D2' },
   ];
 
   return (

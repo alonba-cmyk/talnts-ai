@@ -127,8 +127,8 @@ $ openclaw run --skill monday \\
   },
   {
     icon: <Gift className="w-5 h-5" />,
-    title: 'Free forever for agents',
-    description: 'Not a trial. Not freemium with crippled features. A real, useful, permanent free account.',
+    title: 'Unlimited time on Free plan',
+    description: 'Same Free plan as any monday.com user. No trial expiration. No credit card required.',
     language: 'json',
     code: `{
   "plan": "Individual",
@@ -204,7 +204,7 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
         .split(/◆|◇/)
         .map((part, i) => {
           if (part.startsWith('COMMENT')) return <span key={i} className="text-[#546e7a]">{part.slice(7)}</span>;
-          if (part.startsWith('PROMPT')) return <span key={i} className="text-[#00ff41]">{part.slice(6)}</span>;
+          if (part.startsWith('PROMPT')) return <span key={i} className="text-[#00D2D2]">{part.slice(6)}</span>;
           if (part.startsWith('CMD')) return <span key={i} className="text-[#c792ea]">{part.slice(3)}</span>;
           if (part.startsWith('STR')) return <span key={i} className="text-[#c3e88d]">{part.slice(3)}</span>;
           if (part.startsWith('URL')) return <span key={i} className="text-[#82aaff]">{part.slice(3)}</span>;
@@ -254,10 +254,10 @@ export function WhyMondayForAgents({ tone = 'belong_here' }: { tone?: MessagingT
           {CAPABILITIES.map((cap) => (
             <div
               key={cap.title}
-              className="rounded-xl border border-[#222] bg-[#111] p-6 hover:border-[#00ff41]/30 transition-all duration-500 group hover:shadow-[0_0_40px_rgba(0,255,65,0.05)]"
+              className="rounded-xl border border-[#222] bg-[#111] p-6 hover:border-[#00D2D2]/30 transition-all duration-500 group hover:shadow-[0_0_40px_rgba(0,210,210,0.05)]"
             >
               <div className="flex items-start gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-[#00ff41]/10 text-[#00ff41] group-hover:bg-[#00ff41]/20 transition-colors">
+                <div className="p-2 rounded-lg bg-[#00D2D2]/10 text-[#00D2D2] group-hover:bg-[#00D2D2]/20 transition-colors">
                   {cap.icon}
                 </div>
                 <div>

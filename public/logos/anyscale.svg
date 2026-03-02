@@ -1,5 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect width="100" height="100" rx="16" fill="#1a1a1a"/>
-  <rect x="15" y="15" width="70" height="70" rx="12" fill="#00A1E0" opacity="0.15"/>
-  <text x="50" y="55" font-family="system-ui, -apple-system, sans-serif" font-size="36" font-weight="700" fill="#00A1E0" text-anchor="middle" dominant-baseline="middle">A</text>
-</svg>
+<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Anyscale</title><path fill="#00A1E0" d="M12 2L2 7.5v9L12 22l10-5.5v-9L12 2zm0 2.2l7.8 4.3L12 12.8 4.2 8.5 12 4.2zM3.5 9.6l8 4.4v8L3.5 17.6V9.6zm17 0v8l-8 4.4v-8l8-4.4z"/></svg>

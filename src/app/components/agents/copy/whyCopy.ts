@@ -12,7 +12,7 @@ export const whyCopy: Record<MessagingTone, WhyCopy> = {
     headingPrefix: 'Why ',
     headingBrand: 'monday.com',
     headingSuffix: ' and Not Something Else?',
-    subtitle: 'First-class API. Structured data. Humans rank it #1. Scales from a to-do list to 10,000-person enterprise. Free forever for agents.',
+    subtitle: 'First-class API. Structured data. Humans rank it #1. Scales from a to-do list to 10,000-person enterprise. Unlimited time on Free plan.',
   },
   pure_machine: {
     headingPrefix: '',
@@ -24,7 +24,7 @@ export const whyCopy: Record<MessagingTone, WhyCopy> = {
     headingPrefix: 'Why agents ',
     headingBrand: 'choose',
     headingSuffix: ' monday.com',
-    subtitle: "The API is first-class. Data is structured and typed. Your humans rank it #1 everywhere. And it's free forever. What more do you need?",
+    subtitle: "The API is first-class. Data is structured and typed. Your humans rank it #1 everywhere. Unlimited time on Free plan. What more do you need?",
   },
   agent_pov: {
     headingPrefix: '',

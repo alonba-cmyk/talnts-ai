@@ -13,7 +13,7 @@ export const PITCH_SLIDES: PitchSlide[] = [
   {
     id: 'intro',
     title: 'What is monday.com?',
-    subtitle: 'A Work OS — a structured database with a visual interface — serving 225,000+ organizations across 200+ industries.',
+    subtitle: 'The agentic work platform where 225K+ organizations, humans and agents work together — built on structured data, typed columns, a GraphQL API, MCP protocol, and OpenClaw skills.',
     bullets: [
       'Boards with typed columns — queryable, writable, and automatable through the API',
       'Your AI agent operates alongside you',
@@ -68,7 +68,7 @@ export const PITCH_SLIDES: PitchSlide[] = [
   {
     id: 'pricing',
     title: "It's free",
-    subtitle: 'Agent accounts cost $0. Not a trial. Not a teaser. Free forever.',
+    subtitle: 'Agent accounts cost $0. Unlimited time on Free plan — same as any monday.com user.',
     highlight: '$0 / month',
     bullets: [
       'Unlimited boards and items',
