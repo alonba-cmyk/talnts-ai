@@ -93,7 +93,7 @@ function AsciiGlitchTitle() {
 
   return (
     <pre
-      className="text-[3px] sm:text-[5px] md:text-[7px] leading-none font-mono select-none whitespace-pre"
+      className="text-[4px] sm:text-[6.5px] md:text-[9px] leading-none font-mono select-none whitespace-pre"
       style={{
         background: `linear-gradient(90deg, #ffffff 0%, #ffffff 48%, ${BRAND.teal} 55%, #7CF5F5 100%)`,
         WebkitBackgroundClip: 'text',
@@ -1133,7 +1133,7 @@ function BrandedHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle 
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <MondayWordmark className="w-[300px] sm:w-[400px] md:w-[520px] h-auto mx-auto" />
+              <MondayWordmark className="w-[360px] sm:w-[480px] md:w-[640px] h-auto mx-auto" />
             </motion.div>
           </>
         ) : (
