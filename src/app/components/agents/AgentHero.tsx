@@ -1224,10 +1224,12 @@ function BrandedHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle 
   useEffect(() => { setTimeout(() => setStarted(true), 1000); }, []);
 
   return (
-    <div className="relative min-h-0 sm:min-h-screen flex flex-col items-center pt-14 pb-10 sm:pb-0 px-6 overflow-hidden bg-[#0a0a0a]">
-      <UnifiedDotGrid />
-      {heroDemoStyle === 'bg_stream' && <BgStreamOverlay />}
-      {glowStyle === 'wide' && <BrandedAmbientGlow />}
+    <div className="relative min-h-0 sm:min-h-screen flex flex-col items-center pt-14 pb-10 sm:pb-0 px-6 bg-[#0a0a0a]">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <UnifiedDotGrid />
+        {heroDemoStyle === 'bg_stream' && <BgStreamOverlay />}
+        {glowStyle === 'wide' && <BrandedAmbientGlow />}
+      </div>
 
       <div data-agent-text-done={d2 ? '' : undefined} className="relative z-20 max-w-4xl mx-auto text-center flex flex-col items-center mt-[3vh] sm:mt-[8vh]">
         {titleStyle === 'svg' ? (
@@ -1364,7 +1366,7 @@ function BrandedHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle 
               transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
               className="text-[#00D2D2]/40 font-mono text-sm"
             >
-              ↓ scroll to explore ↓
+              // keep parsing ↓
             </motion.div>
           </div>
         </div>
