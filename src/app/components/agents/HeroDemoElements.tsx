@@ -33,7 +33,7 @@ const METHOD_COLORS: Record<string, string> = {
 const TERMINAL_LINES = [
   { type: 'prompt', text: '$ curl -X POST api.monday.com/v2' },
   { type: 'comment', text: '  # create_item via GraphQL mutation' },
-  { type: 'output', text: '  → mutation { create_item(board_id: 7291048...' },
+  { type: 'output', text: '  → mutation { create_item(board_id: "7291048"...' },
   { type: 'success', text: '  ✓ 200 OK — item #4829 created  [42ms]' },
   { type: 'blank', text: '' },
   { type: 'prompt', text: '$ agent.execute("update_status")' },
@@ -221,16 +221,16 @@ export const AGENT_TYPING_LINES = {
 // ═══════════════════════════════════════════════════════════════
 
 const BG_STREAM_SNIPPETS = [
-  'mutation { create_item(board_id: 7291048, item_name: "Q1 Review") { id } }',
+  'mutation { create_item(board_id: "7291048", item_name: "Q1 Review") { id } }',
   'query { boards(ids: [7291048]) { items_page { items { name column_values { text } } } } }',
-  'mutation { change_column_value(item_id: 4829, column_id: "status", value: "{\\"label\\":\\"Done\\"}") { id } }',
+  'mutation { change_column_value(item_id: "4829", column_id: "status", value: "{\\"label\\":\\"Done\\"}") { id } }',
   'POST /mcp/execute { "tool": "create_update", "args": { "item_id": 4829 } }',
   'mutation { create_notification(user_id: 1234, text: "Agent completed task") { id } }',
   'query { users { id name email } }',
   'POST /openclaw/skills/run { "skill": "summarize_updates", "board_id": 7291048 }',
-  'mutation { move_item_to_group(item_id: 4829, group_id: "done") { id } }',
+  'mutation { move_item_to_group(item_id: "4829", group_id: "done") { id } }',
   'GET /v2/boards/7291048/activity_logs?limit=10',
-  'mutation { add_file_to_column(item_id: 4829, column_id: "files") { id } }',
+  'mutation { add_file_to_column(item_id: "4829", column_id: "files") { id } }',
 ];
 
 interface StreamLine {
@@ -292,7 +292,7 @@ export function BgStreamOverlay() {
 // ═══════════════════════════════════════════════════════════════
 
 type FlowStep =
-  | { type: 'stop'; target: string; label: string; pauseMs: number; driftY?: number }
+  | { type: 'stop'; target: string; label: string; pauseMs: number; driftX?: number; driftY?: number }
   | { type: 'read'; targets: string[]; label: string }
   | { type: 'glance'; target: string; driftX?: number; driftY?: number }
   | { type: 'idle'; x: number; y: number; durationMs: number }
@@ -300,10 +300,9 @@ type FlowStep =
   | { type: 'click'; target: string; label: string };
 
 const FLOW_SEQUENCE: FlowStep[] = [
-  { type: 'stop', target: 'title', label: 'scanning monday.com/agents...', pauseMs: 1400, driftY: -60 },
-  { type: 'read', targets: ['tagline', 'line1', 'line2'], label: 'reading...' },
-  { type: 'wait_text', target: 'subtitle' },
-  { type: 'stop', target: 'subtitle', label: 'LLM-native... this is agent-ready', pauseMs: 2000 },
+  { type: 'stop', target: 'title', label: 'scanning monday.com/agents...', pauseMs: 1400, driftX: 280, driftY: -40 },
+  { type: 'read', targets: ['line1'], label: 'reading...' },
+  { type: 'stop', target: 'line2', label: 'reading...', pauseMs: 900 },
   { type: 'click', target: 'cta', label: 'signing up...' },
 ];
 
@@ -345,8 +344,8 @@ function resolveStepPos(step: FlowStep): ResolvedPos {
   if (step.type === 'glance') {
     return { x: pos.x + (step.driftX ?? 0), y: pos.y + (step.driftY ?? 0) };
   }
-  if (step.type === 'stop' && step.driftY) {
-    return { x: pos.x, y: pos.y + step.driftY };
+  if (step.type === 'stop' && (step.driftX || step.driftY)) {
+    return { x: pos.x + (step.driftX ?? 0), y: pos.y + (step.driftY ?? 0) };
   }
   return pos;
 }

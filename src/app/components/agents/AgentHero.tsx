@@ -340,23 +340,26 @@ function HeroCTAs({ show }: { show: boolean }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: show ? 1 : 0, y: show ? 0 : 20 }}
       transition={{ delay: show ? 0.5 : 0, duration: 0.6 }}
-      className="mt-6 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4"
+      className="mt-6 sm:mt-12 flex flex-col items-center"
       style={{ pointerEvents: show ? 'auto' : 'none' }}
     >
-      <button
-        data-agent-target="cta"
-        onClick={scrollToSignup}
-        className="group font-mono text-sm sm:text-base px-5 sm:px-8 py-2.5 sm:py-3 rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.2)]"
-      >
-        <span className="text-[#00D2D2]/50 mr-2">$</span>
-        monday signup --agent --free
-      </button>
-      <button
-        onClick={() => document.getElementById('api')?.scrollIntoView({ behavior: 'smooth' })}
-        className="hidden sm:flex font-mono text-sm px-6 py-3 rounded-lg border border-[#808080]/30 text-[#808080] hover:text-[#e0e0e0] hover:border-[#e0e0e0]/30 transition-all duration-300"
-      >
-        man monday-api
-      </button>
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <button
+          data-agent-target="cta"
+          onClick={scrollToSignup}
+          className="group font-mono text-sm sm:text-base px-5 sm:px-8 py-2.5 sm:py-3 rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.2)]"
+        >
+          <span className="text-[#00D2D2]/50 mr-2">$</span>
+          monday signup --agent --free
+        </button>
+        <button
+          onClick={() => document.getElementById('api')?.scrollIntoView({ behavior: 'smooth' })}
+          className="hidden sm:flex font-mono text-sm px-6 py-3 rounded-lg border border-[#808080]/30 text-[#808080] hover:text-[#e0e0e0] hover:border-[#e0e0e0]/30 transition-all duration-300"
+        >
+          See monday API
+        </button>
+      </div>
+      <p className="mt-3 text-xs font-mono text-[#808080]">No credit card needed ✦ Unlimited time on Free plan</p>
     </motion.div>
   );
 }
@@ -965,7 +968,7 @@ function MatrixRainHeroV2({ tone = 'belong_here', viewerMode = 'agent', contentS
               onClick={() => document.getElementById('api')?.scrollIntoView({ behavior: 'smooth' })}
               className="hidden sm:flex font-mono text-sm px-6 py-3 rounded-lg border border-[#808080]/30 text-[#808080] hover:text-[#e0e0e0] hover:border-[#e0e0e0]/30 transition-all duration-300"
             >
-              man monday-api
+              See monday API
             </button>
           </motion.div>
         )}
@@ -1379,7 +1382,7 @@ function BrandedHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle 
 //  Main export — variant router
 // ═══════════════════════════════════════════════════════════════
 
-const DEPRECATED_VARIANTS = new Set(['boot', 'neural', 'glitch', 'cli', 'agents_grid', 'agents_marquee', 'gotcha_gate', 'api_blueprint', 'signup_60s', 'openclaw', 'orbital', 'liquid', 'depth_layers', 'data_stream', 'typography_kinetic', 'ambient_orbs']);
+const DEPRECATED_VARIANTS = new Set(['boot', 'neural', 'glitch', 'cli', 'agents_grid', 'agents_marquee', 'hatcha_gate', 'api_blueprint', 'signup_60s', 'openclaw', 'orbital', 'liquid', 'depth_layers', 'data_stream', 'typography_kinetic', 'ambient_orbs']);
 
 export function AgentHero({ variant = 'matrix', tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1', onViewerModeChange }: AgentHeroProps) {
   const v = DEPRECATED_VARIANTS.has(variant ?? '') ? 'matrix' : variant;

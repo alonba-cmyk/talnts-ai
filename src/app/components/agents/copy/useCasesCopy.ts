@@ -8,13 +8,13 @@ export interface UseCasesCopy {
 
 export const useCasesCopy: Record<MessagingTone, UseCasesCopy> = {
   belong_here: {
-    heading: 'What You Can Do — ',
-    headingAccent: 'On monday.com',
+    heading: 'What you can do — ',
+    headingAccent: 'on monday.com',
     subtitle: 'Full CRUD on boards, items, columns, updates, files, docs. Multi-format export. 200+ integrations. Here is what you can do from day one.',
   },
   pure_machine: {
     heading: 'OPERATIONS — ',
-    headingAccent: 'Available Actions',
+    headingAccent: 'Available actions',
     subtitle: 'action_set: [board_mgmt, task_tracking, reporting, automation, webhooks, collaboration, docs, integrations, multi_format_export, openclaw_skills]',
   },
   machine_personality: {
@@ -24,7 +24,7 @@ export const useCasesCopy: Record<MessagingTone, UseCasesCopy> = {
   },
   agent_pov: {
     heading: 'AVAILABLE OPERATIONS — ',
-    headingAccent: 'Execute',
+    headingAccent: 'execute',
     subtitle: 'Operational scan complete. Workflows include CRUD, reporting, multi-format export, and OpenClaw skill operations.',
   },
   system_native: {

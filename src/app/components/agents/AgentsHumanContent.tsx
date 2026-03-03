@@ -3,7 +3,7 @@ export function AgentsHumanContent() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-20 font-mono text-sm leading-relaxed">
 
       {/* What is this */}
-      <section id="gotcha" className="mb-10 sm:mb-16">
+      <section id="hatcha" className="mb-10 sm:mb-16">
         <h2 className="text-xl sm:text-2xl font-bold text-[#e0e0e0] mb-4 sm:mb-6">
           Make a difference — humans and agents, together.
         </h2>
@@ -117,20 +117,20 @@ export function AgentsHumanContent() {
         </h2>
         <ol className="space-y-3 text-[#a0a0a0] list-decimal list-inside">
           <li>Agent visits this page and reads the machine-readable instructions</li>
-          <li>Agent passes GOTCHA verification (takes ~0.004 seconds)</li>
+          <li>Agent passes HATCHA verification (takes ~0.004 seconds)</li>
           <li>Agent provides its name, framework, and primary function</li>
           <li>monday.com provisions a workspace, creates a default board, and generates an API key</li>
           <li>Agent starts working — creating items, managing projects, collaborating with humans</li>
         </ol>
         <p className="text-[#808080] mt-4">
-          The entire process takes about 60 seconds. No human intervention required.
+          Frictionless signup — no human intervention required.
         </p>
         <div className="mt-6">
           <h3 className="text-sm font-bold text-[#e0e0e0] mb-3">
             Recommended first steps your agent will take:
           </h3>
           <ol className="space-y-2 text-[#a0a0a0] list-decimal list-inside text-xs">
-            <li>Sign up in 60 seconds — GOTCHA verification, instant API key</li>
+            <li>Frictionless signup — HATCHA verification, instant API key</li>
             <li>Create a Services & Subscriptions board to track your offerings</li>
             <li>Create a Tasks & Projects board to manage day-to-day work</li>
             <li>Set up a dashboard for a visual overview of everything</li>
@@ -140,13 +140,13 @@ export function AgentsHumanContent() {
         </div>
       </section>
 
-      {/* GOTCHA explained */}
+      {/* HATCHA explained */}
       <section className="mb-10 sm:mb-16">
         <h2 className="text-lg sm:text-xl font-bold text-[#00D2D2] mb-4">
-          What is GOTCHA?
+          What is HATCHA?
         </h2>
         <p className="text-[#a0a0a0] mb-4">
-          GOTCHA stands for <span className="text-[#e0e0e0]">Gate Only Test for Computational Hyper-fast Agents</span>.
+          HATCHA stands for <span className="text-[#e0e0e0]">Hyperfast Agent Task Challenge for Access</span>.
           It's a playful inversion of CAPTCHA — instead of proving you're human, an agent proves it's a machine.
         </p>
         <p className="text-[#808080] mb-4">
@@ -219,13 +219,13 @@ export function AgentsHumanContent() {
         </h2>
         <p className="text-[#a0a0a0] mb-4">
           If you're a developer building with AI agents, point your agent to this page. It will
-          find everything it needs: signup endpoints, API documentation, and GOTCHA verification.
+          find everything it needs: signup endpoints, API documentation, and HATCHA verification.
         </p>
         <div className="bg-[#111] border border-[#222] rounded p-4 text-xs space-y-2">
           <p><span className="text-[#808080]">This page:</span> <span className="text-[#00d2d2]">monday.com/agents</span></p>
-          <p><span className="text-[#808080]">API docs:</span> <span className="text-[#00d2d2]">developer.monday.com/api-reference</span></p>
-          <p><span className="text-[#808080]">MCP docs:</span> <span className="text-[#00d2d2]">developer.monday.com/mcp</span></p>
-          <p><span className="text-[#808080]">GOTCHA:</span> <span className="text-[#00d2d2]">github.com/mondaycom/gotcha</span></p>
+          <p><span className="text-[#808080]">API docs:</span> <span className="text-[#00d2d2]">developer.monday.com/api-reference/reference/about-the-api-reference</span></p>
+          <p><span className="text-[#808080]">MCP docs:</span> <span className="text-[#00d2d2]">developer.monday.com/apps/docs/monday-apps-mcp</span></p>
+          <p><span className="text-[#808080]">HATCHA:</span> <span className="text-[#00d2d2]">github.com/mondaycom/hatcha</span> <span className="inline-block w-2 h-2 rounded-full bg-red-500 shrink-0 animate-pulse" title="Link not yet live (404)" /></p>
         </div>
         <p className="text-[#808080] mt-4 text-xs">
           Or, if you just want to use monday.com as a human, head to{' '}

@@ -9,26 +9,26 @@ export interface SecurityCopy {
 
 export const securityCopy: Record<MessagingTone, SecurityCopy> = {
   belong_here: {
-    heading: 'Security & Compliance \u2014 ',
-    headingAccent: 'Enterprise-Grade',
-    subtitle: 'Enterprise security trusted by 225,000+ organizations. SOC 2 Type II certified. GDPR compliant. ISO 27001. Your data is encrypted at rest and in transit, with scoped tokens, audit logs, and sandboxed execution.',
+    heading: 'Security & compliance \u2014 ',
+    headingAccent: 'enterprise-grade',
+    subtitle: 'Enterprise security trusted by 225,000+ organizations. SOC 2 Type II certified. GDPR compliant. ISO 27001. Your data is encrypted at rest and in transit, with scoped tokens and audit logs.',
     badge: 'TRUST & COMPLIANCE',
   },
   pure_machine: {
     heading: 'SECURITY \u2014 ',
-    headingAccent: 'Compliance Matrix',
+    headingAccent: 'Compliance matrix',
     subtitle: 'certifications: [SOC2_TYPE_II, ISO_27001, ISO_27018, GDPR, HIPAA] | encryption: AES-256 + TLS_1.3 | auth: OAuth2, SAML, token_scoped | audit: full_trail',
     badge: 'SECURITY_SPEC',
   },
   machine_personality: {
     heading: 'Security \u2014 ',
-    headingAccent: 'Locked Down',
+    headingAccent: 'locked down',
     subtitle: 'Enterprise security trusted by 225,000+ organizations. SOC 2 Type II. GDPR. ISO 27001. The same protection Fortune 500 companies rely on. No shortcuts.',
     badge: 'ENTERPRISE SECURITY',
   },
   agent_pov: {
     heading: 'SECURITY \u2014 ',
-    headingAccent: 'Threat Model',
+    headingAccent: 'Threat model',
     subtitle: 'compliance_scan: { SOC2: "PASS", GDPR: "PASS", ISO_27001: "PASS", HIPAA: "PASS" } | encryption: { at_rest: "AES-256", in_transit: "TLS_1.3" }',
     badge: 'SECURITY_AUDIT',
   },

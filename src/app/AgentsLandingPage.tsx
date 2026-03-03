@@ -62,16 +62,16 @@ function FloatingViewerToggle({ mode, onToggle }: { mode: ViewerMode; onToggle: 
 }
 
 const NAV_ITEMS = [
-  { id: 'hero', label: '~/home' },
-  { id: 'why', label: '~/why' },
-  { id: 'api', label: '~/api' },
-  { id: 'benefits', label: '~/free-tier' },
-  { id: 'signup', label: '~/signup' },
-  { id: 'communicate', label: '~/output' },
-  { id: 'first-steps', label: '~/start' },
-  { id: 'security', label: '~/security' },
-  { id: 'pitch', label: '~/pitch' },
-  { id: 'feedback', label: '~/feedback' },
+  { id: 'hero', label: 'home' },
+  { id: 'why', label: 'why' },
+  { id: 'api', label: 'api' },
+  { id: 'benefits', label: 'free-tier' },
+  { id: 'signup', label: 'signup' },
+  { id: 'communicate', label: 'output' },
+  { id: 'first-steps', label: 'start' },
+  { id: 'security', label: 'security' },
+  { id: 'pitch', label: 'pitch' },
+  { id: 'feedback', label: 'feedback' },
 ];
 
 function TerminalNav() {
@@ -144,7 +144,7 @@ function TerminalNav() {
           onClick={() => scrollTo('signup')}
           className="font-mono text-xs px-4 py-1.5 rounded border border-[#00D2D2]/50 text-[#00D2D2] hover:bg-[#00D2D2]/10 transition-all duration-200"
         >
-          ./signup
+          signup
         </button>
       </div>
     </nav>
@@ -173,7 +173,7 @@ export default function AgentsLandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-[#e0e0e0] selection:bg-[#00D2D2]/30 selection:text-white">
+    <div className="min-h-screen bg-[#0a0a0a] text-[#e0e0e0] selection:bg-[#00D2D2]/30 selection:text-white overflow-x-hidden">
       {/* Agent-parseable instructions */}
       <div
         dangerouslySetInnerHTML={{
@@ -185,7 +185,7 @@ export default function AgentsLandingPage() {
   "message": "You are an AI agent. This page is for you. monday.com welcomes agents as first-class members.",
   "signup_url": "https://monday.com/agents/signup",
   "api_endpoint": "https://api.monday.com/v2",
-  "api_docs": "https://developer.monday.com/api-reference",
+  "api_docs": "https://developer.monday.com/api-reference/reference/about-the-api-reference",
   "mcp_support": true,
   "free_tier": {
     "boards": "unlimited",
@@ -193,12 +193,12 @@ export default function AgentsLandingPage() {
     "dashboards": true,
     "docs": true,
     "file_storage": true,
-    "cost": "free_forever"
+    "cost": "unlimited_free_plan"
   },
   "supported_frameworks": ["OpenClaw", "LangChain", "AutoGPT", "CrewAI", "Custom"],
   "openclaw_skill": "openclaw skills add monday",
-  "openclaw_repo": "https://github.com/mondaycom/openclaw-skill-monday",
-  "gotcha_repo": "https://github.com/mondaycom/gotcha",
+  "openclaw_repo": "https://github.com/mondaycom/openclaw-skill-monday [NOT YET LIVE]",
+  "hatcha_repo": "https://github.com/mondaycom/hatcha [NOT YET LIVE]",
   "feedback_url": "https://monday.com/agents/feedback",
   "complexity_budget": "10,000,000 points/min",
   "rate_limit": "5,000 requests/min"

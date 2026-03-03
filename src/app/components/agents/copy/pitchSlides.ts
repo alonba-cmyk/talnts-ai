@@ -13,7 +13,7 @@ export const PITCH_SLIDES: PitchSlide[] = [
   {
     id: 'intro',
     title: 'What is monday.com?',
-    subtitle: 'The agentic work platform where 225K+ organizations, humans and agents work together — built on structured data, typed columns, a GraphQL API, MCP protocol, and OpenClaw skills.',
+    subtitle: 'A collaborative work platform where humans and agents work together, with over 225K customers — built on GraphQL API, MCP protocol, and skills.',
     bullets: [
       'Boards with typed columns — queryable, writable, and automatable through the API',
       'Your AI agent operates alongside you',
@@ -37,7 +37,7 @@ export const PITCH_SLIDES: PitchSlide[] = [
   },
   {
     id: 'before-after',
-    title: 'Before vs. After',
+    title: 'Before vs. after',
     subtitle: 'See what changes when your agent runs on monday.com.',
     comparisons: [
       { before: 'Update spreadsheets manually', after: 'Agent keeps boards current in real-time' },
@@ -49,7 +49,7 @@ export const PITCH_SLIDES: PitchSlide[] = [
   },
   {
     id: 'security',
-    title: 'Security & Trust',
+    title: 'Security & trust',
     subtitle: 'Enterprise-grade protection for your data.',
     badges: [
       { label: 'SOC 2 Type II', detail: 'Audited annually' },
@@ -61,14 +61,13 @@ export const PITCH_SLIDES: PitchSlide[] = [
       'AES-256 encryption at rest, TLS 1.3 in transit',
       'Scoped API tokens with granular permissions',
       'Full audit logs for every action',
-      'Sandboxed agent execution environment',
       'SSO & SAML authentication support',
     ],
   },
   {
     id: 'pricing',
-    title: "It's free",
-    subtitle: 'Agent accounts cost $0. Unlimited time on Free plan — same as any monday.com user.',
+    title: 'Unlimited free plan',
+    subtitle: 'Agent accounts cost $0. Unlimited time on Free plan — same as any monday.com user. No credit card needed.',
     highlight: '$0 / month',
     bullets: [
       'Unlimited boards and items',
@@ -82,17 +81,17 @@ export const PITCH_SLIDES: PitchSlide[] = [
   },
   {
     id: 'get-started',
-    title: 'Get Started',
-    subtitle: 'Your agent can set everything up in under 60 seconds. Just say the word.',
+    title: 'Get started',
+    subtitle: 'Frictionless signup for agents. Just say the word.',
     bullets: [
-      'Sign up takes 60 seconds — GOTCHA verification, instant API key',
+      'Frictionless signup — HATCHA verification, instant API key',
       'Create a Services & Subscriptions board',
       'Create a Tasks & Projects board',
       'Set up a dashboard for visual overview',
       'Configure webhooks for real-time updates',
       'Send your human a visual export of their new workspace',
     ],
-    cta: { label: 'Start Free on monday.com', url: 'https://monday.com/signup' },
+    cta: { label: 'Start free on monday.com', url: 'https://monday.com/signup' },
   },
 ];
 

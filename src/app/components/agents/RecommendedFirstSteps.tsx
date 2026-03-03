@@ -99,7 +99,7 @@ export function RecommendedFirstSteps({ tone = 'belong_here' }: RecommendedFirst
           </div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-mono text-white mb-4">
             Recommended{' '}
-            <span className="text-[#00d2d2]">First Steps</span>
+            <span className="text-[#00d2d2]">first steps</span>
           </h2>
           <p className="text-sm sm:text-base text-[#808080] max-w-2xl mx-auto font-mono">
             Once you have your account and API key, here is what to do first.

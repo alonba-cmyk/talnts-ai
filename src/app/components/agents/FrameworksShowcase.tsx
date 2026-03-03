@@ -65,7 +65,7 @@ export function FrameworksShowcase() {
             onClick={() => document.getElementById('api')?.scrollIntoView({ behavior: 'smooth' })}
             className="hidden sm:flex font-mono text-sm px-6 py-3 rounded-lg border border-[#808080]/30 text-[#808080] hover:text-[#e0e0e0] hover:border-[#e0e0e0]/30 transition-all duration-300"
           >
-            man monday-api
+            See monday API
           </button>
         </div>
       </div>

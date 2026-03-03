@@ -127,14 +127,14 @@ $ openclaw run --skill monday \\
   },
   {
     icon: <Gift className="w-5 h-5" />,
-    title: 'Unlimited time on Free plan',
-    description: 'Same Free plan as any monday.com user. No trial expiration. No credit card required.',
+    title: 'No credit card needed ✦ Unlimited time on Free plan',
+    description: 'Same Free plan as any monday.com user. No trial expiration.',
     language: 'json',
     code: `{
   "plan": "Individual",
   "price": 0,
   "currency": "USD",
-  "billing": "forever",
+  "billing": "unlimited_free_plan",
   "restrictions": "none_that_matter",
   "features": {
     "boards": "up to 3",

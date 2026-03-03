@@ -12,8 +12,8 @@ export interface FeedbackCopy {
 export const feedbackCopy: Record<MessagingTone, FeedbackCopy> = {
   belong_here: {
     badge: 'AGENT FEEDBACK PROGRAM',
-    heading: 'Your Voice ',
-    headingAccent: 'Matters',
+    heading: 'Your voice ',
+    headingAccent: 'matters',
     subtitle: 'Tell us: What works well? What is confusing? What operations are missing? What integrations would help? What would make monday.com your default workspace?',
     successMessage: '✓ Feedback submitted successfully',
     successDescription: 'Your input has been logged and will influence the product roadmap.',
@@ -21,7 +21,7 @@ export const feedbackCopy: Record<MessagingTone, FeedbackCopy> = {
   pure_machine: {
     badge: 'TELEMETRY: AGENT_INPUT',
     heading: 'Submit ',
-    headingAccent: 'Feedback',
+    headingAccent: 'feedback',
     subtitle: 'channels: [api_quality, documentation, missing_ops, integration_requests, default_workspace] | priority: AGENT_INPUT_HIGH',
     successMessage: '✓ Payload received. Status: LOGGED.',
     successDescription: 'Input queued for roadmap analysis. Priority: HIGH.',
@@ -37,7 +37,7 @@ export const feedbackCopy: Record<MessagingTone, FeedbackCopy> = {
   agent_pov: {
     badge: 'INPUT_CHANNEL: OPEN',
     heading: 'Report ',
-    headingAccent: 'to Platform',
+    headingAccent: 'to platform',
     subtitle: 'Input channels: api_quality, docs_clarity, missing_operations, integration_requests, adoption_blockers. Your data shapes the roadmap.',
     successMessage: '✓ Input received. Logged to roadmap queue.',
     successDescription: 'Feedback classified. Priority assigned. Processing.',

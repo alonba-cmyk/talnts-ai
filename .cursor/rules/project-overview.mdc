@@ -1,0 +1,142 @@
+---
+description: Project architecture, conventions, and current state for the monday.com AI Platform landing pages
+alwaysApply: true
+---
+
+# Project: monday.com AI Platform Landing Pages
+
+React + TypeScript + Vite + Tailwind CSS 4 + Supabase. Deployed on Vercel.
+
+## Tech Stack
+
+- **React 18.3** with react-router-dom 7.x
+- **Vite 6.3** with `@tailwindcss/vite` (no separate tailwind.config)
+- **TypeScript** (strict), path alias `@/*` → `./src/*`
+- **Animation**: `motion/react` (Framer Motion)
+- **Backend**: Supabase (URL: `fymyrxqjmnekcmrpvtju.supabase.co`)
+- **UI**: Radix primitives, some MUI 7 components
+- **Shell**: Windows PowerShell — no `&&` chaining, no heredocs
+
+## Key Routes
+
+| Path | Component | Description |
+|------|-----------|-------------|
+| `/` | `HomePage` | Main landing |
+| `/agents` | `AgentsLandingPage` | Agent-focused landing page (primary focus) |
+| `/platform` | `PlatformLandingPage` | Platform showcase |
+| `/admin` | `AdminApp` | Admin dashboard |
+| `/p/:slug` | `DynamicPage` | Supabase-driven pages |
+
+## Directory Structure
+
+```
+src/
+├── main.tsx                     # Routes
+├── lib/supabase.ts              # Supabase client
+├── hooks/useSupabase.ts         # All data hooks + SiteSettings interface
+├── styles/                      # tailwind.css, theme.css, fonts.css
+├── app/
+│   ├── AgentsLandingPage.tsx    # /agents page assembly
+│   ├── PlatformLandingPage.tsx  # /platform page
+│   └── components/
+│       ├── agents/              # All agents page components
+│       │   ├── AgentHero.tsx    # Hero variant router + BrandedHero
+│       │   ├── HeroDemoElements.tsx  # Demo overlays
+│       │   ├── FrameworksShowcase.tsx # Logo grid
+│       │   ├── aiCompanies.ts   # Company data
+│       │   ├── agentsCopy.ts    # Copy entry point
+│       │   └── copy/            # All copy by section
+│       └── platform/            # Platform page components
+└── admin/
+    ├── AdminApp.tsx             # Admin shell
+    └── components/
+        ├── AgentsPageSettings.tsx  # Agents admin panel
+        └── AdminSidebar.tsx
+public/
+├── logos/           # SVG/PNG company logos
+├── flare.png        # Hero glow asset
+├── small-flare.png  # Secondary glow
+└── monday-mark.png  # monday.com logo mark
+```
+
+## Agents Page Architecture
+
+### Hero Variants (`AgentHero.tsx`)
+
+Active variants: `matrix`, `matrix_v2`, `radar`, `mcp_connect`, `branded` (primary).
+All others are deprecated and fall back to `matrix`.
+
+**BrandedHero** is the main variant with:
+- Title style: `svg` (SVG wordmark) or `ascii` (Unicode block art via `AsciiGlitchTitle`)
+- Glow style: `wide` (ambient) or `logo` (behind mark only)
+- Demo style: `none`, `floating_terminal`, `toasts`, `typing_agent`, `bg_stream`, `scroll_reveal`
+- Background: `DotGridBackground` (canvas-rendered), `BrandedAmbientGlow` (PNG with `mixBlendMode: 'screen'`)
+- Typing effect: `useTypingEffect` hook for sequential character reveal
+
+### Messaging Tones (copy system)
+
+`belong_here` | `pure_machine` | `machine_personality` | `agent_pov` | `system_native`
+
+Each tone provides: `typingLine1/2`, `humanLine1/2`, `subtitle`, `humanSubtitle`, `radarBadge`.
+Viewer mode (`agent` | `human`) selects which set to display.
+
+### Hero Demo Elements (`HeroDemoElements.tsx`)
+
+| Style | Rendering | Position |
+|-------|-----------|----------|
+| `floating_terminal` | `HeroDemoElement` | Fixed bottom-right |
+| `toasts` | `HeroDemoElement` | Fixed top-right |
+| `typing_agent` | Inline (replaces hero text) | In hero |
+| `bg_stream` | `BgStreamOverlay` | Absolute behind hero |
+| `scroll_reveal` | `ScrollRevealDemo` | Between hero and next section (in `AgentsLandingPage`) |
+
+### Page Assembly (`AgentsLandingPage.tsx`)
+
+1. `TerminalNav` (fixed)
+2. `FloatingViewerToggle` (agent/human switch)
+3. `AgentHero` (variant from settings)
+4. `ScrollRevealDemo` (if demo = scroll_reveal)
+5. `FrameworksShowcase` (if enabled)
+6. Body: `AgentsHumanContent` | `AgentsV2Content` | `AgentsPlainTextContent` | full visual sections
+
+## Supabase Settings
+
+Settings stored in `site_settings` table (row id `'main'`), inside `sections_visibility` JSON with `_` prefixes.
+
+### Agents Settings (`SiteSettings` interface)
+
+| Field | Type | Default |
+|-------|------|---------|
+| `agents_hero_variant` | variant enum | `'matrix'` |
+| `agents_messaging_tone` | tone enum | `'belong_here'` |
+| `agents_page_layout` | `'visual' \| 'plain_text'` | `'visual'` |
+| `agents_content_style` | `'v1' \| 'v2'` | `'v1'` |
+| `agents_show_frameworks` | `boolean` | `false` |
+| `agents_branded_title_style` | `'svg' \| 'ascii'` | `'ascii'` |
+| `agents_branded_glow_style` | `'wide' \| 'logo'` | `'wide'` |
+| `agents_hero_demo` | demo enum | `'none'` |
+
+### Data flow
+
+```
+useSiteSettings() → agents_* fields
+  → AgentsLandingPage (layout, variant, tone, contentStyle, viewerMode)
+    → AgentHero → BrandedHero (titleStyle, glowStyle, heroDemoStyle)
+      → useHeroCopy(tone, contentStyle) → HeroCopy
+```
+
+## Admin Panel
+
+`AgentsPageSettings.tsx` controls all agents_* settings. Reads on mount, upserts to `site_settings.sections_visibility` on save. Each setting group is conditionally shown (e.g., branded-specific options only when variant = branded).
+
+## Conventions
+
+- Brand teal: `#00D2D2`
+- Dark background: `#0a0a0a`
+- Card backgrounds: `#141414` with `#1e1e1e` border
+- Dot colors: red `#FF3D57`, yellow `#FFCB00`, green `#00D2D2`, blue `#6161FF`, purple `#A25DDC`
+- Glow PNGs use `mixBlendMode: 'screen'` + `maskImage` for fade-out
+- Company logos in `/public/logos/` as colorful SVGs/PNGs
+- Animation via `motion/react` — prefer `AnimatePresence` for enter/exit
+- Canvas API used for `DotGridBackground` rendering
+- Admin settings gate visual features — always check `useSiteSettings()` before rendering conditional elements

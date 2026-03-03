@@ -145,7 +145,7 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
         }
         if (sv._agents_hero_variant) {
           const v = sv._agents_hero_variant as string;
-          const deprecated = ['boot', 'neural', 'glitch', 'cli', 'agents_grid', 'agents_marquee', 'gotcha_gate', 'api_blueprint', 'signup_60s'];
+          const deprecated = ['boot', 'neural', 'glitch', 'cli', 'agents_grid', 'agents_marquee', 'hatcha_gate', 'api_blueprint', 'signup_60s'];
           setSelectedVariant(
             deprecated.includes(v) ? 'matrix' : (v as AgentHeroVariant)
           );

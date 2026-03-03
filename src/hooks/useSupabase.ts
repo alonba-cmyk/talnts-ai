@@ -510,7 +510,7 @@ export function useSiteSettings() {
           platform_use_cases_variant: _platform_use_cases_variant || 'cards_grid',
           agents_hero_variant: (() => {
             const v = _agents_hero_variant || 'matrix';
-            const deprecated = ['boot', 'neural', 'glitch', 'cli', 'agents_grid', 'agents_marquee', 'gotcha_gate', 'api_blueprint', 'signup_60s'];
+            const deprecated = ['boot', 'neural', 'glitch', 'cli', 'agents_grid', 'agents_marquee', 'hatcha_gate', 'api_blueprint', 'signup_60s'];
             return deprecated.includes(v) ? 'matrix' : v;
           })(),
           agents_messaging_tone: _agents_messaging_tone || 'belong_here',
