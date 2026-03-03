@@ -347,7 +347,7 @@ function HeroCTAs({ show }: { show: boolean }) {
         <button
           data-agent-target="cta"
           onClick={scrollToSignup}
-          className="group font-mono text-sm sm:text-base px-5 sm:px-8 py-2.5 sm:py-3 rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.2)]"
+          className="group font-mono text-sm sm:text-base px-5 sm:px-8 py-2.5 sm:py-3 rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.2)] text-center break-words"
         >
           <span className="text-[#00D2D2]/50 mr-2">$</span>
           monday signup --agent --free
@@ -359,7 +359,12 @@ function HeroCTAs({ show }: { show: boolean }) {
           See monday API
         </button>
       </div>
-      <p className="mt-3 text-xs font-mono text-[#808080]">No credit card needed ✦ Unlimited time on Free plan</p>
+      <p className="mt-3 text-xs font-mono text-[#808080] text-center px-2">
+        No credit card needed ✦
+        <br className="sm:hidden" />
+        {' '}
+        Unlimited time on <span className="whitespace-nowrap">Free plan</span>
+      </p>
     </motion.div>
   );
 }
