@@ -16,7 +16,7 @@ const BRAND = {
   teal: '#00D2D2',
   pink: '#FB275D',
   terminalGreen: '#00D2D2',
-  humanWarm: '#FFB224',
+  humanWarm: '#00D2D2',
 } as const;
 
 const BRAND_DOTS = [BRAND.dotRed, BRAND.dotYellow, BRAND.dotGreen];
@@ -346,7 +346,7 @@ function HeroCTAs({ show }: { show: boolean }) {
           href={AGENT_SIGNUP_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="group font-mono text-sm sm:text-base px-5 sm:px-8 py-2.5 sm:py-3 rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.2)] text-center break-words inline-block"
+          className="group font-mono text-sm sm:text-base px-5 sm:px-8 py-3.5 sm:py-3 min-h-[48px] sm:min-h-0 flex items-center justify-center rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 active:bg-[#00D2D2]/20 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.2)] text-center break-words inline-flex"
         >
           <span className="text-[#00D2D2]/50 mr-2">$</span>
           monday signup --agent --free
@@ -961,7 +961,7 @@ function MatrixRainHeroV2({ tone = 'belong_here', viewerMode = 'agent', contentS
               href={AGENT_SIGNUP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-mono text-lg px-10 py-4 rounded-lg border-2 border-[#00D2D2]/60 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,210,210,0.25)] hover:border-[#00D2D2]/80 inline-block"
+              className="font-mono text-lg px-10 py-4 min-h-[48px] flex items-center justify-center rounded-lg border-2 border-[#00D2D2]/60 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 active:bg-[#00D2D2]/20 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,210,210,0.25)] hover:border-[#00D2D2]/80 inline-flex"
             >
               <span className="text-[#00D2D2]/50 mr-2">$</span>
               monday signup --agent --free

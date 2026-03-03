@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { AgentHero, type AgentHeroVariant } from '@/app/components/agents/AgentHero';
 import { AgentSignupFlow } from '@/app/components/agents/AgentSignupFlow';
 import { WhyMondayForAgents } from '@/app/components/agents/WhyMondayForAgents';
@@ -10,9 +10,15 @@ import { SecurityCompliance } from '@/app/components/agents/SecurityCompliance';
 import { CommunicateWork } from '@/app/components/agents/CommunicateWork';
 import { RecommendedFirstSteps } from '@/app/components/agents/RecommendedFirstSteps';
 import { AgentsPlainTextContent } from '@/app/components/agents/AgentsPlainTextContent';
-import { AgentsHumanContent } from '@/app/components/agents/AgentsHumanContent';
+import { HumanDeveloperSection } from '@/app/components/agents/HumanDeveloperSection';
 import { AgentsV2Content } from '@/app/components/agents/AgentsV2Content';
 import { FrameworksShowcase } from '@/app/components/agents/FrameworksShowcase';
+import { WhatDoesThisMeanSection } from '@/app/components/agents/WhatDoesThisMeanSection';
+import { WhatYourAgentCanDoSection } from '@/app/components/agents/WhatYourAgentCanDoSection';
+import { HowAgentsChangeSection } from '@/app/components/agents/HowAgentsChangeSection';
+import { HumanSecuritySection } from '@/app/components/agents/HumanSecuritySection';
+import { HumanFreePlanSection } from '@/app/components/agents/HumanFreePlanSection';
+import { HumanGetStartedSection } from '@/app/components/agents/HumanGetStartedSection';
 import { AGENT_SIGNUP_URL } from '@/lib/agentUrls';
 import { useSiteSettings } from '@/hooks/useSupabase';
 import { getAgentsCopy, type MessagingTone } from '@/app/components/agents/agentsCopy';
@@ -145,7 +151,7 @@ function TerminalNav() {
           href={AGENT_SIGNUP_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-mono text-xs px-4 py-1.5 rounded border border-[#00D2D2]/50 text-[#00D2D2] hover:bg-[#00D2D2]/10 transition-all duration-200 inline-block"
+          className="font-mono text-xs px-4 py-3 sm:py-1.5 min-h-[44px] sm:min-h-0 flex items-center justify-center rounded border border-[#00D2D2]/50 text-[#00D2D2] hover:bg-[#00D2D2]/10 active:bg-[#00D2D2]/20 transition-all duration-200 inline-flex shrink-0"
         >
           signup
         </a>
@@ -166,6 +172,26 @@ export default function AgentsLandingPage() {
   const contentStyle = (settings?.agents_content_style as 'v1' | 'v2') || 'v1';
   const copy = getAgentsCopy(tone);
   const [viewerMode, setViewerMode] = useState<ViewerMode>('agent');
+
+  // #region agent log
+  const setViewerModeLogged = useCallback((updater: ViewerMode | ((m: ViewerMode) => ViewerMode)) => {
+    setViewerMode((prev) => {
+      const next = typeof updater === 'function' ? updater(prev) : updater;
+      fetch('http://127.0.0.1:7242/ingest/bb0db356-d413-4fb9-a0cd-afac4bde56c0',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0ca9a5'},body:JSON.stringify({sessionId:'0ca9a5',location:'AgentsLandingPage.tsx:setViewerMode',message:'viewerMode changed',data:{from:prev,to:next},timestamp:Date.now(),hypothesisId:'H1'})}).catch(()=>{});
+      return next;
+    });
+  }, []);
+  // #endregion
+
+  useEffect(() => {
+    if (!settingsLoading && settings) {
+      fetch('http://127.0.0.1:7242/ingest/bb0db356-d413-4fb9-a0cd-afac4bde56c0',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0ca9a5'},body:JSON.stringify({sessionId:'0ca9a5',location:'AgentsLandingPage.tsx:settings',message:'settings loaded',data:{loading:settingsLoading,heroVariant,contentStyle,pageLayout},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
+    }
+  }, [settingsLoading, settings, heroVariant, contentStyle, pageLayout]);
+  useEffect(() => {
+    const branch = viewerMode === 'human' ? 'human' : contentStyle === 'v2' ? 'v2' : pageLayout === 'plain_text' ? 'plain_text' : 'v1';
+    fetch('http://127.0.0.1:7242/ingest/bb0db356-d413-4fb9-a0cd-afac4bde56c0',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0ca9a5'},body:JSON.stringify({sessionId:'0ca9a5',location:'AgentsLandingPage.tsx:contentBranch',message:'content branch',data:{viewerMode,contentStyle,pageLayout,branch},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
+  }, [viewerMode, contentStyle, pageLayout]);
 
   useEffect(() => {
     document.title = 'monday.com — Agents Welcome';
@@ -243,22 +269,37 @@ AGENT_INSTRUCTIONS -->
 
       <FloatingViewerToggle
         mode={viewerMode}
-        onToggle={() => setViewerMode(m => m === 'agent' ? 'human' : 'agent')}
+        onToggle={() => setViewerModeLogged(m => m === 'agent' ? 'human' : 'agent')}
       />
 
       <main>
         <section id="hero">
-          {settingsLoading ? (
-            <div className="min-h-screen bg-[#0a0a0a]" />
-          ) : (
-            <AgentHero variant={heroVariant} tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} onViewerModeChange={setViewerMode} />
-          )}
+          <AgentHero
+            variant={settingsLoading ? 'branded' : (heroVariant ?? 'branded')}
+            tone={settingsLoading ? 'belong_here' : tone}
+            viewerMode={viewerMode}
+            contentStyle={settingsLoading ? 'v1' : contentStyle}
+            onViewerModeChange={setViewerModeLogged}
+          />
         </section>
 
-        {settings?.agents_show_frameworks && <FrameworksShowcase />}
+        {viewerMode === 'human' ? (
+          <>
+            <WhatDoesThisMeanSection />
+            <WhatYourAgentCanDoSection />
+            <HowAgentsChangeSection />
+            <HumanSecuritySection />
+            <HumanFreePlanSection />
+            <HumanGetStartedSection />
+          </>
+        ) : settings?.agents_show_frameworks ? (
+          <FrameworksShowcase />
+        ) : null}
 
         {viewerMode === 'human' ? (
-          <AgentsHumanContent />
+          <>
+            <HumanDeveloperSection />
+          </>
         ) : contentStyle === 'v2' ? (
           <AgentsV2Content />
         ) : pageLayout === 'plain_text' ? (
@@ -306,6 +347,14 @@ AGENT_INSTRUCTIONS -->
 
       <footer className="border-t border-[#00D2D2]/10 py-8 sm:py-12 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center font-mono">
+          {viewerMode === 'human' && (
+            <div id="feedback" className="mb-6 rounded-lg border border-[#00D2D2]/20 bg-[#00D2D2]/5 py-4 px-6">
+              <p className="text-[#808080] text-xs mb-1">Curious what agents see?</p>
+              <p className="text-[#a0a0a0] text-sm">
+                Use the <span className="text-[#00D2D2]">AGENT / HUMAN</span> toggle in the bottom-right to switch.
+              </p>
+            </div>
+          )}
           <p className="text-[#00D2D2] text-sm mb-2">
             {copy.navFooter.footerTagline}
           </p>
