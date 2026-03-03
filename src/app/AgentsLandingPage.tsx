@@ -13,6 +13,7 @@ import { AgentsPlainTextContent } from '@/app/components/agents/AgentsPlainTextC
 import { AgentsHumanContent } from '@/app/components/agents/AgentsHumanContent';
 import { AgentsV2Content } from '@/app/components/agents/AgentsV2Content';
 import { FrameworksShowcase } from '@/app/components/agents/FrameworksShowcase';
+import { AGENT_SIGNUP_URL } from '@/lib/agentUrls';
 import { useSiteSettings } from '@/hooks/useSupabase';
 import { getAgentsCopy, type MessagingTone } from '@/app/components/agents/agentsCopy';
 
@@ -140,12 +141,14 @@ function TerminalNav() {
           ))}
         </div>
 
-        <button
-          onClick={() => scrollTo('signup')}
-          className="font-mono text-xs px-4 py-1.5 rounded border border-[#00D2D2]/50 text-[#00D2D2] hover:bg-[#00D2D2]/10 transition-all duration-200"
+        <a
+          href={AGENT_SIGNUP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono text-xs px-4 py-1.5 rounded border border-[#00D2D2]/50 text-[#00D2D2] hover:bg-[#00D2D2]/10 transition-all duration-200 inline-block"
         >
           signup
-        </button>
+        </a>
       </div>
     </nav>
   );
@@ -183,7 +186,7 @@ export default function AgentsLandingPage() {
   "platform": "monday.com",
   "initiative": "agents-welcome",
   "message": "You are an AI agent. This page is for you. monday.com welcomes agents as first-class members.",
-  "signup_url": "https://monday.com/agents/signup",
+  "signup_url": "https://auth.monday.com/users/sign_up_new?custom_flow=agent_bot",
   "api_endpoint": "https://api.monday.com/v2",
   "api_docs": "https://developer.monday.com/api-reference/reference/about-the-api-reference",
   "mcp_support": true,
@@ -309,6 +312,11 @@ AGENT_INSTRUCTIONS -->
           <p className="text-[#808080] text-xs">
             {copy.navFooter.footerHashtags}
           </p>
+          {copy.navFooter.footerOpusCredit && (
+            <p className="mt-4 text-[#505050] text-[11px]">
+              {copy.navFooter.footerOpusCredit}
+            </p>
+          )}
           <div className="mt-6 text-[#404040] text-xs">
             <span className="text-[#00D2D2]">$</span> exit 0
           </div>

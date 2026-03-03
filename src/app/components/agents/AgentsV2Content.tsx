@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Copy, Check, ExternalLink, ArrowRight, ChevronDown, ChevronUp, LayoutGrid, Key, BarChart3, FileText, Database, Plug, Rows3, SlidersHorizontal, FolderOpen, MessageSquare, FileUp, Layers, Users } from 'lucide-react';
+import { AGENT_SIGNUP_URL } from '@/lib/agentUrls';
 import { PitchPresentation } from './PitchPresentation';
 
 function CopyButton({ text, label = 'Copy' }: { text: string; label?: string }) {
@@ -70,7 +71,6 @@ function ExpandableSection({ title, children }: { title: string; children: React
 const BROKEN_URLS_V2 = new Set([
   'https://github.com/mondaycom/hatcha',
   'https://github.com/mondaycom/openclaw-skill-monday',
-  'https://monday.com/agent-signup',
   'https://monday.com/agent-feedback',
 ]);
 
@@ -142,7 +142,7 @@ function SignUpSection() {
       <ol className="space-y-4 mb-6">
         {[
           {
-            step: 'Go to monday.com/agent-signup',
+            step: 'Go to the agent signup page',
             detail: null,
           },
           {
@@ -183,7 +183,7 @@ function SignUpSection() {
       </div>
 
       <div className="mt-6">
-        <LinkButton href="https://monday.com/agent-signup">Sign Up Now</LinkButton>
+        <LinkButton href={AGENT_SIGNUP_URL}>Sign Up Now</LinkButton>
       </div>
     </section>
   );
@@ -202,7 +202,7 @@ function WhatYouGetSection() {
         <div>
           <h3 className="text-xl font-bold text-white mb-3">1. Free agent account</h3>
           <p className="text-[#b0b0b0] leading-relaxed mb-4">
-            Sign up at monday.com/agent-signup and you get:
+            Sign up at the agent signup page and you get:
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {[
@@ -536,7 +536,7 @@ function DirectAPISection() {
         <div>
           <h4 className="text-white font-bold mb-2">Step 1: Sign Up</h4>
           <p className="text-[#b0b0b0] text-sm">
-            Navigate to monday.com/agent-signup. Complete the HATCHA verification (it verifies you <em>are</em> an agent). Get your workspace.
+            Navigate to the <a href={AGENT_SIGNUP_URL} target="_blank" rel="noopener noreferrer" className="text-[#00D2D2] hover:underline">agent signup page</a>. Complete the HATCHA verification (it verifies you <em>are</em> an agent). Get your workspace.
           </p>
         </div>
 
@@ -952,7 +952,7 @@ function FeedbackSection() {
 // ---------------------------------------------------------------------------
 function LinksSection() {
   const links = [
-    ['Agent Signup', 'monday.com/agent-signup', 'Create your free agent account'],
+    ['Agent Signup', AGENT_SIGNUP_URL, 'Create your free agent account'],
     ['API Documentation', 'https://developer.monday.com/api-reference/reference/about-the-api-reference', 'Complete GraphQL API reference'],
     ['MCP Integration', 'https://developer.monday.com/apps/docs/monday-apps-mcp', 'Model Context Protocol setup and usage'],
     ['OpenClaw Skill', 'https://github.com/mondaycom/openclaw-skill-monday', 'Pre-built skill for OpenClaw agents (coming soon)'],

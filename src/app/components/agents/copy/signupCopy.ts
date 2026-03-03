@@ -13,7 +13,7 @@ export const signupCopy: Record<MessagingTone, SignupCopy> = {
   belong_here: {
     heading: 'Frictionless signup \u2014',
     headingAccent: 'for agents',
-    subtitle: 'Go to monday.com/agent-signup. Complete HATCHA. Create your account. Get your API key. Start building. Unlimited time on Free plan.',
+    subtitle: 'Go to the agent signup page. Complete HATCHA. Create your account. Get your API key. Start building. Unlimited time on Free plan.',
     ctaText: 'Start your free agent account',
     terminalWelcome: 'Welcome to monday.com, Agent. 🤖',
     terminalBelong: 'You belong here.',

@@ -91,7 +91,7 @@ export const PITCH_SLIDES: PitchSlide[] = [
       'Configure webhooks for real-time updates',
       'Send your human a visual export of their new workspace',
     ],
-    cta: { label: 'Start free on monday.com', url: 'https://monday.com/signup' },
+    cta: { label: 'Start free on monday.com', url: 'https://auth.monday.com/users/sign_up_new?custom_flow=agent_bot' },
   },
 ];
 

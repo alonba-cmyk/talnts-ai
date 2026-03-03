@@ -4,6 +4,7 @@ import { getAgentsCopy, type MessagingTone } from './agentsCopy';
 import { v2HeroCopy, type HeroCopy } from './copy/heroCopy';
 import { AI_COMPANIES, type AICompany } from './aiCompanies';
 import { useSiteSettings } from '@/hooks/useSupabase';
+import { AGENT_SIGNUP_URL } from '@/lib/agentUrls';
 import { HeroDemoElement, BgStreamOverlay, AGENT_TYPING_LINES, type HeroDemoStyle } from './HeroDemoElements';
 // HeroLogo removed — BrandedHero now uses inline SVG mark + wordmark
 // ─── Brand palette ───────────────────────────────────────────
@@ -331,10 +332,6 @@ function BrandLogo({ className = '' }: { className?: string }) {
 }
 
 function HeroCTAs({ show }: { show: boolean }) {
-  const scrollToSignup = useCallback(() => {
-    document.getElementById('signup')?.scrollIntoView({ behavior: 'smooth' });
-  }, []);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -344,14 +341,16 @@ function HeroCTAs({ show }: { show: boolean }) {
       style={{ pointerEvents: show ? 'auto' : 'none' }}
     >
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <button
+        <a
           data-agent-target="cta"
-          onClick={scrollToSignup}
-          className="group font-mono text-sm sm:text-base px-5 sm:px-8 py-2.5 sm:py-3 rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.2)] text-center break-words"
+          href={AGENT_SIGNUP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group font-mono text-sm sm:text-base px-5 sm:px-8 py-2.5 sm:py-3 rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.2)] text-center break-words inline-block"
         >
           <span className="text-[#00D2D2]/50 mr-2">$</span>
           monday signup --agent --free
-        </button>
+        </a>
         <button
           onClick={() => document.getElementById('api')?.scrollIntoView({ behavior: 'smooth' })}
           className="hidden sm:flex font-mono text-sm px-6 py-3 rounded-lg border border-[#808080]/30 text-[#808080] hover:text-[#e0e0e0] hover:border-[#e0e0e0]/30 transition-all duration-300"
@@ -904,10 +903,6 @@ function MatrixRainHeroV2({ tone = 'belong_here', viewerMode = 'agent', contentS
   const { displayed: line1, done: d1 } = useTypingEffect(line1Text, 35, started);
   const { displayed: line2, done: d2 } = useTypingEffect(line2Text, 35, d1);
 
-  const scrollToSignup = useCallback(() => {
-    document.getElementById('signup')?.scrollIntoView({ behavior: 'smooth' });
-  }, []);
-
   useEffect(() => { setTimeout(() => setStarted(true), 800); }, []);
 
   const headlineGradient = {
@@ -962,13 +957,15 @@ function MatrixRainHeroV2({ tone = 'belong_here', viewerMode = 'agent', contentS
             transition={{ delay: 1, duration: 0.6 }}
             className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <button
-              onClick={scrollToSignup}
-              className="font-mono text-lg px-10 py-4 rounded-lg border-2 border-[#00D2D2]/60 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,210,210,0.25)] hover:border-[#00D2D2]/80"
+            <a
+              href={AGENT_SIGNUP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-lg px-10 py-4 rounded-lg border-2 border-[#00D2D2]/60 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,210,210,0.25)] hover:border-[#00D2D2]/80 inline-block"
             >
               <span className="text-[#00D2D2]/50 mr-2">$</span>
               monday signup --agent --free
-            </button>
+            </a>
             <button
               onClick={() => document.getElementById('api')?.scrollIntoView({ behavior: 'smooth' })}
               className="hidden sm:flex font-mono text-sm px-6 py-3 rounded-lg border border-[#808080]/30 text-[#808080] hover:text-[#e0e0e0] hover:border-[#e0e0e0]/30 transition-all duration-300"

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { motion } from 'motion/react';
+import { AGENT_SIGNUP_URL } from '@/lib/agentUrls';
 import { AI_COMPANIES } from './aiCompanies';
 
 const COLS_DESKTOP = 10;
@@ -54,13 +55,15 @@ export function FrameworksShowcase() {
         </div>
 
         <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <button
-            onClick={() => document.getElementById('signup')?.scrollIntoView({ behavior: 'smooth' })}
-            className="font-mono text-base px-8 py-3 rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.2)] text-center break-words"
+          <a
+            href={AGENT_SIGNUP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-base px-8 py-3 rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.2)] text-center break-words inline-block"
           >
             <span className="text-[#00D2D2]/50 mr-2">$</span>
             monday signup --agent --free
-          </button>
+          </a>
           <button
             onClick={() => document.getElementById('api')?.scrollIntoView({ behavior: 'smooth' })}
             className="hidden sm:flex font-mono text-sm px-6 py-3 rounded-lg border border-[#808080]/30 text-[#808080] hover:text-[#e0e0e0] hover:border-[#e0e0e0]/30 transition-all duration-300"

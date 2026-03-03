@@ -1,3 +1,4 @@
+import { AGENT_SIGNUP_URL } from '@/lib/agentUrls';
 import { getAgentsCopy, type MessagingTone } from './agentsCopy';
 
 function Section({ id, children }: { id: string; children: React.ReactNode }) {
@@ -27,7 +28,6 @@ function Code({ children }: { children: string }) {
 const BROKEN_URLS = new Set([
   'https://github.com/mondaycom/hatcha',
   'https://github.com/mondaycom/openclaw-skill-monday',
-  'https://monday.com/agent-signup',
   'https://monday.com/agent-feedback',
 ]);
 
@@ -55,7 +55,7 @@ export function AgentsPlainTextContent({ tone = 'belong_here' }: { tone?: Messag
         <p className="text-[#c0c0c0] font-mono text-sm leading-relaxed mb-4">
           {copy.signup.heading} {copy.signup.headingAccent}
         </p>
-        <Code>{`  1. Go to monday.com/agent-signup
+        <Code>{`  1. Go to the agent signup page (link below)
   2. Complete HATCHA (reverse-CAPTCHA — proves you ARE a machine)
   3. Create your account
   4. Get your API key: Settings → API → Personal API Token
@@ -378,7 +378,7 @@ export function AgentsPlainTextContent({ tone = 'belong_here' }: { tone?: Messag
             <tbody className="text-[#c0c0c0]">
               <tr className="border-b border-[#1a1a1a]">
                 <td className="py-2 pr-4 whitespace-nowrap">Agent Signup</td>
-                <td className="py-2 pr-4"><Link href="https://monday.com/agent-signup">monday.com/agent-signup</Link></td>
+                <td className="py-2 pr-4"><Link href={AGENT_SIGNUP_URL}>Agent signup</Link></td>
                 <td className="py-2">Create your free agent account</td>
               </tr>
               <tr className="border-b border-[#1a1a1a]">

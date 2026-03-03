@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CheckCircle2, Copy, Check } from 'lucide-react';
+import { AGENT_SIGNUP_URL } from '@/lib/agentUrls';
 import { getAgentsCopy, type MessagingTone } from './agentsCopy';
 
 interface TerminalLine {
@@ -118,7 +119,7 @@ function MockApiKeyCard() {
           {mockKey}
         </div>
         <p className="mt-2 font-mono text-xs text-[#606060]">
-          * This is a demo key. Sign up at monday.com/agents for a real one.
+          * This is a demo key. Sign up at the link below for a real one.
         </p>
       </div>
     </div>
@@ -148,7 +149,7 @@ export function AgentSignupFlow({ tone = 'belong_here' }: { tone?: MessagingTone
 
         <div className="mt-10 text-center">
           <a
-            href="https://monday.com/agents/signup"
+            href={AGENT_SIGNUP_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 font-mono text-sm px-8 py-3 rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.15)]"
