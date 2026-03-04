@@ -4,26 +4,9 @@ import { ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import SlideShell, { SlideTitle, SlideSubtitle, StaggerChild } from './SlideShell';
 import { competitors } from './gtmData';
 
-const PAGE_SHOT_BASE = 'https://pageshot.site/v1/screenshot';
-const MICROLINK_API = 'https://api.microlink.io';
-
 function useCompetitorImages(comp: (typeof competitors)[0] | null) {
-  const [ogImage, setOgImage] = useState<string | null>(null);
-  useEffect(() => {
-    if (!comp) return;
-    setOgImage(null);
-    fetch(`${MICROLINK_API}?url=${encodeURIComponent(comp.productUrl)}`)
-      .then((r) => r.json())
-      .then((data) => {
-        const url = data?.data?.image?.url;
-        if (url && typeof url === 'string') setOgImage(url);
-      })
-      .catch(() => {});
-  }, [comp?.name]);
-
   return useMemo(() => {
     if (!comp) return [];
-    const encoded = encodeURIComponent(comp.productUrl);
     const items: { url: string; isVideo: boolean; tweetId?: string }[] = [];
     if (comp.galleryUrls?.length) {
       comp.galleryUrls.forEach((u) => items.push({ url: u, isVideo: false }));
@@ -36,16 +19,13 @@ function useCompetitorImages(comp: (typeof competitors)[0] | null) {
       items.push({ url: comp.promoMediaUrl, isVideo });
     }
     if (comp.screenshotUrl) items.push({ url: comp.screenshotUrl, isVideo: false });
-    if (ogImage) items.push({ url: ogImage, isVideo: false });
-    items.push({ url: `${PAGE_SHOT_BASE}?url=${encoded}&width=1280&height=800&block_ads=true`, isVideo: false });
-    items.push({ url: `${PAGE_SHOT_BASE}?url=${encoded}&width=1280&height=900&full_page=true&block_ads=true`, isVideo: false });
     const seen = new Set<string>();
     return items.filter(({ url }) => {
       if (seen.has(url)) return false;
       seen.add(url);
       return true;
     });
-  }, [comp?.name, comp?.screenshotUrl, comp?.productUrl, comp?.promoMediaUrl, comp?.tweetEmbedId, comp?.galleryUrls, ogImage]);
+  }, [comp?.name, comp?.screenshotUrl, comp?.promoMediaUrl, comp?.tweetEmbedId, comp?.galleryUrls]);
 }
 
 const SLIDESHOW_INTERVAL = 4500;
@@ -238,43 +218,55 @@ export default function CompetitorLandscapeSlide() {
               transition={{ duration: 0.25 }}
               className="flex-1 flex flex-col min-w-0"
             >
-              <div className="flex-1 min-h-0 rounded-xl overflow-hidden">
-                <CompetitorVisual key={comp.name} comp={comp} />
-              </div>
-              <div className="mt-3 flex flex-wrap items-center gap-3">
-                <img
-                  src={comp.logoUrl}
-                  alt=""
-                  className="w-8 h-8 rounded object-contain shrink-0 bg-white/5"
-                  referrerPolicy="no-referrer"
-                  onError={(e) => {(e.target as HTMLImageElement).style.display = 'none';}}
-                />
-                <div>
-                  <h3 className="text-base font-bold text-white">{comp.heroHeadline}</h3>
-                  <p className="text-xs text-white/50">{comp.heroSubline}</p>
-                </div>
-                <span className="flex items-center gap-1.5">
-                  <span className="text-sm font-bold" style={{ color: comp.color }}>{comp.keyMetric}</span>
-                  {comp.keyMetricSourceUrl && (
+              <div className="mb-3 shrink-0">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                  <div className="flex items-start gap-4 min-w-0">
+                    <img
+                      src={comp.logoUrl}
+                      alt=""
+                      className="w-10 h-10 rounded-lg object-contain shrink-0 bg-white/5 p-1"
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {(e.target as HTMLImageElement).style.display = 'none';}}
+                    />
+                    <div className="min-w-0">
+                      <h3 className="text-base sm:text-lg font-bold text-white leading-tight">{comp.heroHeadline}</h3>
+                      <p className="text-xs sm:text-sm text-white/50 mt-1 leading-snug">{comp.heroSubline}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3 sm:ml-auto">
+                    <span className="flex items-center gap-1.5">
+                      <span className="text-sm font-bold" style={{ color: comp.color }}>{comp.keyMetric}</span>
+                      {comp.keyMetricSourceUrl && (
+                        <a
+                          href={comp.keyMetricSourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-0.5 rounded text-white/40 hover:text-[#00D2D2] transition-colors"
+                          title="View source"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                    </span>
                     <a
-                      href={comp.keyMetricSourceUrl}
+                      href={comp.productUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-0.5 rounded text-white/40 hover:text-[#00D2D2] transition-colors"
-                      title="View source"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#00D2D2]/15 text-[#00D2D2] text-sm font-semibold hover:bg-[#00D2D2]/25 transition-colors border border-[#00D2D2]/30"
                     >
-                      <ExternalLink className="w-3.5 h-3.5" />
+                      View page <ExternalLink className="w-3.5 h-3.5" />
                     </a>
-                  )}
-                </span>
-                <a
-                  href={comp.productUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 text-white/70 text-xs font-medium hover:bg-white/15"
-                >
-                  View page <ExternalLink className="w-3.5 h-3.5" />
-                </a>
+                  </div>
+                </div>
+                {comp.bottomLine && (
+                  <div className="pt-3 mt-3 border-t border-white/[0.06] pl-14 sm:pl-14">
+                    <span className="text-[10px] font-semibold text-white/40 uppercase tracking-widest">Bottom line</span>
+                    <p className="text-sm text-white/90 mt-1.5 leading-relaxed">{comp.bottomLine}</p>
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 min-h-0 rounded-xl overflow-hidden">
+                <CompetitorVisual key={comp.name} comp={comp} />
               </div>
             </motion.div>
           ) : (

@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import OpeningSlide from './components/gtm/OpeningSlide';
 import ChapterSlide from './components/gtm/ChapterSlide';
 import ContextSlide from './components/gtm/ContextSlide';
+import CustomerIntentSlide from './components/gtm/CustomerIntentSlide';
 import CustomerJTBDSlide from './components/gtm/CustomerJTBDSlide';
 import AIEcosystemSlide from './components/gtm/AIEcosystemSlide';
 import CompetitorLandscapeSlide from './components/gtm/CompetitorLandscapeSlide';
@@ -18,6 +19,7 @@ const slides = [
   { id: 'ch1', label: 'Where We Are', component: () => <ChapterSlide title="Where We Are" sectionNumber={1} /> },
   { id: 'context', label: 'Context', component: ContextSlide },
   { id: 'ch2', label: 'Customers', component: () => <ChapterSlide title="Our Customers" sectionNumber={2} /> },
+  { id: 'customer-intent', label: 'Intent Blend', component: CustomerIntentSlide },
   { id: 'jtbd', label: 'JTBD', component: CustomerJTBDSlide },
   { id: 'ch3', label: 'Competition', component: () => <ChapterSlide title="Competitive Landscape" sectionNumber={3} /> },
   { id: 'ai-ecosystem', label: 'AI Ecosystem', component: AIEcosystemSlide },

@@ -57,6 +57,8 @@ export interface Competitor {
   /** Fallback: Clearbit logo when no screenshot */
   logoUrl: string;
   keyVisuals?: string[];
+  /** One-line strategic direction: "Horizontal use cases", "AI for departments", etc. */
+  bottomLine?: string;
 }
 
 /** Google Favicon - works without API key; Clearbit is deprecated */
@@ -334,6 +336,24 @@ export const departments: Department[] = [
   },
 ];
 
+/** Core vs Operational intent blend per department. operationalPercent 0=Core, 100=Operational */
+export interface DepartmentIntentBlend {
+  name: string;
+  color: string;
+  lucideIcon: string;
+  operationalPercent: number;
+  label?: string;
+}
+
+export const departmentIntentBlend: DepartmentIntentBlend[] = [
+  { name: 'Marketing', color: BRAND_COLORS.teal, lucideIcon: 'Megaphone', operationalPercent: 70, label: 'Campaigns, assets, boards' },
+  { name: 'PMO', color: BRAND_COLORS.purple, lucideIcon: 'BarChart3', operationalPercent: 40, label: 'Portfolio & coordination' },
+  { name: 'Sales', color: BRAND_COLORS.teal, lucideIcon: 'Handshake', operationalPercent: 50, label: 'Pipeline + tracking' },
+  { name: 'R&D / Dev', color: BRAND_COLORS.green, lucideIcon: 'Settings', operationalPercent: 35, label: 'Sprint, roadmap, release' },
+  { name: 'IT / Service', color: BRAND_COLORS.pink, lucideIcon: 'Shield', operationalPercent: 25, label: 'Internal tickets & ops' },
+  { name: 'Operations', color: BRAND_COLORS.yellow, lucideIcon: 'RefreshCw', operationalPercent: 65, label: 'Process & approvals' },
+];
+
 export const marketTrends: MarketTrend[] = [
   {
     id: 'vibe-coding',
@@ -418,12 +438,21 @@ export const marketTrends: MarketTrend[] = [
     ],
     points: [
       'GenAI spending surpassing non-AI software for the first time in history',
+      'VCs: enterprises will spend more on AI in 2026 — through fewer vendors (TechCrunch, Dec 2025)',
       'AI-powered CRM, ERP, and productivity platforms tripling to ~$270B',
       'Enterprises pivoted from "build" to "buy" after POC failures in 2024',
       'Of 15.2% software growth, ~9% goes to price increases — remaining 6% almost entirely to AI',
     ],
     implication:
       'The budget is there. Enterprises want AI embedded in their existing platforms, not new standalone tools.',
+    evidenceQuote: {
+      author: 'Rob Biederman',
+      handle: 'TechCrunch, Asymmetric Capital Partners',
+      text: '"Budgets will increase for a narrow set of AI products that clearly deliver results and will decline sharply for everything else. We expect a bifurcation where a small number of vendors capture a disproportionate share of enterprise AI budgets."',
+      url: 'https://techcrunch.com/2025/12/30/vcs-predict-enterprises-will-spend-more-on-ai-in-2026-through-fewer-vendors/',
+      avatarUrl: 'https://unavatar.io/domain/techcrunch.com',
+      imageUrl: '/competitors/techcrunch-enterprise-ai-2026.jpg',
+    },
   },
   {
     id: 'multi-agent-swarms',
@@ -496,9 +525,10 @@ export const competitors: Competitor[] = [
     productUrl: 'https://www.notion.so/product/ai',
     screenshotUrl: '/competitors/notion-ai.png',
     tweetEmbedId: '2028533326966088188',
-    galleryUrls: ['/competitors/notion-qa-agent.png', '/competitors/notion-bug-tracker.png'],
+    galleryUrls: ['/competitors/notion-custom-agents.png', '/competitors/notion-qa-agent.png', '/competitors/notion-bug-tracker.png'],
     logoUrl: LOGO_URL('notion.so'),
     keyVisuals: ['Custom Agents automate recurring work', 'Enterprise Search across Slack, GitHub & more', 'AI Meeting Notes — no bot needed'],
+    bottomLine: 'Horizontal use cases — Custom Agents (Q&A, routing, reporting) for any team',
   },
   {
     name: 'ClickUp',
@@ -513,7 +543,9 @@ export const competitors: Competitor[] = [
     heroSubline: 'Super Agents, autonomous projects, AI Creator. Save 1 day per week, guaranteed.',
     productUrl: 'https://clickup.com/ai',
     screenshotUrl: '/competitors/clickup-ai.png',
+    galleryUrls: ['/competitors/clickup-ai-departments.png'],
     logoUrl: LOGO_URL('clickup.com'),
+    bottomLine: 'AI for departments — Solutions for Projects, Marketing, IT, HR, Leadership',
     keyVisuals: ['Super Agents: Project Manager, Campaign Manager, Content Reviewer', 'Autonomous projects — work moves forward on its own', 'AI in every feature, right where you work'],
   },
   {
@@ -530,6 +562,7 @@ export const competitors: Competitor[] = [
     productUrl: 'https://asana.com/product/ai',
     screenshotUrl: '/competitors/asana-ai.png',
     logoUrl: LOGO_URL('asana.com'),
+    bottomLine: 'Human–AI collaboration — AI Teammates + prebuilt workflows, enterprise governance',
     keyVisuals: ['AI Teammates for complex work delegation', 'AI Studio for routine tasks — no code required', 'Smart Workflow Gallery with best practices'],
   },
   {
@@ -547,6 +580,7 @@ export const competitors: Competitor[] = [
     screenshotUrl: '/competitors/airtable-hyperagent.png',
     galleryUrls: ['/competitors/airtable-hyperagent-fleet.png'],
     logoUrl: LOGO_URL('airtable.com'),
+    bottomLine: 'AGI infrastructure — Isolated computing, skill learning, agent fleet',
     keyVisuals: ['Isolated full computing environment per session — no Mac Mini', 'Teach agents skills (due diligence, startup eval, your voice)', 'One-click deploy to Slack as intelligent coworkers', 'Command center to manage agent fleet at scale'],
   },
   {
@@ -562,7 +596,9 @@ export const competitors: Competitor[] = [
     heroSubline: 'Assign work to Rovo agents like teammates. MCP protocol for multi-vendor. Rovo Studio for custom workflows.',
     productUrl: 'https://atlassian.com/software/jira/ai',
     screenshotUrl: '/competitors/atlassian-ai.png',
+    galleryUrls: ['/competitors/atlassian-team26.png', '/competitors/atlassian-jira-rovo.png', '/competitors/atlassian-confluence-ai.png'],
     logoUrl: LOGO_URL('atlassian.com'),
+    bottomLine: 'Dev-centric agents — Rovo in Jira, MCP multi-vendor, agent assignment',
     keyVisuals: ['Agents in Jira — @mention, assign, run in workflows', 'Workflow Builder, Code Planner, Work Readiness Checker', 'MCP-compatible: Amplitude, Figma, GitHub, HubSpot'],
   },
   {
@@ -579,6 +615,7 @@ export const competitors: Competitor[] = [
     productUrl: 'https://www.salesforce.com/ai',
     screenshotUrl: '/competitors/salesforce-ai.png',
     logoUrl: LOGO_URL('salesforce.com'),
+    bottomLine: 'Enterprise agentic platform — Agentforce, Atlas, action-based pricing',
     keyVisuals: ['Atlas Reasoning Engine for autonomous planning', 'Agentforce Command Center for oversight', 'Action-based pricing at $0.10 per action'],
   },
   {
@@ -594,7 +631,13 @@ export const competitors: Competitor[] = [
     heroSubline: 'AI Agent Fabric, AI Control Tower, Agentic Playbooks. #1 Gartner AI Agents. Vibe Coding for non-technical users.',
     productUrl: 'https://www.servicenow.com/products/ai-agents.html',
     screenshotUrl: '/competitors/servicenow-ai.png',
+    galleryUrls: [
+      '/competitors/servicenow-ai-agent-studio.png',
+      '/competitors/servicenow-control-tower.png',
+      '/competitors/servicenow-one-platform.png',
+    ],
     logoUrl: LOGO_URL('servicenow.com'),
+    bottomLine: 'Enterprise orchestration — AI Agent Fabric, Control Tower, Gartner #1',
     keyVisuals: ['AI Agent Fabric for sub-second enterprise context', 'AI Control Tower for multi-agent governance', 'Agentic Playbooks for flexible business logic'],
   },
   {
@@ -610,6 +653,7 @@ export const competitors: Competitor[] = [
     heroSubline: 'Autonomous SDR outreach, deep research agents, multi-agent workflows for GTM teams.',
     productUrl: 'https://relevanceai.com',
     logoUrl: LOGO_URL('relevanceai.com'),
+    bottomLine: 'GTM vertical — Self-Driving SDRs, research agents for sales & marketing',
     keyVisuals: ['Self-Driving SDRs for outbound', 'Research agents for lead enrichment', 'Multi-agent workflows for GTM'],
   },
 ];

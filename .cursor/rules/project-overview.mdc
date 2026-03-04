@@ -97,7 +97,7 @@ Viewer mode (`agent` | `human`) selects which set to display.
 3. `AgentHero` (variant from settings)
 4. `ScrollRevealDemo` (if demo = scroll_reveal)
 5. `FrameworksShowcase` (if enabled)
-6. Body: `AgentsHumanContent` | `AgentsV2Content` | `AgentsPlainTextContent` | full visual sections
+6. Body: Human sections (`WhatDoesThisMeanSection`, `WhatYourAgentCanDoSection`, etc.) + `HumanDeveloperSection` | `AgentsV2Content` | `AgentsPlainTextContent` | full visual sections
 
 ## Supabase Settings
 

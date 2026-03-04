@@ -13,7 +13,7 @@ export default function AssumptionsSlide() {
         Seven beliefs that shape every GTM decision. Click to expand.
       </SlideSubtitle>
 
-      <Accordion type="single" collapsible className="flex flex-col gap-3">
+      <Accordion type="single" collapsible className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {assumptions.map((a) => {
           const Icon = ICON_MAP[a.lucideIcon as keyof typeof ICON_MAP] ?? Target;
           const value = String(a.number);
@@ -28,15 +28,15 @@ export default function AssumptionsSlide() {
               }`}
             >
               <AccordionTrigger
-                className="flex items-center gap-4 py-5 px-5 md:px-6 hover:no-underline hover:bg-white/[0.03] data-[state=open]:bg-white/[0.03] text-left [&>svg]:text-white/40 [&>svg]:shrink-0 [&[data-state=open]>svg]:text-white/60"
+                className="flex items-center gap-3 py-4 px-4 md:px-5 hover:no-underline hover:bg-white/[0.03] data-[state=open]:bg-white/[0.03] text-left [&>svg]:text-white/40 [&>svg]:shrink-0 [&[data-state=open]>svg]:text-white/60"
               >
-                <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   <div
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                    className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
                       a.highlight ? 'bg-[#00D2D2]/20 text-[#00D2D2]' : 'bg-white/10 text-white/70'
                     }`}
                   >
-                    <Icon className="w-5 h-5" />
+                    <Icon className="w-4 h-4" />
                   </div>
                   <span
                     className={`text-xs font-bold uppercase tracking-wider shrink-0 ${
@@ -45,7 +45,7 @@ export default function AssumptionsSlide() {
                   >
                     #{a.number}
                   </span>
-                  <h3 className="text-base font-semibold text-white leading-snug truncate">
+                  <h3 className="text-sm font-semibold text-white leading-snug line-clamp-2">
                     {a.headline}
                   </h3>
                   {a.highlight && (
@@ -56,7 +56,7 @@ export default function AssumptionsSlide() {
                 </div>
               </AccordionTrigger>
               <AccordionContent>
-                <div className="px-5 md:px-6 pb-5 pt-0">
+                <div className="px-4 md:px-5 pb-4 pt-0">
                   <p className="text-sm text-white/70 leading-relaxed">{a.detail}</p>
                   {a.sourceUrl && (
                     <a

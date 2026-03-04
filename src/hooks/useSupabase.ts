@@ -469,6 +469,9 @@ export function useSiteSettings() {
         const sectionsVisibilityData = data.sections_visibility || {};
         const { _order, _teams_agents_v2_layout, _team_flanked_featured_agents, _ai_platform_arch_layout, _platform_architecture_variant, _platform_page_version, _platform_context_toggle, _platform_sidekick_panel_style, _platform_v3_team_avatars, _platform_v3_minimal_chat, _platform_sidebar_left, _platform_v4_left_panel, _platform_showcase_section, _platform_show_jtbd_sidebar, _platform_show_inline_sidekick, _platform_show_department_bar, _platform_showcase_show_jtbd_sidebar, _platform_showcase_show_inline_sidekick, _platform_showcase_show_department_bar, _platform_showcase_variant, _platform_show_intro, _platform_intro_style, _platform_hero_variant, _platform_use_cases_variant, _agents_hero_variant, _agents_messaging_tone, _agents_page_layout, _agents_content_style, _agents_show_frameworks, _agents_branded_title_style, _agents_branded_glow_style, _agents_hero_demo, ...sectionsVisibilityWithoutOrder } = sectionsVisibilityData;
         
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/bb0db356-d413-4fb9-a0cd-afac4bde56c0',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0ca9a5'},body:JSON.stringify({sessionId:'0ca9a5',location:'useSupabase.ts:fetchSettings',message:'settings fetched',data:{hasData:!!data,_agents_hero_variant:(data?.sections_visibility as any)?._agents_hero_variant,_agents_content_style:(data?.sections_visibility as any)?._agents_content_style,_agents_page_layout:(data?.sections_visibility as any)?._agents_page_layout},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
+        // #endregion
         setSettings({
           hero_title: data.hero_title || 'What would you like to achieve?',
           hero_subtitle: data.hero_subtitle || 'with AI-powered products, AI work capabilities, and a unified context-aware layer',
@@ -529,6 +532,9 @@ export function useSiteSettings() {
       console.log('No site settings found, using defaults:', err.message);
       setError(err.message);
     } finally {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/bb0db356-d413-4fb9-a0cd-afac4bde56c0',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0ca9a5'},body:JSON.stringify({sessionId:'0ca9a5',location:'useSupabase.ts:useSiteSettings:finally',message:'settings fetch done',data:{},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
+      // #endregion
       setLoading(false);
     }
   }, []);

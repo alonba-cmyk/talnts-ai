@@ -13,7 +13,7 @@ export default function OpeningSlide() {
           GTM Strategy
         </h1>
         <p className="mt-4 text-lg md:text-xl text-white/50 max-w-md mx-auto">
-          Agentic Work Platform — humans and agents together
+          Market overview
         </p>
       </motion.div>
     </section>

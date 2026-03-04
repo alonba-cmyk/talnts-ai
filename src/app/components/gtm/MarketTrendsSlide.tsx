@@ -149,7 +149,7 @@ function TrendDetailModal({
                       />
                     )}
                     <span className="inline-block mt-3 text-xs text-[#00D2D2] font-medium">
-                      View on X →
+                      {trend.evidenceQuote.url.includes('x.com') || trend.evidenceQuote.url.includes('twitter.com') ? 'View on X →' : 'View article →'}
                     </span>
                   </a>
                 ) : (

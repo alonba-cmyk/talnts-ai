@@ -59,7 +59,7 @@ export function FrameworksShowcase() {
             href={AGENT_SIGNUP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-mono text-base px-8 py-3 rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.2)] text-center break-words inline-block"
+            className="font-mono text-base px-8 py-3.5 min-h-[48px] flex items-center justify-center rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 active:bg-[#00D2D2]/20 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.2)] text-center break-words inline-flex"
           >
             <span className="text-[#00D2D2]/50 mr-2">$</span>
             monday signup --agent --free
