@@ -106,11 +106,11 @@ export default function ProductTimelineSlide() {
                     <p className="text-xl md:text-2xl font-semibold text-white text-center">
                       {point.slideTitle}
                     </p>
-                    <div className="w-full aspect-[4/3] max-h-[55vh] rounded-xl overflow-hidden shadow-2xl">
+                    <div className="w-full aspect-video max-h-[55vh] rounded-xl overflow-hidden shadow-2xl flex items-center justify-center bg-black/20">
                       <img
                         src={point.image}
                         alt={point.title}
-                        className="w-full h-full object-cover object-[center_25%]"
+                        className="w-full h-full object-contain"
                       />
                     </div>
                   </div>

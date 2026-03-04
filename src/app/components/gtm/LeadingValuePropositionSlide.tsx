@@ -4,7 +4,7 @@ import SlideShell, { SlideTitle } from './SlideShell';
 
 const messageToday = 'Outpace everyone with the best AI work platform';
 
-const messageFuture = 'An AI work platform, where humans and agents work together, to achieve business outcomes';
+const messageFuture = 'An AI work platform, where people and agents work together, to achieve business outcomes';
 
 export default function LeadingValuePropositionSlide() {
   return (

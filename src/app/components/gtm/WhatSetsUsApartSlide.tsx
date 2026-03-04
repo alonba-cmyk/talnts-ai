@@ -12,6 +12,7 @@ const future = [
   'Work Context',
   'Enterprise-grade secure',
   'Control & governance',
+  'Easy to adopt AI capabilities',
   'Agent hub',
 ];
 
