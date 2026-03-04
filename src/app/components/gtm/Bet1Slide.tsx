@@ -1,10 +1,27 @@
+import { useMemo } from 'react';
 import { motion } from 'motion/react';
 import { Check, AlertTriangle } from 'lucide-react';
 import SlideShell, { SlideTitle, SlideSubtitle, SlideBadge, StaggerChild } from './SlideShell';
 import { bets } from './gtmData';
+import { useDepartments } from '@/hooks/useSupabase';
+
+/** Map Bet 1 agent name to platform department id for avatar lookup */
+const AGENT_TO_DEPT: Record<string, string> = {
+  'Marketing Agent': 'marketing',
+  'Sales Agent': 'sales',
+  'PMO Agent': 'operations',
+  'Dev Agent': 'product',
+  'Service Agent': 'support',
+};
 
 export default function Bet1Slide() {
   const bet = bets[0];
+  const { departments } = useDepartments();
+  const deptBySlug = useMemo(() => {
+    const m = new Map<string, { avatar_image: string; avatar_color: string }>();
+    departments.forEach((d) => m.set(d.name, { avatar_image: d.avatar_image, avatar_color: d.avatar_color }));
+    return m;
+  }, [departments]);
 
   return (
     <SlideShell dark>
@@ -13,17 +30,25 @@ export default function Bet1Slide() {
       <SlideSubtitle dark>{bet.subtitle}</SlideSubtitle>
 
       <div className="space-y-3 mb-8">
-        {bet.agents.map((agent, i) => (
+        {bet.agents.map((agent, i) => {
+          const deptSlug = AGENT_TO_DEPT[agent.name];
+          const dept = deptSlug ? deptBySlug.get(deptSlug) : null;
+          const avatarColor = dept?.avatar_color || agent.color;
+          return (
           <StaggerChild key={agent.name} index={i}>
             <motion.div
               whileHover={{ x: 6, borderColor: agent.color + '66' }}
               className="flex items-center gap-4 p-4 rounded-xl border bg-white/[0.04] transition-all border-white/[0.08]"
             >
               <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold shrink-0"
-                style={{ background: agent.color + '22', color: agent.color }}
+                className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center text-lg font-bold shrink-0 ring-1 ring-white/10"
+                style={{ background: dept?.avatar_image ? avatarColor : agent.color + '22', color: dept?.avatar_image ? undefined : agent.color }}
               >
-                {agent.name.charAt(0)}
+                {dept?.avatar_image ? (
+                  <img src={dept.avatar_image} alt={agent.name} className="w-full h-full object-cover" />
+                ) : (
+                  agent.name.charAt(0)
+                )}
               </div>
               <div className="flex-1">
                 <div className="font-semibold text-white text-sm">{agent.name}</div>
@@ -32,7 +57,8 @@ export default function Bet1Slide() {
               <div className="w-2 h-2 rounded-full shrink-0" style={{ background: agent.color }} />
             </motion.div>
           </StaggerChild>
-        ))}
+        );
+        })}
       </div>
 
       <div className="grid md:grid-cols-2 gap-5 mb-6">

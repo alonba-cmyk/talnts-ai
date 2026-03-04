@@ -821,7 +821,7 @@ export const bets: Bet[] = [
     ],
     keyRisk: 'Generic capabilities are harder to differentiate — any AI platform could offer these.',
     tradeOff: 'We chose department-specific over horizontal to avoid commoditization.',
-    phase: 'Phase 2: Research, Reporting agents (H2 2026). Agent Marketplace beta.',
+    phase: 'Phase 2: Research, Reporting agents (H2 2026). Agent Hub beta.',
   },
   {
     number: 3,
@@ -833,7 +833,7 @@ export const bets: Bet[] = [
     agents: [],
     pillars: [
       {
-        title: 'Agent Marketplace',
+        title: 'Agent Hub',
         description: 'Department-specific AND horizontal agents — monday.com-built and third-party (MCP-compatible)',
         lucideIcon: 'Store',
       },
@@ -857,9 +857,9 @@ export const bets: Bet[] = [
     ],
     pros: [],
     cons: [],
-    keyRisk: 'Requires significant product investment in orchestration and marketplace — timing could slip.',
+    keyRisk: 'Requires significant product investment in orchestration and hub — timing could slip.',
     tradeOff: 'We chose orchestration layer over single-agent focus to own the category long-term.',
-    phase: 'Phase 2: Work Surface messaging, Agent Marketplace beta. Phase 3: Control Tower, governance (2027).',
+    phase: 'Phase 2: Work Surface messaging, Agent Hub beta. Phase 3: Control Tower, governance (2027).',
   },
 ];
 
@@ -881,7 +881,7 @@ export const roadmap: RoadmapPhase[] = [
     items: [
       'Marketing + PMO agents launch',
       'Horizontal capabilities: Research, Reporting agents',
-      'Agent Marketplace beta — third-party agent integration',
+      'Agent Hub beta — third-party agent integration',
       'MCP protocol support for external agents',
     ],
     color: BRAND_COLORS.purple,
