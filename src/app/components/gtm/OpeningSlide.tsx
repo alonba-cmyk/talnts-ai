@@ -15,9 +15,9 @@ export default function OpeningSlide() {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="relative text-center max-w-2xl"
+        className="relative text-center max-w-4xl"
       >
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight">
+        <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-tight whitespace-nowrap">
           monday story{' '}
           <span className="bg-gradient-to-r from-[#00D2D2] to-[#A25DDC] bg-clip-text text-transparent">
             evolution
