@@ -8,15 +8,14 @@ const agendaItems = [
     num: 3,
     title: 'Marketing implications',
     subItems: [
+      'Assumptions',
       'Our category & positioning',
       'Our leading value proposition',
       'How we tell the story',
       'What sets us apart',
-      'Assumptions',
-      'Bets',
     ],
   },
-  { num: 4, title: 'Discussion', subItems: ['Time to talk'] },
+  { num: 4, title: 'Summary & Discussion', subItems: ['Our packaging', 'Time to talk'] },
 ];
 
 export default function AgendaSlide() {

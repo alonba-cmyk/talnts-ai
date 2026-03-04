@@ -21,8 +21,9 @@ import CategoryPositioningSlide from './components/gtm/CategoryPositioningSlide'
 import LeadingValuePropositionSlide from './components/gtm/LeadingValuePropositionSlide';
 import HowWeTellStorySlide from './components/gtm/HowWeTellStorySlide';
 import WhatSetsUsApartSlide from './components/gtm/WhatSetsUsApartSlide';
+import PackagingSummarySlide from './components/gtm/PackagingSummarySlide';
 
-const IMPLICATION_TILE_INDICES = [17, 18, 19, 20];
+const IMPLICATION_TILE_INDICES = [18, 19, 20, 21]; // category, value-prop, story, what-sets-us-apart
 
 function createSlides(goToSlide: (index: number) => void) {
   const slidesArray = [
@@ -47,21 +48,22 @@ function createSlides(goToSlide: (index: number) => void) {
     label: '4 main implications',
     component: () => (
       <MarketingImplicationsAgendaSlide
-        onTileClick={(i) => goToSlide(IMPLICATION_TILE_INDICES[i] ?? 17)}
+        onTileClick={(i) => goToSlide(IMPLICATION_TILE_INDICES[i] ?? 18)}
       />
     ),
   },
+  { id: 'assumptions', label: 'Assumptions', component: AssumptionsSlide },
   { id: 'category-positioning', label: 'Category & Positioning', component: CategoryPositioningSlide },
   { id: 'leading-value-prop', label: 'Leading Value Proposition', component: LeadingValuePropositionSlide },
   { id: 'how-we-tell-story', label: 'How we tell the story', component: HowWeTellStorySlide },
   { id: 'what-sets-us-apart', label: 'What sets us apart', component: WhatSetsUsApartSlide },
-  { id: 'assumptions', label: 'Assumptions', component: AssumptionsSlide },
+  { id: 'packaging-summary', label: 'Our packaging', component: PackagingSummarySlide },
   { id: 'time-to-talk', label: 'Time to talk', component: TimeToTalkSlide },
 ];
   return slidesArray;
 }
 
-const SLIDE_COUNT = 23;
+const SLIDE_COUNT = 24;
 
 export default function GTMStrategyPresentation() {
   const [currentSlide, setCurrentSlide] = useState(0);
