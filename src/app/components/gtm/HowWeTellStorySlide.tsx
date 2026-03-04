@@ -1,12 +1,28 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown } from 'lucide-react';
 import SlideShell, { SlideTitle, SlideSubtitle } from './SlideShell';
 import { bets } from './gtmData';
+import { useDepartments } from '@/hooks/useSupabase';
+
+const AGENT_TO_DEPT: Record<string, string> = {
+  'Marketing Agent': 'marketing',
+  'Sales Agent': 'sales',
+  'PMO Agent': 'operations',
+  'Dev Agent': 'product',
+  'Service Agent': 'support',
+};
 
 export default function HowWeTellStorySlide() {
   const [openDept, setOpenDept] = useState<number | null>(null);
   const [openCap, setOpenCap] = useState<number | null>(null);
+
+  const { departments } = useDepartments();
+  const deptBySlug = useMemo(() => {
+    const m = new Map<string, { avatar_image?: string | null; avatar_color?: string | null }>();
+    departments.forEach((d) => m.set(d.name, { avatar_image: d.avatar_image, avatar_color: d.avatar_color }));
+    return m;
+  }, [departments]);
 
   const deptBet = bets[0]; // Agentic Departments
   const capBet = bets[1];  // Agentic Capabilities
@@ -29,6 +45,10 @@ export default function HowWeTellStorySlide() {
           <div className="p-3 space-y-2">
             {deptBet.agents.map((agent, idx) => {
               const isOpen = openDept === idx;
+              const slug = AGENT_TO_DEPT[agent.name];
+              const dept = slug ? deptBySlug.get(slug) : null;
+              const avatarImage = dept?.avatar_image;
+              const avatarColor = dept?.avatar_color || agent.color;
               return (
                 <div
                   key={agent.name}
@@ -41,10 +61,17 @@ export default function HowWeTellStorySlide() {
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       <div
-                        className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-                        style={{ background: agent.color + '22', color: agent.color }}
+                        className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center text-xs font-bold shrink-0 ring-1 ring-white/10"
+                        style={{
+                          background: avatarImage ? avatarColor : agent.color + '22',
+                          color: avatarImage ? undefined : agent.color,
+                        }}
                       >
-                        {agent.name.charAt(0)}
+                        {avatarImage ? (
+                          <img src={avatarImage} alt={agent.name} className="w-full h-full object-cover" />
+                        ) : (
+                          agent.name.charAt(0)
+                        )}
                       </div>
                       <span className="font-medium text-white text-sm truncate">{agent.name}</span>
                     </div>
