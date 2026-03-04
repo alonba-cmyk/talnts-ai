@@ -28,7 +28,8 @@ function useCompetitorImages(comp: (typeof competitors)[0] | null) {
   }, [comp?.name, comp?.screenshotUrl, comp?.promoMediaUrl, comp?.tweetEmbedId, comp?.galleryUrls]);
 }
 
-const SLIDESHOW_INTERVAL = 4500;
+const SLIDESHOW_INTERVAL = 22000;
+const SLIDESHOW_INTERVAL_VIDEO = 125000; // ~2 min for tweet videos (e.g. Notion)
 
 function CompetitorVisual({ comp }: { comp: (typeof competitors)[0] }) {
   const mediaItems = useCompetitorImages(comp);
@@ -40,14 +41,16 @@ function CompetitorVisual({ comp }: { comp: (typeof competitors)[0] }) {
   const showSlideshow = validItems.length > 1;
   const safeLen = Math.max(1, validItems.length);
   const current = validItems[currentIdx % safeLen];
+  const isVideoOrTweet = current && (('tweetId' in current && !!current.tweetId) || current.isVideo);
+  const interval = isVideoOrTweet ? SLIDESHOW_INTERVAL_VIDEO : SLIDESHOW_INTERVAL;
 
   useEffect(() => {
     if (!showSlideshow) return;
     const t = setInterval(() => {
       setCurrentIdx((i) => i + 1);
-    }, SLIDESHOW_INTERVAL);
+    }, interval);
     return () => clearInterval(t);
-  }, [showSlideshow]);
+  }, [showSlideshow, interval]);
 
   useEffect(() => {
     setCurrentIdx(0);

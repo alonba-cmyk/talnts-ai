@@ -403,6 +403,14 @@ export const marketTrends: MarketTrend[] = [
     ],
     implication:
       'Every worker will have personal AI agents. Work platforms must support agent-to-platform integration, not just human-to-platform.',
+    evidenceQuote: {
+      author: 'Grand View Research',
+      handle: 'AI Code Tools Market Report',
+      text: 'The global AI code tools market was valued at USD 4.86 billion in 2023 and is projected to reach USD 26.03 billion by 2030, growing at a CAGR of 27.1%.',
+      url: 'https://www.grandviewresearch.com/industry-analysis/ai-code-tools-market-report',
+      avatarUrl: 'https://unavatar.io/domain/grandviewresearch.com',
+      imageUrl: '/competitors/atlassian-team26.png',
+    },
   },
   {
     id: 'competitors',
@@ -424,6 +432,14 @@ export const marketTrends: MarketTrend[] = [
     ],
     implication:
       'Every competitor has an agentic narrative. The question isn\'t whether to go agentic — it\'s how to differentiate.',
+    evidenceQuote: {
+      author: 'Notion',
+      handle: 'Meet your 24/7 AI team',
+      text: 'Notion Custom Agents: infinite minds built for teamwork. Answer questions, prioritize tasks, write reports — all while you sleep. Custom Agents automate recurring work across any team.',
+      url: 'https://www.notion.so/product/ai',
+      avatarUrl: 'https://unavatar.io/domain/notion.so',
+      imageUrl: '/competitors/notion-custom-agents.png',
+    },
   },
   {
     id: 'enterprise-spending',
@@ -461,7 +477,7 @@ export const marketTrends: MarketTrend[] = [
     summary: 'Shift from one smart bot to teams of specialized agents working in a loop.',
     cardStat: { value: '3+', label: 'Agent teams in loop' },
     stats: [
-      { value: '3+', label: 'Specialized agents in a typical swarm (Researcher, Writer, Fact-Checker)', sourceUrl: 'https://openai.com/research/swarm' },
+      { value: '3+', label: 'Specialized agents in a typical swarm (Researcher, Writer, Fact-Checker)', sourceUrl: 'https://github.com/openai/swarm' },
     ],
     points: [
       'Teams of agents: Researcher → Writer → Fact-Checker working in sequence',
@@ -471,6 +487,14 @@ export const marketTrends: MarketTrend[] = [
     ],
     implication:
       'Work platforms must support agent-to-agent collaboration, not just human-to-agent. Orchestration becomes the differentiator.',
+    evidenceQuote: {
+      author: 'OpenAI',
+      handle: 'Swarm framework',
+      text: 'Educational framework exploring ergonomic, lightweight multi-agent orchestration. Teams of agents working in sequence — Researcher, Writer, Fact-Checker — with handoffs between specialized agents.',
+      url: 'https://github.com/openai/swarm',
+      avatarUrl: 'https://unavatar.io/domain/github.com',
+      imageUrl: '/competitors/servicenow-ai-agent-studio.png',
+    },
   },
   {
     id: 'mcp-standard',
@@ -489,6 +513,14 @@ export const marketTrends: MarketTrend[] = [
     ],
     implication:
       'monday.com\'s MCP support positions us as the hub where external agents and internal work meet.',
+    evidenceQuote: {
+      author: 'Anthropic',
+      handle: 'Model Context Protocol',
+      text: 'MCP is an open standard for connecting AI assistants to external data sources. Replace fragmented custom integrations with a universal protocol — connect to BigQuery, Slack, GitHub, Postgres without custom code.',
+      url: 'https://modelcontextprotocol.io',
+      avatarUrl: 'https://unavatar.io/domain/anthropic.com',
+      imageUrl: '/competitors/atlassian-jira-rovo.png',
+    },
   },
   {
     id: 'agentic-gap',
@@ -507,6 +539,14 @@ export const marketTrends: MarketTrend[] = [
     ],
     implication:
       'monday.com\'s API-first platform and enterprise governance are a competitive moat for customers worried about agentic failures.',
+    evidenceQuote: {
+      author: 'Gartner',
+      handle: 'Agentic AI Predictions',
+      text: 'Over 40% of agentic AI projects will be canceled by end of 2027 — driven by escalating costs, unclear business value, inadequate risk controls, and legacy system integration challenges.',
+      url: 'https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027',
+      avatarUrl: 'https://unavatar.io/domain/gartner.com',
+      imageUrl: '/competitors/atlassian-confluence-ai.png',
+    },
   },
 ];
 

@@ -28,7 +28,7 @@ export default function AssumptionsSlide() {
               }`}
             >
               <AccordionTrigger
-                className="flex items-center gap-3 py-4 px-4 md:px-5 hover:no-underline hover:bg-white/[0.03] data-[state=open]:bg-white/[0.03] text-left [&>svg]:text-white/40 [&>svg]:shrink-0 [&[data-state=open]>svg]:text-white/60"
+                className="flex items-center gap-3 py-5 px-4 md:px-5 hover:no-underline hover:bg-white/[0.03] data-[state=open]:bg-white/[0.03] text-left [&>svg]:text-white/40 [&>svg]:shrink-0 [&[data-state=open]>svg]:text-white/60"
               >
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   <div
@@ -39,17 +39,17 @@ export default function AssumptionsSlide() {
                     <Icon className="w-4 h-4" />
                   </div>
                   <span
-                    className={`text-xs font-bold uppercase tracking-wider shrink-0 ${
+                    className={`text-sm font-bold uppercase tracking-wider shrink-0 ${
                       a.highlight ? 'text-[#00D2D2]' : 'text-white/50'
                     }`}
                   >
                     #{a.number}
                   </span>
-                  <h3 className="text-sm font-semibold text-white leading-snug line-clamp-2">
+                  <h3 className="text-base font-semibold text-white leading-snug line-clamp-2">
                     {a.headline}
                   </h3>
                   {a.highlight && (
-                    <span className="hidden sm:inline-flex text-[10px] font-bold uppercase tracking-wider text-[#00D2D2] bg-[#00D2D2]/15 px-2 py-0.5 rounded-full shrink-0">
+                    <span className="hidden sm:inline-flex text-xs font-bold uppercase tracking-wider text-[#00D2D2] bg-[#00D2D2]/15 px-2 py-0.5 rounded-full shrink-0">
                       Key differentiator
                     </span>
                   )}
@@ -57,13 +57,13 @@ export default function AssumptionsSlide() {
               </AccordionTrigger>
               <AccordionContent>
                 <div className="px-4 md:px-5 pb-4 pt-0">
-                  <p className="text-sm text-white/70 leading-relaxed">{a.detail}</p>
+                  <p className="text-base text-white/70 leading-relaxed">{a.detail}</p>
                   {a.sourceUrl && (
                     <a
                       href={a.sourceUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-3 inline-flex items-center gap-1.5 text-xs text-white/50 hover:text-[#00D2D2] transition-colors"
+                      className="mt-3 inline-flex items-center gap-1.5 text-sm text-white/50 hover:text-[#00D2D2] transition-colors"
                     >
                       <ExternalLink className="w-3 h-3" /> Source
                     </a>

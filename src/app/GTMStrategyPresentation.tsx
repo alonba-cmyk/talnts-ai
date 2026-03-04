@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import OpeningSlide from './components/gtm/OpeningSlide';
+import WhyWeAreHereSlide from './components/gtm/WhyWeAreHereSlide';
 import ChapterSlide from './components/gtm/ChapterSlide';
 import ContextSlide from './components/gtm/ContextSlide';
 import CustomerIntentSlide from './components/gtm/CustomerIntentSlide';
@@ -16,6 +17,7 @@ import Bet3Slide from './components/gtm/Bet3Slide';
 
 const slides = [
   { id: 'opening', label: 'GTM Strategy', component: () => <OpeningSlide /> },
+  { id: 'why-here', label: 'Why are we here?', component: WhyWeAreHereSlide },
   { id: 'ch1', label: 'Where We Are', component: () => <ChapterSlide title="Where We Are" sectionNumber={1} /> },
   { id: 'context', label: 'Context', component: ContextSlide },
   { id: 'ch2', label: 'Customers', component: () => <ChapterSlide title="Our Customers" sectionNumber={2} /> },
@@ -128,16 +130,19 @@ export default function GTMStrategyPresentation() {
         )}
       </AnimatePresence>
 
-      {/* Footer: center dots, Prev/Next right */}
+      {/* Footer: dots absolutely centered, Prev/Next right */}
       <AnimatePresence>
         {showNav && (
           <motion.footer
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
-            className="fixed bottom-6 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12"
+            className="fixed bottom-6 left-0 right-0 z-50 flex items-center justify-end px-6 md:px-12"
           >
-            <div className="flex-1 flex justify-center gap-2">
+            <div
+              className="absolute left-1/2 -translate-x-1/2 flex justify-center gap-2 pointer-events-auto"
+              aria-hidden="false"
+            >
               {slides.map((slide, i) => (
                 <button
                   key={slide.id}
@@ -153,7 +158,7 @@ export default function GTMStrategyPresentation() {
                 </button>
               ))}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 relative z-10">
               <button
                 onClick={() => currentSlide > 0 && goToSlide(currentSlide - 1)}
                 disabled={currentSlide === 0}
