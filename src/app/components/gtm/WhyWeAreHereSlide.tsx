@@ -1,43 +1,27 @@
 import { motion } from 'motion/react';
-import { Target, CheckSquare } from 'lucide-react';
-import SlideShell, { SlideTitle, SlideSubtitle } from './SlideShell';
 
 export default function WhyWeAreHereSlide() {
   return (
-    <SlideShell dark>
-      <SlideTitle dark>Why are we here?</SlideTitle>
-      <SlideSubtitle dark>
-        Every work platform is going agentic. We need to choose our path — and align as a team.
-      </SlideSubtitle>
-
+    <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-[#0a0a0a] px-6 md:px-12">
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="max-w-2xl"
+        transition={{ duration: 0.5 }}
+        className="max-w-3xl text-center md:text-left"
       >
-        <div className="text-lg text-white/70 leading-relaxed mb-8">
-          By the end of this deck, we want:
-        </div>
-        <ul className="space-y-4">
-          {[
-            { icon: Target, text: 'Shared understanding — market, customers, competitors' },
-            { icon: CheckSquare, text: 'Clear bets — which positioning we pursue and why' },
-            { icon: CheckSquare, text: 'Next steps — what we do Monday morning' },
-          ].map((item, i) => (
-            <motion.li
-              key={i}
-              initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.35 + i * 0.1 }}
-              className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.04] border border-white/[0.08]"
-            >
-              <item.icon className="w-6 h-6 text-[#00D2D2] shrink-0" />
-              <span className="text-base font-medium text-white/90">{item.text}</span>
-            </motion.li>
-          ))}
-        </ul>
+        <h2 className="text-sm md:text-base font-medium text-white/60 uppercase tracking-wider mb-8">
+          Why we&apos;re here
+        </h2>
+        <p className="text-base md:text-lg text-white/90 leading-relaxed mb-5">
+          monday has its own current positioning, story and direction. But it&apos;s not keeping up with the new market direction, and misses the platform&apos;s newest capabilities.
+        </p>
+        <p className="text-base md:text-lg text-white/90 leading-relaxed mb-5">
+          We have a revolutionary new AI work platform.
+        </p>
+        <p className="text-base md:text-lg text-white/90 leading-relaxed">
+          We need to package our brand & strategy to tell this story for our customers.
+        </p>
       </motion.div>
-    </SlideShell>
+    </section>
   );
 }

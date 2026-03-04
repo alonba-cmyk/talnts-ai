@@ -774,6 +774,60 @@ export const assumptions: Assumption[] = [
   },
 ];
 
+export interface StoryLayer {
+  number: number;
+  title: string;
+  subtitle: string;
+  color: string;
+  lucideIcon: string;
+  points: string[];
+}
+
+export const storyLayers: StoryLayer[] = [
+  {
+    number: 1,
+    title: 'Execution layer',
+    subtitle: 'Where agents and people work',
+    color: BRAND_COLORS.teal,
+    lucideIcon: 'Users',
+    points: [
+      'Sidekick AI assistant — natural language to actions',
+      'Department agents (Marketing, Sales, PMO, Dev, Service)',
+      'Capability agents (Research, Planning, Content, QA, Reporting)',
+      'Agent Hub — third-party and monday.com-built agents',
+      'Humans and agents collaborate on the same surface',
+    ],
+  },
+  {
+    number: 2,
+    title: 'Work context layer',
+    subtitle: 'Where work is visible — boards, items, dashboards',
+    color: BRAND_COLORS.purple,
+    lucideIcon: 'LayoutGrid',
+    points: [
+      'Boards — visual work management for any use case',
+      'Items — tasks, projects, deals, tickets in one place',
+      'Dashboards — real-time visibility and reporting',
+      'Automations — workflows that connect humans and agents',
+      'Single source of truth for what\'s happening',
+    ],
+  },
+  {
+    number: 3,
+    title: 'Data layer',
+    subtitle: 'System of Records — Enterprise Grade Secure / Governance and Permissions',
+    color: BRAND_COLORS.blue,
+    lucideIcon: 'Shield',
+    points: [
+      'Enterprise-grade security and compliance',
+      'Governance and permissions at scale',
+      'Audit trails for human and agent actions',
+      'Data residency and regulatory requirements',
+      'Trust foundation for agent adoption',
+    ],
+  },
+];
+
 export const bets: Bet[] = [
   {
     number: 1,

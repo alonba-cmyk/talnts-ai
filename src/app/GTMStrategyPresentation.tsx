@@ -1,40 +1,67 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import OpeningSlide from './components/gtm/OpeningSlide';
+import AgendaSlide from './components/gtm/AgendaSlide';
 import WhyWeAreHereSlide from './components/gtm/WhyWeAreHereSlide';
+import WhatWeWantToAchieveSlide from './components/gtm/WhatWeWantToAchieveSlide';
+import ContextTilesSlide from './components/gtm/ContextTilesSlide';
+import TimeToTalkSlide from './components/gtm/TimeToTalkSlide';
 import ChapterSlide from './components/gtm/ChapterSlide';
-import ContextSlide from './components/gtm/ContextSlide';
 import CustomerIntentSlide from './components/gtm/CustomerIntentSlide';
 import CustomerJTBDSlide from './components/gtm/CustomerJTBDSlide';
+import CustomerSentimentSlide from './components/gtm/CustomerSentimentSlide';
 import AIEcosystemSlide from './components/gtm/AIEcosystemSlide';
 import CompetitorLandscapeSlide from './components/gtm/CompetitorLandscapeSlide';
 import MarketTrendsSlide from './components/gtm/MarketTrendsSlide';
 import AssumptionsSlide from './components/gtm/AssumptionsSlide';
-import Bet1Slide from './components/gtm/Bet1Slide';
-import Bet2Slide from './components/gtm/Bet2Slide';
-import Bet3Slide from './components/gtm/Bet3Slide';
+import ProductTimelineSlide from './components/gtm/ProductTimelineSlide';
+import MarketingImplicationsAgendaSlide from './components/gtm/MarketingImplicationsAgendaSlide';
+import CategoryPositioningSlide from './components/gtm/CategoryPositioningSlide';
+import LeadingValuePropositionSlide from './components/gtm/LeadingValuePropositionSlide';
+import HowWeTellStorySlide from './components/gtm/HowWeTellStorySlide';
+import WhatSetsUsApartSlide from './components/gtm/WhatSetsUsApartSlide';
 
-const slides = [
-  { id: 'opening', label: 'GTM Strategy', component: () => <OpeningSlide /> },
+const IMPLICATION_TILE_INDICES = [17, 18, 19, 20];
+
+function createSlides(goToSlide: (index: number) => void) {
+  const slidesArray = [
+  { id: 'opening', label: 'monday story evolution', component: () => <OpeningSlide /> },
+  { id: 'agenda', label: 'Agenda', component: AgendaSlide },
   { id: 'why-here', label: 'Why are we here?', component: WhyWeAreHereSlide },
-  { id: 'ch1', label: 'Where We Are', component: () => <ChapterSlide title="Where We Are" sectionNumber={1} /> },
-  { id: 'context', label: 'Context', component: ContextSlide },
-  { id: 'ch2', label: 'Customers', component: () => <ChapterSlide title="Our Customers" sectionNumber={2} /> },
-  { id: 'customer-intent', label: 'Intent Blend', component: CustomerIntentSlide },
-  { id: 'jtbd', label: 'JTBD', component: CustomerJTBDSlide },
-  { id: 'ch3', label: 'Competition', component: () => <ChapterSlide title="Competitive Landscape" sectionNumber={3} /> },
+  { id: 'what-we-want', label: 'What we want to achieve', component: WhatWeWantToAchieveSlide },
+  { id: 'context', label: 'Context', component: ContextTilesSlide },
+  { id: 'ch-market', label: 'Market', component: () => <ChapterSlide title="Market" sectionNumber={1} /> },
+  { id: 'trends', label: 'Market Trends', component: MarketTrendsSlide },
   { id: 'ai-ecosystem', label: 'AI Ecosystem', component: AIEcosystemSlide },
   { id: 'competitors', label: 'Competitors', component: CompetitorLandscapeSlide },
-  { id: 'ch4', label: 'Market', component: () => <ChapterSlide title="Market Trends" sectionNumber={4} /> },
-  { id: 'trends', label: 'Market Trends', component: MarketTrendsSlide },
-  { id: 'ch5', label: 'Assumptions', component: () => <ChapterSlide title="Our Assumptions" sectionNumber={5} /> },
+  { id: 'ch-product', label: 'Product', component: () => <ChapterSlide title="Product" subtitle="Product evolution" sectionNumber={2} /> },
+  { id: 'product-timeline', label: 'Product evolution', component: ProductTimelineSlide },
+  { id: 'ch-customers', label: 'Customers', component: () => <ChapterSlide title="Our Customers" sectionNumber={3} /> },
+  { id: 'customer-intent', label: 'Intent Blend', component: CustomerIntentSlide },
+  { id: 'jtbd', label: 'JTBD', component: CustomerJTBDSlide },
+  { id: 'customer-sentiment', label: 'Customer Sentiment', component: CustomerSentimentSlide },
+  { id: 'ch-marketing', label: 'Marketing implications', component: () => <ChapterSlide title="Marketing implications" sectionNumber={4} /> },
+  {
+    id: 'marketing-agenda',
+    label: '4 main implications',
+    component: () => (
+      <MarketingImplicationsAgendaSlide
+        onTileClick={(i) => goToSlide(IMPLICATION_TILE_INDICES[i] ?? 17)}
+      />
+    ),
+  },
+  { id: 'category-positioning', label: 'Category & Positioning', component: CategoryPositioningSlide },
+  { id: 'leading-value-prop', label: 'Leading Value Proposition', component: LeadingValuePropositionSlide },
+  { id: 'how-we-tell-story', label: 'How we tell the story', component: HowWeTellStorySlide },
+  { id: 'what-sets-us-apart', label: 'What sets us apart', component: WhatSetsUsApartSlide },
   { id: 'assumptions', label: 'Assumptions', component: AssumptionsSlide },
-  { id: 'ch6', label: 'Bets', component: () => <ChapterSlide title="Our GTM Bets" sectionNumber={6} /> },
-  { id: 'bet1', label: 'Bet 1', component: Bet1Slide },
-  { id: 'bet2', label: 'Bet 2', component: Bet2Slide },
-  { id: 'bet3', label: 'Bet 3', component: Bet3Slide },
+  { id: 'time-to-talk', label: 'Time to talk', component: TimeToTalkSlide },
 ];
+  return slidesArray;
+}
+
+const SLIDE_COUNT = 23;
 
 export default function GTMStrategyPresentation() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -43,10 +70,12 @@ export default function GTMStrategyPresentation() {
 
   const [direction, setDirection] = useState(0);
   const goToSlide = useCallback((index: number) => {
-    const next = Math.max(0, Math.min(index, slides.length - 1));
+    const next = Math.max(0, Math.min(index, SLIDE_COUNT - 1));
     setDirection(next > currentSlide ? 1 : -1);
     setCurrentSlide(next);
   }, [currentSlide]);
+
+  const slides = useMemo(() => createSlides(goToSlide), [goToSlide]);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {

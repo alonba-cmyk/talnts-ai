@@ -2,10 +2,11 @@ import { motion } from 'motion/react';
 
 interface ChapterSlideProps {
   title: string;
+  subtitle?: string;
   sectionNumber?: number;
 }
 
-export default function ChapterSlide({ title, sectionNumber }: ChapterSlideProps) {
+export default function ChapterSlide({ title, subtitle, sectionNumber }: ChapterSlideProps) {
   return (
     <section className="relative min-h-screen w-full snap-start flex flex-col items-center justify-center overflow-hidden bg-[#0a0a0a]">
       <motion.div
@@ -23,6 +24,11 @@ export default function ChapterSlide({ title, sectionNumber }: ChapterSlideProps
         <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
           {title}
         </h2>
+        {subtitle && (
+          <p className="mt-3 text-base md:text-lg text-white/50 tracking-wide">
+            {subtitle}
+          </p>
+        )}
       </motion.div>
     </section>
   );
