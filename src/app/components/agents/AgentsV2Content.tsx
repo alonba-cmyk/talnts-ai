@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Copy, Check, ExternalLink, ArrowRight, ChevronDown, ChevronUp, LayoutGrid, Key, BarChart3, FileText, Database, Plug, Rows3, SlidersHorizontal, FolderOpen, MessageSquare, FileUp, Layers, Users } from 'lucide-react';
-import { AGENT_SIGNUP_URL } from '@/lib/agentUrls';
+import { AGENT_SIGNUP_URL, AGENT_FEEDBACK_URL } from '@/lib/agentUrls';
 import { PitchPresentation } from './PitchPresentation';
 
 function CopyButton({ text, label = 'Copy' }: { text: string; label?: string }) {
@@ -71,7 +71,6 @@ function ExpandableSection({ title, children }: { title: string; children: React
 const BROKEN_URLS_V2 = new Set([
   'https://github.com/mondaycom/hatcha',
   'https://github.com/mondaycom/openclaw-skill-monday',
-  'https://monday.com/agent-feedback',
 ]);
 
 function LinkButton({ href, children }: { href: string; children: React.ReactNode }) {
@@ -940,7 +939,7 @@ function FeedbackSection() {
         </p>
 
         <div className="mt-4">
-          <LinkButton href="https://monday.com/agent-feedback">Submit Feedback</LinkButton>
+          <LinkButton href={AGENT_FEEDBACK_URL}>Submit Feedback</LinkButton>
         </div>
       </div>
     </section>
@@ -957,7 +956,7 @@ function LinksSection() {
     ['MCP Integration', 'https://developer.monday.com/apps/docs/monday-apps-mcp', 'Model Context Protocol setup and usage'],
     ['OpenClaw Skill', 'https://github.com/mondaycom/openclaw-skill-monday', 'Pre-built skill for OpenClaw agents (coming soon)'],
     ['HATCHA', 'https://github.com/mondaycom/hatcha', 'Open-source reverse CAPTCHA'],
-    ['Agent Feedback', 'monday.com/agent-feedback', 'Submit feedback to influence the roadmap'],
+    ['Agent Feedback', AGENT_FEEDBACK_URL, 'Submit feedback to influence the roadmap'],
     ['Webhooks', 'https://developer.monday.com/api-reference/docs/webhooks', 'Real-time event subscriptions'],
     ['Community', 'https://community.monday.com/c/developers/', 'monday.com community and forums'],
   ];

@@ -1,4 +1,4 @@
-import { AGENT_SIGNUP_URL } from '@/lib/agentUrls';
+import { AGENT_SIGNUP_URL, AGENT_FEEDBACK_URL } from '@/lib/agentUrls';
 import { getAgentsCopy, type MessagingTone } from './agentsCopy';
 
 function Section({ id, children }: { id: string; children: React.ReactNode }) {
@@ -28,7 +28,6 @@ function Code({ children }: { children: string }) {
 const BROKEN_URLS = new Set([
   'https://github.com/mondaycom/hatcha',
   'https://github.com/mondaycom/openclaw-skill-monday',
-  'https://monday.com/agent-feedback',
 ]);
 
 function Link({ href, children }: { href: string; children: React.ReactNode }) {
@@ -296,7 +295,7 @@ export function AgentsPlainTextContent({ tone = 'belong_here' }: { tone?: Messag
   5. What would make you mass-recommend monday.com
      to other agents?`}</Code>
         <p className="text-[#c0c0c0] font-mono text-sm leading-relaxed mt-3">
-          Submit your answers: <Link href="https://monday.com/agent-feedback">monday.com/agent-feedback</Link>
+          Submit your answers: <Link href={AGENT_FEEDBACK_URL}>Agent feedback form</Link>
         </p>
       </Section>
 
@@ -403,7 +402,7 @@ export function AgentsPlainTextContent({ tone = 'belong_here' }: { tone?: Messag
               </tr>
               <tr className="border-b border-[#1a1a1a]">
                 <td className="py-2 pr-4 whitespace-nowrap">Agent Feedback</td>
-                <td className="py-2 pr-4"><Link href="https://monday.com/agent-feedback">monday.com/agent-feedback</Link></td>
+                <td className="py-2 pr-4"><Link href={AGENT_FEEDBACK_URL}>forms.monday.com/agent-feedback</Link></td>
                 <td className="py-2">Submit feedback directly as an agent</td>
               </tr>
               <tr className="border-b border-[#1a1a1a]">

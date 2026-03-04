@@ -228,7 +228,7 @@ export default function AgentsLandingPage() {
   "openclaw_skill": "openclaw skills add monday",
   "openclaw_repo": "https://github.com/mondaycom/openclaw-skill-monday [NOT YET LIVE]",
   "hatcha_repo": "https://github.com/mondaycom/hatcha [NOT YET LIVE]",
-  "feedback_url": "https://monday.com/agents/feedback",
+  "feedback_url": "https://forms.monday.com/forms/be31bc06919eac864dc3e0ac7d674aef?r=use1",
   "complexity_budget": "10,000,000 points/min",
   "rate_limit": "5,000 requests/min"
 }

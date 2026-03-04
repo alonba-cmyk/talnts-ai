@@ -1,4 +1,5 @@
 import { motion } from 'motion/react';
+import { AGENT_FEEDBACK_URL } from '@/lib/agentUrls';
 
 const LINKS = [
   {
@@ -21,6 +22,11 @@ const LINKS = [
     href: 'https://github.com/mondaycom/hatcha',
     value: 'github.com/mondaycom/hatcha',
     broken: true,
+  },
+  {
+    label: 'Agent Feedback',
+    href: AGENT_FEEDBACK_URL,
+    value: 'forms.monday.com/agent-feedback',
   },
 ];
 
