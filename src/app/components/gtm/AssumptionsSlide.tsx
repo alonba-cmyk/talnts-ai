@@ -1,0 +1,79 @@
+import { Sprout, Target, Zap, Users, Eye, Lock, Compass, ExternalLink } from 'lucide-react';
+import SlideShell, { SlideTitle, SlideSubtitle } from './SlideShell';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/app/components/ui/accordion';
+import { assumptions } from './gtmData';
+
+const ICON_MAP = { Sprout, Target, Zap, Users, Eye, Lock, Compass } as const;
+
+export default function AssumptionsSlide() {
+  return (
+    <SlideShell dark>
+      <SlideTitle dark>Our Guiding Assumptions</SlideTitle>
+      <SlideSubtitle dark>
+        Seven beliefs that shape every GTM decision. Click to expand.
+      </SlideSubtitle>
+
+      <Accordion type="single" collapsible className="flex flex-col gap-3">
+        {assumptions.map((a) => {
+          const Icon = ICON_MAP[a.lucideIcon as keyof typeof ICON_MAP] ?? Target;
+          const value = String(a.number);
+          return (
+            <AccordionItem
+              key={a.number}
+              value={value}
+              className={`rounded-xl border overflow-hidden last:border-b data-[state=open]:border-white/[0.14] transition-colors ${
+                a.highlight
+                  ? 'bg-[#00D2D2]/08 border-[#00D2D2]/30'
+                  : 'bg-white/[0.04] border-white/[0.08]'
+              }`}
+            >
+              <AccordionTrigger
+                className="flex items-center gap-4 py-5 px-5 md:px-6 hover:no-underline hover:bg-white/[0.03] data-[state=open]:bg-white/[0.03] text-left [&>svg]:text-white/40 [&>svg]:shrink-0 [&[data-state=open]>svg]:text-white/60"
+              >
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div
+                    className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                      a.highlight ? 'bg-[#00D2D2]/20 text-[#00D2D2]' : 'bg-white/10 text-white/70'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <span
+                    className={`text-xs font-bold uppercase tracking-wider shrink-0 ${
+                      a.highlight ? 'text-[#00D2D2]' : 'text-white/50'
+                    }`}
+                  >
+                    #{a.number}
+                  </span>
+                  <h3 className="text-base font-semibold text-white leading-snug truncate">
+                    {a.headline}
+                  </h3>
+                  {a.highlight && (
+                    <span className="hidden sm:inline-flex text-[10px] font-bold uppercase tracking-wider text-[#00D2D2] bg-[#00D2D2]/15 px-2 py-0.5 rounded-full shrink-0">
+                      Key differentiator
+                    </span>
+                  )}
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="px-5 md:px-6 pb-5 pt-0">
+                  <p className="text-sm text-white/70 leading-relaxed">{a.detail}</p>
+                  {a.sourceUrl && (
+                    <a
+                      href={a.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex items-center gap-1.5 text-xs text-white/50 hover:text-[#00D2D2] transition-colors"
+                    >
+                      <ExternalLink className="w-3 h-3" /> Source
+                    </a>
+                  )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          );
+        })}
+      </Accordion>
+    </SlideShell>
+  );
+}
