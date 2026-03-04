@@ -157,58 +157,13 @@ export default function AgentLedDiagram() {
         <p className="text-xl md:text-2xl font-semibold text-white">
           Humans and Agents working together
         </p>
+        <p className="text-sm text-white/45 mt-2">
+          Tools around — humans & agents at the center
+        </p>
       </motion.div>
 
       <div className="relative w-full aspect-[16/9] max-h-[45vh] min-h-[280px]">
-        {/* Single SVG: lines from tool positions to center avatars */}
-        <svg
-          className="absolute inset-0 w-full h-full pointer-events-none z-0"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="xMidYMid meet"
-        >
-          {/* Vibe (top-left area) → left agents */}
-          <motion.path
-            d="M 12 22 Q 25 35, 30 50"
-            fill="none"
-            stroke={purple}
-            strokeWidth="1.5"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-          />
-          {/* Workflows (bottom-left) → left agents */}
-          <motion.path
-            d="M 12 78 Q 25 65, 30 50"
-            fill="none"
-            stroke={purple}
-            strokeWidth="1.5"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 0.7, delay: 0.35 }}
-          />
-          {/* Work mgmt (top-right) → right agents */}
-          <motion.path
-            d="M 88 22 Q 75 35, 70 50"
-            fill="none"
-            stroke={purple}
-            strokeWidth="1.5"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 0.7, delay: 0.45 }}
-          />
-          {/* Sidekick (bottom-right) → right agents */}
-          <motion.path
-            d="M 88 78 Q 75 65, 70 50"
-            fill="none"
-            stroke={purple}
-            strokeWidth="1.5"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 0.7, delay: 0.6 }}
-          />
-        </svg>
-
-        {/* Tools — at line start positions (match SVG coords: 12,22 | 12,78 | 88,22 | 88,78) */}
+        {/* Tools — in corners, surrounding humans + agents in center (no lines — layout conveys the idea) */}
         <div className="absolute left-[8%] top-[18%] z-10 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.1] border border-white/20 shadow-lg" style={{ borderLeft: `3px solid ${purple}` }}>
           <img src={products[0].logo} alt="" className="w-5 h-5 object-contain shrink-0" />
           <span className="text-[10px] md:text-[11px] font-medium text-white/90 truncate max-w-[100px]">{products[0].label}</span>
@@ -228,13 +183,13 @@ export default function AgentLedDiagram() {
 
         {/* Avatars — center */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center gap-1.5 md:gap-2 flex-shrink-0 z-20">
-          {/* 3 agents left */}
+          {/* 3 agents left (smaller) */}
           {leftAgents.map((item, i) => (
             <AvatarCircle
               key={`l-${i}`}
               image={item.image}
               isPerson={false}
-              size="md"
+              size="sm"
               color={purple}
               index={i}
             />
@@ -250,13 +205,13 @@ export default function AgentLedDiagram() {
               index={3 + i}
             />
           ))}
-          {/* 3 agents right */}
+          {/* 3 agents right (smaller) */}
           {rightAgents.map((item, i) => (
             <AvatarCircle
               key={`r-${i}`}
               image={item.image}
               isPerson={false}
-              size="md"
+              size="sm"
               color={purple}
               index={6 + i}
             />

@@ -37,11 +37,6 @@ export default function AssumptionsSlide() {
                 <h3 className="text-base font-semibold text-white leading-snug text-left flex-1 min-w-0">
                   {a.headline}
                 </h3>
-                {a.highlight && (
-                  <span className="hidden sm:inline-flex text-xs font-bold uppercase tracking-wider text-[#00D2D2] bg-[#00D2D2]/15 px-2 py-0.5 rounded-full shrink-0">
-                    Key differentiator
-                  </span>
-                )}
               </AccordionTrigger>
               <AccordionContent>
                 <div className="px-4 md:px-5 pb-4 pt-0">

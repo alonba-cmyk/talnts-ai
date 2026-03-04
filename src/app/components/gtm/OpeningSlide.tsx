@@ -18,8 +18,7 @@ export default function OpeningSlide() {
         className="relative text-center max-w-2xl"
       >
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight">
-          monday story
-          <br />
+          monday story{' '}
           <span className="bg-gradient-to-r from-[#00D2D2] to-[#A25DDC] bg-clip-text text-transparent">
             evolution
           </span>

@@ -9,6 +9,7 @@ import agentsLogo from '@/assets/99be461a455ae49743d963276e2023ed6cd1445d.png';
 import workflowsLogo from '@/assets/workflows-logo.png';
 import personImg1 from '@/assets/a8016eb62d3e284810c5691fa950de5343f7d776.png';
 import personImg2 from '@/assets/4f1259d102c1081ca7d88367c1ec9d3487166104.png';
+import personImg3 from '@/assets/31fef8e27a4c799459c58ae163c55324da0a21d4.png';
 import agentImg1 from '@/assets/053936dfeea2ccad575c77f11dabe02cb2e01b92.png';
 import agentImg2 from '@/assets/f158e4bd7406bb7f1accf54fb06c7de8cfd09e48.png';
 
@@ -38,13 +39,20 @@ export default function PackagingSummarySlide() {
       </SlideSubtitle>
 
       <div className="relative mt-6 max-w-4xl mr-auto">
-        {/* Agentic Work Platform — frames the content */}
-        <div className="absolute -top-3 left-0 right-0 flex justify-center pointer-events-none">
+        {/* People + Agents row above Agentic Work Platform (inspired by team layout) */}
+        <div className="flex flex-col items-center gap-4 mb-2">
+          <div className="flex items-center justify-center -space-x-4">
+            <img src={personImg1} alt="" className="w-14 h-14 rounded-full object-cover object-top ring-2 ring-[#FF9F43]/80 bg-[#FF9F43]/20 shrink-0" />
+            <img src={personImg2} alt="" className="w-16 h-16 rounded-full object-cover object-top ring-2 ring-[#A25DDC]/80 bg-[#A25DDC]/20 shrink-0 z-10" />
+            <img src={personImg3} alt="" className="w-14 h-14 rounded-full object-cover object-top ring-2 ring-[#FF3D57]/80 bg-[#FF3D57]/20 shrink-0" />
+            <img src={agentImg1} alt="" className="w-14 h-14 rounded-full object-contain ring-2 ring-[#6161FF]/80 bg-[#6161FF]/20 shrink-0 p-0.5" />
+            <img src={agentImg2} alt="" className="w-14 h-14 rounded-full object-contain ring-2 ring-[#00D2D2]/80 bg-[#00D2D2]/20 shrink-0 p-0.5" />
+          </div>
           <span className="inline-block px-5 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest text-white/90 bg-gradient-to-r from-[#6161FF]/30 to-[#00D2D2]/30 border border-white/[0.15]">
             Agentic Work Platform
           </span>
         </div>
-        <div className="rounded-2xl border-2 border-white/[0.12] bg-white/[0.02] p-6 pt-8 space-y-3">
+        <div className="rounded-2xl border-2 border-white/[0.12] bg-white/[0.02] p-6 space-y-3">
         {storyLayers.map((layer, idx) => {
           const isOpen = openLayer === idx;
           const Icon = LAYER_ICONS[layer.lucideIcon as keyof typeof LAYER_ICONS] ?? Users;

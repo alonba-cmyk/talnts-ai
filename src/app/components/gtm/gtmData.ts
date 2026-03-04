@@ -255,6 +255,72 @@ export const aiEcosystemCategories: AIEcosystemCategory[] = [
   },
 ];
 
+export interface AgenticPlatformStackLayer {
+  id: string;
+  title: string;
+  description: string;
+  tagline: string;
+  color: string;
+  companies: { name: string; logoUrl: string; isMonday?: boolean }[];
+}
+
+export const agenticPlatformStackLayers: AgenticPlatformStackLayer[] = [
+  {
+    id: 'intelligence',
+    title: 'Intelligence Layer',
+    description: 'Reasoning & model capability',
+    tagline: 'Provides intelligence — not workflow ownership.',
+    color: BRAND_COLORS.blue,
+    companies: [
+      { name: 'OpenAI', logoUrl: LOGO_URL('openai.com') },
+      { name: 'Anthropic', logoUrl: LOGO_URL('anthropic.com') },
+      { name: 'Google', logoUrl: LOGO_URL('google.com') },
+      { name: 'Azure AI', logoUrl: LOGO_URL('azure.microsoft.com') },
+    ],
+  },
+  {
+    id: 'agent-builders',
+    title: 'Agent Builder Platforms',
+    description: 'Build, deploy & govern agents',
+    tagline: 'Strong inside their ecosystems.',
+    color: BRAND_COLORS.purple,
+    companies: [
+      { name: 'Microsoft Copilot Studio', logoUrl: LOGO_URL('microsoft.com') },
+      { name: 'Salesforce', logoUrl: LOGO_URL('salesforce.com') },
+      { name: 'Agentforce', logoUrl: LOGO_URL('salesforce.com') },
+      { name: 'Google Gemini', logoUrl: LOGO_URL('google.com') },
+    ],
+  },
+  {
+    id: 'automation',
+    title: 'Automation & Orchestration Engines',
+    description: 'Connect systems & automate processes',
+    tagline: 'Automate tasks — don\'t own cross-team work.',
+    color: '#FF9F43',
+    companies: [
+      { name: 'UiPath', logoUrl: LOGO_URL('uipath.com') },
+      { name: 'Automation Anywhere', logoUrl: LOGO_URL('automationanywhere.com') },
+      { name: 'Workato', logoUrl: LOGO_URL('workato.com') },
+      { name: 'Zapier', logoUrl: LOGO_URL('zapier.com') },
+    ],
+  },
+  {
+    id: 'work-operating',
+    title: 'Work Operating Layer',
+    description: 'Where work is assigned, approved, tracked, and measured',
+    tagline: 'This is where human + agent collaboration becomes accountable execution.',
+    color: BRAND_COLORS.teal,
+    companies: [
+      { name: 'monday.com', logoUrl: LOGO_URL('monday.com'), isMonday: true },
+      { name: 'Asana', logoUrl: LOGO_URL('asana.com') },
+      { name: 'Atlassian', logoUrl: LOGO_URL('atlassian.com') },
+      { name: 'Linear', logoUrl: LOGO_URL('linear.app') },
+    ],
+  },
+];
+
+export const agenticPlatformStackConclusion = 'Agents need intelligence and automation. But value accrues where execution is orchestrated and measured.';
+
 export const departments: Department[] = [
   {
     name: 'Marketing',
@@ -822,7 +888,7 @@ export interface StoryLayer {
 export const storyLayers: StoryLayer[] = [
   {
     number: 1,
-    title: 'Execution layer',
+    title: 'Agentic execution layer',
     subtitle: 'Where agents and people work',
     color: BRAND_COLORS.teal,
     lucideIcon: 'Users',

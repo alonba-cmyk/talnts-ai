@@ -13,7 +13,9 @@ import CustomerJTBDSlide from './components/gtm/CustomerJTBDSlide';
 import CustomerSentimentSlide from './components/gtm/CustomerSentimentSlide';
 import AIEcosystemSlide from './components/gtm/AIEcosystemSlide';
 import CompetitorLandscapeSlide from './components/gtm/CompetitorLandscapeSlide';
+import AgenticPlatformStackSlide from './components/gtm/AgenticPlatformStackSlide';
 import MarketTrendsSlide from './components/gtm/MarketTrendsSlide';
+import AgenticImperativeSlide from './components/gtm/AgenticImperativeSlide';
 import AssumptionsSlide from './components/gtm/AssumptionsSlide';
 import ProductTimelineSlide from './components/gtm/ProductTimelineSlide';
 import MarketingImplicationsAgendaSlide from './components/gtm/MarketingImplicationsAgendaSlide';
@@ -23,7 +25,7 @@ import HowWeTellStorySlide from './components/gtm/HowWeTellStorySlide';
 import WhatSetsUsApartSlide from './components/gtm/WhatSetsUsApartSlide';
 import PackagingSummarySlide from './components/gtm/PackagingSummarySlide';
 
-const IMPLICATION_TILE_INDICES = [18, 19, 20, 21]; // category, value-prop, story, what-sets-us-apart
+const IMPLICATION_TILE_INDICES = [20, 21, 22, 23]; // category, value-prop, story, what-sets-us-apart
 
 function createSlides(goToSlide: (index: number) => void) {
   const slidesArray = [
@@ -34,7 +36,9 @@ function createSlides(goToSlide: (index: number) => void) {
   { id: 'context', label: 'Context', component: ContextTilesSlide },
   { id: 'ch-market', label: 'Market', component: () => <ChapterSlide title="Market" sectionNumber={1} /> },
   { id: 'trends', label: 'Market Trends', component: MarketTrendsSlide },
+  { id: 'agentic-imperative', label: 'Agentic imperative', component: AgenticImperativeSlide },
   { id: 'ai-ecosystem', label: 'AI Ecosystem', component: AIEcosystemSlide },
+  { id: 'agentic-stack', label: 'Agentic platform stack', component: AgenticPlatformStackSlide },
   { id: 'competitors', label: 'Competitors', component: CompetitorLandscapeSlide },
   { id: 'ch-product', label: 'Product', component: () => <ChapterSlide title="Product" subtitle="Product evolution" sectionNumber={2} /> },
   { id: 'product-timeline', label: 'Product evolution', component: ProductTimelineSlide },
@@ -63,7 +67,7 @@ function createSlides(goToSlide: (index: number) => void) {
   return slidesArray;
 }
 
-const SLIDE_COUNT = 24;
+const SLIDE_COUNT = 26;
 
 export default function GTMStrategyPresentation() {
   const [currentSlide, setCurrentSlide] = useState(0);
