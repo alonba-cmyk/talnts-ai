@@ -354,6 +354,32 @@ export const departmentIntentBlend: DepartmentIntentBlend[] = [
   { name: 'Operations', color: BRAND_COLORS.yellow, lucideIcon: 'RefreshCw', operationalPercent: 65, label: 'Process & approvals' },
 ];
 
+/** Top enterprise use cases (ranked by popularity) — from monday.com enterprise adoption */
+export interface EnterpriseUseCase {
+  rank: number;
+  name: string;
+  departments: string;
+  stat?: { value: string; label: string };
+}
+
+export const topEnterpriseUseCases: EnterpriseUseCase[] = [
+  { rank: 1, name: 'Project & Portfolio Management', departments: 'PMO, Operations, R&D' },
+  { rank: 2, name: 'Sales Pipeline & CRM', departments: 'Sales, Revenue Ops' },
+  { rank: 3, name: 'Marketing Campaign & Content', departments: 'Marketing' },
+  { rank: 4, name: 'Product Roadmap & Release Planning', departments: 'Product, R&D' },
+  { rank: 5, name: 'Agile Development & Bug Tracking', departments: 'R&D, QA' },
+  { rank: 6, name: 'HR Recruitment Pipeline (ATS)', departments: 'HR, Talent' },
+  { rank: 7, name: 'Employee Onboarding', departments: 'HR, IT, Facilities' },
+  {
+    rank: 8,
+    name: 'Customer Onboarding & Implementation',
+    departments: 'Customer Success, Account Mgmt',
+    stat: { value: '74%', label: 'boost in retention when onboarding is managed in one place' },
+  },
+  { rank: 9, name: 'OKR Tracking', departments: 'Leadership, All departments', stat: { value: '95%', label: 'OKR adoption, 80% goals achieved' } },
+  { rank: 10, name: 'IT Support & Helpdesk', departments: 'IT Service Desk' },
+];
+
 export const marketTrends: MarketTrend[] = [
   {
     id: 'vibe-coding',

@@ -19,7 +19,7 @@ export default function MarketingImplicationsAgendaSlide({ onTileClick }: Market
       <div className="text-center mb-2">
         <SlideTitle dark className="!mb-2">4 main implications on marketing</SlideTitle>
         <SlideSubtitle dark className="!mb-0 mx-auto max-w-xl">
-          Agenda for the discussion — click a tile to explore
+          Agenda for the discussion
         </SlideSubtitle>
       </div>
 

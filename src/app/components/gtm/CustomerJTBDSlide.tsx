@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Megaphone, BarChart3, Handshake, Settings, Shield, RefreshCw } from 'lucide-react';
 import SlideShell, { SlideTitle, SlideSubtitle, StaggerChild } from './SlideShell';
-import { departments } from './gtmData';
+import { departments, topEnterpriseUseCases } from './gtmData';
 
 const ICON_MAP = {
   Megaphone,
@@ -84,6 +84,26 @@ export default function CustomerJTBDSlide() {
       </div>
 
       <StaggerChild index={6}>
+        <div className="p-4 rounded-xl border border-white/[0.08] bg-white/[0.03] mb-6">
+          <div className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Top enterprise use cases (by popularity)</div>
+          <div className="flex flex-wrap gap-2">
+            {topEnterpriseUseCases.slice(0, 8).map((uc) => (
+              <div
+                key={uc.rank}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.06]"
+              >
+                <span className="text-[10px] font-bold text-white/50">{uc.rank}.</span>
+                <span className="text-xs text-white/85">{uc.name}</span>
+                {uc.stat && (
+                  <span className="text-[10px] text-[#00D2D2] font-semibold shrink-0">{uc.stat.value}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </StaggerChild>
+
+      <StaggerChild index={7}>
         <div className="p-5 rounded-xl bg-[#00D2D2]/10 border border-[#00D2D2]/25 text-center">
           <div className="text-xs font-semibold text-[#00D2D2] uppercase tracking-wider mb-1">Core Insight</div>
           <div className="text-base font-semibold text-white">
@@ -92,6 +112,7 @@ export default function CustomerJTBDSlide() {
           <div className="text-sm text-white/60 mt-1">
             They come to launch campaigns, close deals, ship products, resolve tickets.
           </div>
+          <div className="text-xs text-white/40 mt-2">Source: monday.com enterprise use cases</div>
         </div>
       </StaggerChild>
     </SlideShell>

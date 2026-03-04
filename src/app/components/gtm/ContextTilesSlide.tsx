@@ -31,7 +31,7 @@ export default function ContextTilesSlide() {
     <SlideShell dark>
       <SlideTitle dark>Context</SlideTitle>
       <SlideSubtitle dark>
-        Market, Product, Customers — shared understanding before we discuss bets.
+        Market, Product, Customers — shared understanding before we go into the marketing implications and next steps.
       </SlideSubtitle>
 
       <div className="grid md:grid-cols-3 gap-6 mt-8">
