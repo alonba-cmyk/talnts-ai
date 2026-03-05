@@ -1,0 +1,151 @@
+name: Sync to Monday.com Repository
+
+on:
+  push:
+    branches: [ master, main ]
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  sync-to-monday:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Get commit info
+        id: commit-info
+        run: |
+          echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "COMMIT_MESSAGE=$(git log -1 --pretty=%B | head -1)" >> $GITHUB_OUTPUT
+          echo "COMMIT_AUTHOR=$(git log -1 --pretty=%an)" >> $GITHUB_OUTPUT
+
+      - name: Checkout target repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'DaPulse/dapulse-homepage-react'  # Adjust org name if needed
+          token: ${{ secrets.MONDAY_GITHUB_TOKEN }}
+          path: 'target-repo'
+          fetch-depth: 0
+
+      - name: Configure git for target repo
+        working-directory: target-repo
+        run: |
+          git config --global user.name 'Monday Agents Bot'
+          git config --global user.email 'monday-agents-bot@monday.com'
+
+      - name: Create and checkout sync branch
+        working-directory: target-repo
+        run: |
+          BRANCH_NAME="sync/monday-for-agents-$(date +%Y%m%d-%H%M%S)"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+
+          # Check if monday-for-agents branch exists, if not create it from master
+          if git show-ref --verify --quiet refs/remotes/origin/monday-for-agents; then
+            git checkout -b $BRANCH_NAME origin/monday-for-agents
+          else
+            git checkout -b monday-for-agents origin/master
+            git push origin monday-for-agents
+            git checkout -b $BRANCH_NAME monday-for-agents
+          fi
+
+      - name: Sync files from source to target
+        run: |
+          # Sync to static/monday-for-agents directory in dapulse-homepage-react
+          TARGET_DIR="target-repo/static/monday-for-agents"
+          mkdir -p $TARGET_DIR
+
+          # Copy main content files
+          cp -r src/* $TARGET_DIR/ 2>/dev/null || true
+          cp -r public/* $TARGET_DIR/ 2>/dev/null || true
+          cp index.html $TARGET_DIR/ 2>/dev/null || true
+          cp *.md $TARGET_DIR/ 2>/dev/null || true
+
+          # Copy build configuration files
+          cp package.json $TARGET_DIR/ 2>/dev/null || true
+          cp vite.config.ts $TARGET_DIR/ 2>/dev/null || true
+          cp tsconfig*.json $TARGET_DIR/ 2>/dev/null || true
+          cp vercel.json $TARGET_DIR/ 2>/dev/null || true
+
+          # Copy any additional assets or documentation
+          cp -r docs/* $TARGET_DIR/docs/ 2>/dev/null || mkdir -p $TARGET_DIR/docs
+          cp -r guidelines/* $TARGET_DIR/guidelines/ 2>/dev/null || mkdir -p $TARGET_DIR/guidelines
+
+          echo "Files synced to: $TARGET_DIR"
+          echo "Synced files:"
+          find $TARGET_DIR -type f -name "*" | head -20
+
+      - name: Check for changes
+        id: changes
+        working-directory: target-repo
+        run: |
+          git add .
+          if git diff --cached --quiet; then
+            echo "HAS_CHANGES=false" >> $GITHUB_OUTPUT
+            echo "No changes detected"
+          else
+            echo "HAS_CHANGES=true" >> $GITHUB_OUTPUT
+            echo "Changes detected:"
+            git diff --cached --name-only
+          fi
+
+      - name: Commit changes
+        if: steps.changes.outputs.HAS_CHANGES == 'true'
+        working-directory: target-repo
+        run: |
+          git commit -m "🤖 Sync monday-for-agents content from ${{ steps.commit-info.outputs.COMMIT_SHA }}
+
+          Original commit: ${{ steps.commit-info.outputs.COMMIT_MESSAGE }}
+          Author: ${{ steps.commit-info.outputs.COMMIT_AUTHOR }}
+          Source: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+
+          Auto-synced by GitHub Actions"
+
+      - name: Push branch
+        if: steps.changes.outputs.HAS_CHANGES == 'true'
+        working-directory: target-repo
+        run: |
+          git push origin $BRANCH_NAME
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.HAS_CHANGES == 'true'
+        working-directory: target-repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.MONDAY_GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --title "🚀 Sync monday-for-agents content from commit ${{ steps.commit-info.outputs.COMMIT_SHA }}" \
+            --body "## 🤖 Automated Content Sync
+
+          This PR automatically syncs content from the monday-agents-pr repository to update the monday-for-agents section.
+
+          ### Changes
+          - **Source Commit:** [\`${{ steps.commit-info.outputs.COMMIT_SHA }}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+          - **Original Message:** ${{ steps.commit-info.outputs.COMMIT_MESSAGE }}
+          - **Author:** ${{ steps.commit-info.outputs.COMMIT_AUTHOR }}
+
+          ### Files Updated
+          \`\`\`
+          $(git diff HEAD~1 --name-only)
+          \`\`\`
+
+          **🔍 Review:** Please review the changes before merging to ensure content quality and consistency.
+          **🚀 Deploy:** Once merged, this will update https://mondaystaging.com/monday-for-agents
+
+          ---
+          *This PR was automatically created by the monday-agents sync workflow*" \
+            --base monday-for-agents \
+            --head $BRANCH_NAME
+
+      - name: Output PR URL
+        if: steps.changes.outputs.HAS_CHANGES == 'true'
+        working-directory: target-repo
+        run: |
+          PR_URL=$(gh pr view $BRANCH_NAME --json url --jq '.url')
+          echo "::notice title=Pull Request Created::PR created at $PR_URL"
