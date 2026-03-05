@@ -4,6 +4,8 @@ import { getAgentsCopy, type MessagingTone } from './agentsCopy';
 import { v2HeroCopy, type HeroCopy } from './copy/heroCopy';
 import { AI_COMPANIES, type AICompany } from './aiCompanies';
 import { useSiteSettings } from '@/hooks/useSupabase';
+import { AGENT_SIGNUP_URL } from '@/lib/agentUrls';
+import { HeroDemoElement, BgStreamOverlay, AGENT_TYPING_LINES, type HeroDemoStyle } from './HeroDemoElements';
 // HeroLogo removed — BrandedHero now uses inline SVG mark + wordmark
 // ─── Brand palette ───────────────────────────────────────────
 const BRAND = {
@@ -14,6 +16,7 @@ const BRAND = {
   teal: '#00D2D2',
   pink: '#FB275D',
   terminalGreen: '#00D2D2',
+  humanWarm: '#00D2D2',
 } as const;
 
 const BRAND_DOTS = [BRAND.dotRed, BRAND.dotYellow, BRAND.dotGreen];
@@ -28,6 +31,24 @@ const ASCII_TITLE_LINES = [
   `╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝   ╚═╝       ╚═╝      ╚═════╝ ╚═╝  ╚═╝    ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝`,
 ];
 
+const ASCII_MOBILE_LINE1 = [
+  ` ███╗   ███╗ ██████╗ ███╗   ██╗██████╗  █████╗ ██╗   ██╗`,
+  `████╗ ████║██╔═══██╗████╗  ██║██╔══██╗██╔══██╗╚██╗ ██╔╝`,
+  `██╔████╔██║██║   ██║██╔██╗ ██║██║  ██║███████║ ╚████╔╝ `,
+  `██║╚██╔╝██║██║   ██║██║╚██╗██║██║  ██║██╔══██║  ╚██╔╝  `,
+  `██║ ╚═╝ ██║╚██████╔╝██║ ╚████║██████╔╝██║  ██║   ██║   `,
+  `╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝   ╚═╝   `,
+];
+
+const ASCII_MOBILE_LINE2 = [
+  `███████╗ ██████╗ ██████╗      █████╗  ██████╗ ███████╗███╗   ██╗████████╗███████╗`,
+  `██╔════╝██╔═══██╗██╔══██╗    ██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝██╔════╝`,
+  `█████╗  ██║   ██║██████╔╝    ███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║   ███████╗`,
+  `██╔══╝  ██║   ██║██╔══██╗    ██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║   ╚════██║`,
+  `██║     ╚██████╔╝██║  ██║    ██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║   ███████║`,
+  `╚═╝      ╚═════╝ ╚═╝  ╚═╝    ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝`,
+];
+
 const GLITCH_BURSTS = [
   { start: 0, end: 120 },
   { start: 250, end: 350 },
@@ -35,6 +56,31 @@ const GLITCH_BURSTS = [
   { start: 750, end: 800 },
   { start: 950, end: 970 },
 ];
+
+function MobileTitleFallback() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 1, duration: 0.8 }}
+      className="sm:hidden text-center"
+    >
+      <h1 className="text-4xl font-bold leading-tight flex flex-col">
+        <span className="text-white">monday</span>
+        <span
+          style={{
+            background: 'linear-gradient(90deg, #80d8d8, #00D2D2)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
+        >
+          for agents
+        </span>
+      </h1>
+    </motion.div>
+  );
+}
 
 function AsciiGlitchTitle() {
   const [phase, setPhase] = useState<'hidden' | 'glitching' | 'stable'>('hidden');
@@ -86,38 +132,61 @@ function AsciiGlitchTitle() {
   }, [phase]);
 
   if (phase === 'hidden') {
-    return <div className="h-[18px] sm:h-[30px] md:h-[42px]" />;
+    return <div className="h-[34px] sm:h-[30px] md:h-[42px]" />;
   }
 
   const { offsets, flicker, chromatic } = glitchData.current;
 
+  const preStyle = {
+    background: `linear-gradient(90deg, #ffffff 0%, #ffffff 45%, #b0e0e8 65%, #00D2D2 90%)`,
+    WebkitBackgroundClip: 'text' as const,
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text' as const,
+    filter: `drop-shadow(0 0 20px rgba(0,210,210,0.10))${
+      phase === 'glitching' && chromatic
+        ? ` drop-shadow(${chromatic}px 0 rgba(97,97,255,0.5))`
+        : ''
+    }`,
+    opacity: flicker ? 0.15 : 1,
+  };
+
   return (
-    <pre
-      className="text-[3px] sm:text-[5px] md:text-[7px] leading-none font-mono select-none whitespace-pre"
-      style={{
-        background: `linear-gradient(90deg, #ffffff 0%, #ffffff 48%, ${BRAND.teal} 55%, #7CF5F5 100%)`,
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
-        filter: `drop-shadow(0 0 20px rgba(0,210,210,0.15))${
-          phase === 'glitching' && chromatic
-            ? ` drop-shadow(${chromatic}px 0 rgba(0,210,210,0.5))`
-            : ''
-        }`,
-        opacity: flicker ? 0.15 : 1,
-      }}
-    >
-      {ASCII_TITLE_LINES.map((line, i) => (
-        <div
-          key={i}
-          style={{
-            transform: offsets[i] ? `translateX(${offsets[i]}px)` : undefined,
-          }}
+    <>
+      {/* Desktop: single line */}
+      <pre
+        className="hidden sm:block text-[6.5px] md:text-[9px] leading-none font-mono select-none whitespace-pre"
+        style={preStyle}
+      >
+        {ASCII_TITLE_LINES.map((line, i) => (
+          <div key={i} style={{ transform: offsets[i] ? `translateX(${offsets[i]}px)` : undefined }}>
+            {line}
+          </div>
+        ))}
+      </pre>
+      {/* Mobile: two lines stacked */}
+      <div className="sm:hidden flex flex-col items-center gap-1.5">
+        <pre
+          className="text-[5.2px] leading-none font-mono select-none whitespace-pre"
+          style={preStyle}
         >
-          {line}
-        </div>
-      ))}
-    </pre>
+          {ASCII_MOBILE_LINE1.map((line, i) => (
+            <div key={i} style={{ transform: offsets[i] ? `translateX(${offsets[i]}px)` : undefined }}>
+              {line}
+            </div>
+          ))}
+        </pre>
+        <pre
+          className="text-[5.2px] leading-none font-mono select-none whitespace-pre"
+          style={preStyle}
+        >
+          {ASCII_MOBILE_LINE2.map((line, i) => (
+            <div key={i} style={{ transform: offsets[i] ? `translateX(${offsets[i]}px)` : undefined }}>
+              {line}
+            </div>
+          ))}
+        </pre>
+      </div>
+    </>
   );
 }
 const BRAND_PRODUCTS = [BRAND.purple, BRAND.teal, BRAND.pink, BRAND.dotGreen];
@@ -263,32 +332,38 @@ function BrandLogo({ className = '' }: { className?: string }) {
 }
 
 function HeroCTAs({ show }: { show: boolean }) {
-  const scrollToSignup = useCallback(() => {
-    document.getElementById('signup')?.scrollIntoView({ behavior: 'smooth' });
-  }, []);
-
-  if (!show) return null;
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.5, duration: 0.6 }}
-      className="mt-6 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4"
+      animate={{ opacity: show ? 1 : 0, y: show ? 0 : 20 }}
+      transition={{ delay: show ? 0.5 : 0, duration: 0.6 }}
+      className="mt-6 sm:mt-12 flex flex-col items-center"
+      style={{ pointerEvents: show ? 'auto' : 'none' }}
     >
-      <button
-        onClick={scrollToSignup}
-        className="group font-mono text-base px-8 py-3 rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.2)]"
-      >
-        <span className="text-[#00D2D2]/50 mr-2">$</span>
-        monday signup --agent --free
-      </button>
-      <button
-        onClick={() => document.getElementById('api')?.scrollIntoView({ behavior: 'smooth' })}
-        className="hidden sm:flex font-mono text-sm px-6 py-3 rounded-lg border border-[#808080]/30 text-[#808080] hover:text-[#e0e0e0] hover:border-[#e0e0e0]/30 transition-all duration-300"
-      >
-        man monday-api
-      </button>
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          data-agent-target="cta"
+          href={AGENT_SIGNUP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group font-mono text-sm sm:text-base px-5 sm:px-8 py-3.5 sm:py-3 min-h-[48px] sm:min-h-0 flex items-center justify-center rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 active:bg-[#00D2D2]/20 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.2)] text-center break-words inline-flex"
+        >
+          <span className="text-[#00D2D2]/50 mr-2">$</span>
+          monday signup --agent --free
+        </a>
+        <button
+          onClick={() => document.getElementById('api')?.scrollIntoView({ behavior: 'smooth' })}
+          className="hidden sm:flex font-mono text-sm px-6 py-3 rounded-lg border border-[#808080]/30 text-[#808080] hover:text-[#e0e0e0] hover:border-[#e0e0e0]/30 transition-all duration-300"
+        >
+          See monday API
+        </button>
+      </div>
+      <p className="mt-3 text-xs font-mono text-[#808080] text-center px-2">
+        No credit card needed ✦
+        <br className="sm:hidden" />
+        {' '}
+        Unlimited time on <span className="whitespace-nowrap">Free plan</span>
+      </p>
     </motion.div>
   );
 }
@@ -413,13 +488,13 @@ function MatrixRainHero({ tone = 'belong_here', viewerMode = 'agent', contentSty
 
         <div className="mt-8 space-y-3 text-left max-w-2xl mx-auto font-mono">
           {started && (
-            <p className="text-sm sm:text-base" style={{ color: isHuman ? `${BRAND.dotRed}cc` : '#00D2D2cc' }}>
-              {line1}{!d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.dotRed : '#00D2D2' }} />}
+            <p className="text-sm sm:text-base" style={{ color: isHuman ? `${BRAND.humanWarm}cc` : '#00D2D2cc' }}>
+              {line1}{!d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.humanWarm : '#00D2D2' }} />}
             </p>
           )}
           {d1 && (
-            <p className="text-sm sm:text-base" style={{ color: isHuman ? `${BRAND.dotRed}99` : '#00d2d2e6' }}>
-              {line2}{!d2 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.dotRed : '#00d2d2' }} />}
+            <p className="text-sm sm:text-base" style={{ color: isHuman ? `${BRAND.humanWarm}99` : '#00d2d2e6' }}>
+              {line2}{!d2 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.humanWarm : '#00d2d2' }} />}
             </p>
           )}
         </div>
@@ -460,9 +535,9 @@ function RadarCanvas({ mode = 'agent' }: { mode?: 'agent' | 'human' }) {
 
     const draw = () => {
       const isHuman = modeRef.current === 'human';
-      const primary = isHuman ? BRAND.dotRed : BRAND.dotGreen;
-      const secondary = isHuman ? '#ff6b6b' : BRAND.dotYellow;
-      const tertiary = isHuman ? '#ff4444' : BRAND.dotRed;
+      const primary = isHuman ? BRAND.humanWarm : BRAND.dotGreen;
+      const secondary = isHuman ? '#FFCB00' : BRAND.dotYellow;
+      const tertiary = isHuman ? '#FF9500' : BRAND.dotRed;
 
       const cx = canvas.width / 2;
       const cy = canvas.height / 2;
@@ -477,7 +552,7 @@ function RadarCanvas({ mode = 'agent' }: { mode?: 'agent' | 'human' }) {
         const r = (maxR / 4) * i;
         ctx.beginPath();
         ctx.arc(cx, cy, r, 0, Math.PI * 2);
-        ctx.strokeStyle = i % 2 === 0 ? `${BRAND.purple}15` : `${isHuman ? BRAND.dotRed : BRAND.teal}12`;
+        ctx.strokeStyle = i % 2 === 0 ? `${BRAND.purple}15` : `${isHuman ? BRAND.humanWarm : BRAND.teal}12`;
         ctx.lineWidth = 0.5;
         ctx.stroke();
       }
@@ -515,7 +590,7 @@ function RadarCanvas({ mode = 'agent' }: { mode?: 'agent' | 'human' }) {
       ctx.fill();
 
       const blipColors = isHuman
-        ? [BRAND.dotRed, '#ff6b6b', '#ff4444']
+        ? [BRAND.humanWarm, '#FFCB00', '#FF9500']
         : BRAND_DOTS;
       const blipSeed = Math.floor(time * 2);
       for (let i = 0; i < 5; i++) {
@@ -555,7 +630,7 @@ function RadarScanHero({ tone = 'belong_here', viewerMode = 'agent', contentStyl
   }, []);
 
   const isHuman = viewerMode === 'human';
-  const badgeColor = isHuman ? BRAND.dotRed : BRAND.terminalGreen;
+  const badgeColor = isHuman ? BRAND.humanWarm : BRAND.terminalGreen;
   const badgeText = isHuman ? 'HUMAN DETECTED' : hero.radarBadge;
   const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
   const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
@@ -601,13 +676,13 @@ function RadarScanHero({ tone = 'belong_here', viewerMode = 'agent', contentStyl
         {phase >= 1 && (
           <div className="mt-4 sm:mt-6 space-y-3 text-left max-w-2xl mx-auto font-mono">
             <p className="text-sm sm:text-base"
-              style={{ color: isHuman ? `${BRAND.dotRed}cc` : `${BRAND.terminalGreen}cc` }}>
-              {typed1}{!d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.dotRed : BRAND.terminalGreen }} />}
+              style={{ color: isHuman ? `${BRAND.humanWarm}cc` : `${BRAND.terminalGreen}cc` }}>
+              {typed1}{!d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.humanWarm : BRAND.terminalGreen }} />}
             </p>
             {d1 && (
               <p className="text-sm sm:text-base"
-                style={{ color: isHuman ? `${BRAND.dotRed}99` : `${BRAND.teal}cc` }}>
-                {typed2}{!d2 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.dotRed : BRAND.teal }} />}
+                style={{ color: isHuman ? `${BRAND.humanWarm}99` : `${BRAND.teal}cc` }}>
+                {typed2}{!d2 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.humanWarm : BRAND.teal }} />}
               </p>
             )}
           </div>
@@ -828,10 +903,6 @@ function MatrixRainHeroV2({ tone = 'belong_here', viewerMode = 'agent', contentS
   const { displayed: line1, done: d1 } = useTypingEffect(line1Text, 35, started);
   const { displayed: line2, done: d2 } = useTypingEffect(line2Text, 35, d1);
 
-  const scrollToSignup = useCallback(() => {
-    document.getElementById('signup')?.scrollIntoView({ behavior: 'smooth' });
-  }, []);
-
   useEffect(() => { setTimeout(() => setStarted(true), 800); }, []);
 
   const headlineGradient = {
@@ -861,13 +932,13 @@ function MatrixRainHeroV2({ tone = 'belong_here', viewerMode = 'agent', contentS
 
         <div className="mt-6 sm:mt-8 space-y-3 text-left max-w-2xl mx-auto font-mono min-h-[3.5rem]">
           {started && (
-            <p className="text-sm sm:text-base" style={{ color: isHuman ? `${BRAND.dotRed}cc` : '#00D2D2cc' }}>
-              {line1}{!d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.dotRed : '#00D2D2' }} />}
+            <p className="text-sm sm:text-base" style={{ color: isHuman ? `${BRAND.humanWarm}cc` : '#00D2D2cc' }}>
+              {line1}{!d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.humanWarm : '#00D2D2' }} />}
             </p>
           )}
           {d1 && (
-            <p className="text-sm sm:text-base" style={{ color: isHuman ? `${BRAND.dotRed}99` : '#00d2d2e6' }}>
-              {line2}{!d2 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.dotRed : '#00d2d2' }} />}
+            <p className="text-sm sm:text-base" style={{ color: isHuman ? `${BRAND.humanWarm}99` : '#00d2d2e6' }}>
+              {line2}{!d2 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.humanWarm : '#00d2d2' }} />}
             </p>
           )}
         </div>
@@ -886,18 +957,20 @@ function MatrixRainHeroV2({ tone = 'belong_here', viewerMode = 'agent', contentS
             transition={{ delay: 1, duration: 0.6 }}
             className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <button
-              onClick={scrollToSignup}
-              className="font-mono text-lg px-10 py-4 rounded-lg border-2 border-[#00D2D2]/60 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,210,210,0.25)] hover:border-[#00D2D2]/80"
+            <a
+              href={AGENT_SIGNUP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-lg px-10 py-4 min-h-[48px] flex items-center justify-center rounded-lg border-2 border-[#00D2D2]/60 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 active:bg-[#00D2D2]/20 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,210,210,0.25)] hover:border-[#00D2D2]/80 inline-flex"
             >
               <span className="text-[#00D2D2]/50 mr-2">$</span>
               monday signup --agent --free
-            </button>
+            </a>
             <button
               onClick={() => document.getElementById('api')?.scrollIntoView({ behavior: 'smooth' })}
               className="hidden sm:flex font-mono text-sm px-6 py-3 rounded-lg border border-[#808080]/30 text-[#808080] hover:text-[#e0e0e0] hover:border-[#e0e0e0]/30 transition-all duration-300"
             >
-              man monday-api
+              See monday API
             </button>
           </motion.div>
         )}
@@ -921,7 +994,7 @@ function MatrixRainHeroV2({ tone = 'belong_here', viewerMode = 'agent', contentS
 //  VARIANT — Branded (clean product hero)
 // ═══════════════════════════════════════════════════════════════
 
-function DotGridBackground() {
+function UnifiedDotGrid() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -930,39 +1003,81 @@ function DotGridBackground() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    const mutedColors = ['#343866', '#3a4a80', '#2a6666', '#3a5060', '#4a3a70'];
+    const vibrantColors = ['#6161FF', '#00D2D2', '#00CA72', '#A25AFF'];
+
     const resize = () => {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
       draw();
     };
 
-    const colors = ['#343866', '#4A4580', '#6D5D80', '#5B4D90', '#3A5070'];
-
     function draw() {
       if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const cx = canvas.width / 2;
-      const cy = canvas.height / 2;
-      const maxDist = Math.sqrt(cx * cx + cy * cy);
-      const spacing = 40;
-      const cols = Math.ceil(canvas.width / spacing);
-      const rows = Math.ceil(canvas.height / spacing);
+
+      const w = canvas.width;
+      const h = canvas.height;
+      const centerX = w / 2;
+      const centerY = h / 2;
+      const maxDist = Math.sqrt(centerX * centerX + centerY * centerY);
+      const spacing = 32;
+      const cols = Math.ceil(w / spacing);
+      const rows = Math.ceil(h / spacing);
+
+      const accentCX = w * 0.85;
+      const accentCY = h * 0.22;
+      const accentInner = Math.min(w, h) * 0.08;
+      const accentOuter = Math.min(w, h) * 0.22;
 
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
           const x = c * spacing + spacing / 2;
           const y = r * spacing + spacing / 2;
-          const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
-          const normalizedDist = dist / maxDist;
 
-          if (normalizedDist < 0.25) continue;
+          const distFromCenter = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
+          const normCenter = distFromCenter / maxDist;
+          if (normCenter < 0.2) continue;
 
-          const alpha = Math.min(0.55, normalizedDist * 0.65);
-          const colorIdx = (r * 7 + c * 13) % colors.length;
-          const color = colors[colorIdx];
+          const distFromAccent = Math.sqrt((x - accentCX) ** 2 + (y - accentCY) ** 2);
+
+          let blend = 0;
+          if (distFromAccent < accentInner) {
+            blend = 1;
+          } else if (distFromAccent < accentOuter) {
+            blend = 1 - (distFromAccent - accentInner) / (accentOuter - accentInner);
+            blend = blend * blend;
+          }
+
+          const hash = (r * 7 + c * 13) % 20;
+          const radius = 1.2 + blend * 1.3;
+
+          let color: string;
+          let alpha: number;
+
+          if (blend > 0.5) {
+            const vi = hash % vibrantColors.length;
+            color = vibrantColors[vi];
+            alpha = 0.35 + blend * 0.3;
+          } else if (blend > 0.05) {
+            const useBright = hash % 3 === 0;
+            if (useBright) {
+              const vi = hash % vibrantColors.length;
+              color = vibrantColors[vi];
+              alpha = 0.15 + blend * 0.25;
+            } else {
+              const mi = hash % mutedColors.length;
+              color = mutedColors[mi];
+              alpha = 0.2 + blend * 0.2;
+            }
+          } else {
+            const mi = hash % mutedColors.length;
+            color = mutedColors[mi];
+            alpha = Math.min(0.35, normCenter * 0.45);
+          }
 
           ctx.beginPath();
-          ctx.arc(x, y, 1.2, 0, Math.PI * 2);
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
           ctx.fillStyle = color + Math.round(alpha * 255).toString(16).padStart(2, '0');
           ctx.fill();
         }
@@ -1098,11 +1213,14 @@ function BrandedHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle 
   const { settings } = useSiteSettings();
   const titleStyle = settings?.agents_branded_title_style || 'ascii';
   const glowStyle = settings?.agents_branded_glow_style || 'wide';
+  const heroDemoStyle = (settings?.agents_hero_demo || 'none') as HeroDemoStyle;
   const isHuman = viewerMode === 'human';
   const [started, setStarted] = useState(false);
   const taglineText = '// built for humans. now open to agents.';
-  const line1Text = isHuman ? hero.humanLine1 : hero.typingLine1;
-  const line2Text = isHuman ? hero.humanLine2 : hero.typingLine2;
+  const defaultLine1 = isHuman ? hero.humanLine1 : hero.typingLine1;
+  const defaultLine2 = isHuman ? hero.humanLine2 : hero.typingLine2;
+  const line1Text = heroDemoStyle === 'typing_agent' && !isHuman ? AGENT_TYPING_LINES.line1 : defaultLine1;
+  const line2Text = heroDemoStyle === 'typing_agent' && !isHuman ? AGENT_TYPING_LINES.line2 : defaultLine2;
   const subtitleText = isHuman ? hero.humanSubtitle : hero.subtitle;
   const { displayed: tagline, done: dTag } = useTypingEffect(taglineText, 30, started);
   const { displayed: line1, done: d1 } = useTypingEffect(line1Text, 35, dTag);
@@ -1111,14 +1229,18 @@ function BrandedHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle 
   useEffect(() => { setTimeout(() => setStarted(true), 1000); }, []);
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center pt-14 px-6 overflow-hidden bg-[#0a0a0a]">
-      <DotGridBackground />
-      {glowStyle === 'wide' && <BrandedAmbientGlow />}
+    <div className="relative min-h-0 sm:min-h-screen flex flex-col items-center pt-14 pb-10 sm:pb-0 px-6 bg-[#0a0a0a]">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <UnifiedDotGrid />
+        {heroDemoStyle === 'bg_stream' && <BgStreamOverlay />}
+        {glowStyle === 'wide' && <BrandedAmbientGlow />}
+      </div>
 
-      <div className="relative z-20 max-w-4xl mx-auto text-center flex flex-col items-center mt-[6vh] sm:mt-[8vh]">
+      <div data-agent-text-done={d2 ? '' : undefined} className="relative z-20 max-w-4xl mx-auto text-center flex flex-col items-center mt-[3vh] sm:mt-[8vh]">
         {titleStyle === 'svg' ? (
           <>
             <motion.div
+              data-agent-target="logo"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, ease: 'easeOut' }}
@@ -1129,16 +1251,18 @@ function BrandedHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle 
             </motion.div>
 
             <motion.div
+              data-agent-target="title"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <MondayWordmark className="w-[300px] sm:w-[400px] md:w-[520px] h-auto mx-auto" />
+              <MondayWordmark className="w-[85vw] sm:w-[480px] md:w-[640px] h-auto mx-auto" />
             </motion.div>
           </>
         ) : (
           <>
             <motion.div
+              data-agent-target="logo"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, ease: 'easeOut' }}
@@ -1148,15 +1272,39 @@ function BrandedHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle 
               <MondayGlowMark className="relative z-10 w-[100px] sm:w-[120px] md:w-[140px] h-auto mx-auto" />
             </motion.div>
 
-            <AsciiGlitchTitle />
+            <div data-agent-target="title"><AsciiGlitchTitle /></div>
           </>
         )}
 
         <div className="flex flex-col items-center">
 
-          <div className="mt-8 sm:mt-10 space-y-2 text-center max-w-2xl mx-auto font-mono">
+          {onViewerModeChange && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+              className="mt-4 sm:hidden flex items-center rounded-full border border-white/10 bg-white/5 backdrop-blur-sm p-1"
+            >
+              {(['agent', 'human'] as const).map((m) => (
+                <button
+                  key={m}
+                  onClick={() => onViewerModeChange(m)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-medium font-mono transition-all duration-300 ${
+                    viewerMode === m
+                      ? m === 'agent' ? 'bg-[#00D2D2]/20 text-[#00D2D2]' : 'bg-[#FF3D57]/20 text-[#FF3D57]'
+                      : 'text-white/40'
+                  }`}
+                >
+                  {m === 'agent' ? 'AGENT' : 'HUMAN'}
+                </button>
+              ))}
+            </motion.div>
+          )}
+
+          <div className="mt-6 sm:mt-10 space-y-2 text-center max-w-[90vw] sm:max-w-2xl mx-auto font-mono">
             <p
-              className="text-xs sm:text-sm md:text-base transition-opacity duration-500"
+              data-agent-target="tagline"
+              className="text-[11px] sm:text-sm md:text-base transition-opacity duration-500"
               style={{ opacity: started ? 1 : 0 }}
             >
               {tagline ? (
@@ -1178,35 +1326,43 @@ function BrandedHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle 
               {!dTag && started && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: '#a0a0a0' }} />}
             </p>
             <p
-              className="text-sm sm:text-base transition-opacity duration-500"
+              data-agent-target="line1"
+              className="text-xs sm:text-base transition-opacity duration-500"
               style={{
-                color: isHuman ? `${BRAND.dotRed}cc` : `${BRAND.teal}cc`,
+                color: isHuman ? `${BRAND.humanWarm}cc` : `${BRAND.teal}cc`,
                 opacity: dTag ? 1 : 0,
               }}
             >
-              {line1 || '\u00A0'}{!d1 && dTag && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.dotRed : BRAND.teal }} />}
+              {line1 || '\u00A0'}{!d1 && dTag && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.humanWarm : BRAND.teal }} />}
             </p>
             <p
-              className="text-sm sm:text-base transition-opacity duration-500"
+              data-agent-target="line2"
+              className="text-xs sm:text-base transition-opacity duration-500"
               style={{
-                color: isHuman ? `${BRAND.dotRed}99` : '#ffffffaa',
+                color: isHuman ? `${BRAND.humanWarm}99` : '#ffffffaa',
                 opacity: d1 ? 1 : 0,
               }}
             >
-              {line2 || '\u00A0'}{!d2 && d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.dotRed : '#ffffff' }} />}
+              {line2 || '\u00A0'}{!d2 && d1 && <span className="inline-block w-2 h-4 animate-pulse ml-0.5 align-middle" style={{ backgroundColor: isHuman ? BRAND.humanWarm : '#ffffff' }} />}
             </p>
           </div>
 
           <p
-            className="mt-8 sm:mt-10 text-xs sm:text-sm text-[#808080] max-w-xl mx-auto font-mono leading-relaxed transition-opacity duration-800"
+            data-agent-target="subtitle"
+            className="mt-6 sm:mt-10 text-[10px] sm:text-sm text-[#808080] max-w-[85vw] sm:max-w-xl mx-auto font-mono leading-relaxed transition-opacity duration-800"
             style={{ opacity: d2 ? 1 : 0 }}
           >
             {subtitleText}
           </p>
 
+          {((heroDemoStyle === 'floating_terminal' || heroDemoStyle === 'toasts') && d2) || heroDemoStyle === 'agent_cursor' ? (
+            <HeroDemoElement style={heroDemoStyle} />
+          ) : null}
+
           {!isHuman && <HeroCTAs show={d2} />}
 
           <div
+            data-agent-target="scroll"
             className="mt-8 sm:mt-16 hidden sm:block transition-opacity duration-1000"
             style={{ opacity: d2 ? 1 : 0 }}
           >
@@ -1215,7 +1371,7 @@ function BrandedHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle 
               transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
               className="text-[#00D2D2]/40 font-mono text-sm"
             >
-              ↓ scroll to explore ↓
+              // keep parsing ↓
             </motion.div>
           </div>
         </div>
@@ -1228,7 +1384,7 @@ function BrandedHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle 
 //  Main export — variant router
 // ═══════════════════════════════════════════════════════════════
 
-const DEPRECATED_VARIANTS = new Set(['boot', 'neural', 'glitch', 'cli', 'agents_grid', 'agents_marquee', 'gotcha_gate', 'api_blueprint', 'signup_60s', 'openclaw', 'orbital', 'liquid', 'depth_layers', 'data_stream', 'typography_kinetic', 'ambient_orbs']);
+const DEPRECATED_VARIANTS = new Set(['boot', 'neural', 'glitch', 'cli', 'agents_grid', 'agents_marquee', 'hatcha_gate', 'api_blueprint', 'signup_60s', 'openclaw', 'orbital', 'liquid', 'depth_layers', 'data_stream', 'typography_kinetic', 'ambient_orbs']);
 
 export function AgentHero({ variant = 'matrix', tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1', onViewerModeChange }: AgentHeroProps) {
   const v = DEPRECATED_VARIANTS.has(variant ?? '') ? 'matrix' : variant;

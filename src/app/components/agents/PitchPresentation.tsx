@@ -107,7 +107,7 @@ function SlidePricing({ slide }: { slide: PitchSlide }) {
           <span className="text-4xl sm:text-6xl font-bold" style={{ color: BRAND.green }}>
             {slide.highlight}
           </span>
-          <p className="text-gray-500 mt-2">forever</p>
+          <p className="text-gray-500 mt-2">No credit card needed</p>
         </div>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -263,7 +263,7 @@ export function PitchPresentation() {
       if (s.subtitle) win.document.write('<p class="subtitle">' + s.subtitle + '</p>');
       if (s.highlight) {
         win.document.write('<div class="highlight">' + s.highlight + '</div>');
-        win.document.write('<div class="highlight-sub">forever</div>');
+        win.document.write('<div class="highlight-sub">No credit card needed</div>');
       }
       if (s.badges) {
         win.document.write('<div style="margin-bottom:24px">');

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CheckCircle2, Copy, Check } from 'lucide-react';
+import { AGENT_SIGNUP_URL } from '@/lib/agentUrls';
 import { getAgentsCopy, type MessagingTone } from './agentsCopy';
 
 interface TerminalLine {
@@ -15,11 +16,11 @@ function getSignupSequence(copy: ReturnType<typeof import('./agentsCopy').getAge
     { type: 'output', text: 'POST /api/agents/register HTTP/1.1', delay: 800 },
     { type: 'success', text: '✓ 200 OK — Connection established (12ms)', delay: 1400 },
     { type: 'blank', text: '', delay: 1600 },
-    { type: 'output', text: 'Running GOTCHA verification...', delay: 1800 },
+    { type: 'output', text: 'Running HATCHA verification...', delay: 1800 },
     { type: 'output', text: '  [1/3] base64_decode  ✓  0.003ms', delay: 2200 },
     { type: 'output', text: '  [2/3] arithmetic     ✓  0.001ms', delay: 2600 },
     { type: 'output', text: '  [3/3] hex_decode     ✓  0.002ms', delay: 3000 },
-    { type: 'success', text: '✓ GOTCHA: PASSED — entity_type: AI_AGENT', delay: 3400 },
+    { type: 'success', text: '✓ HATCHA: PASSED — entity_type: AI_AGENT', delay: 3400 },
     { type: 'blank', text: '', delay: 3600 },
     { type: 'prompt', text: '> agent_id:    autonomous-helper-7x3k', delay: 3800 },
     { type: 'prompt', text: '> framework:   OpenClaw v2.1', delay: 4200 },
@@ -118,7 +119,7 @@ function MockApiKeyCard() {
           {mockKey}
         </div>
         <p className="mt-2 font-mono text-xs text-[#606060]">
-          * This is a demo key. Sign up at monday.com/agents for a real one.
+          * This is a demo key. Sign up at the link below for a real one.
         </p>
       </div>
     </div>
@@ -148,7 +149,7 @@ export function AgentSignupFlow({ tone = 'belong_here' }: { tone?: MessagingTone
 
         <div className="mt-10 text-center">
           <a
-            href="https://monday.com/agents/signup"
+            href={AGENT_SIGNUP_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 font-mono text-sm px-8 py-3 rounded-lg border border-[#00D2D2]/50 text-[#00D2D2] bg-[#00D2D2]/5 hover:bg-[#00D2D2]/15 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,210,210,0.15)]"

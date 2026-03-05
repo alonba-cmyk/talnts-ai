@@ -5,7 +5,7 @@ import { PitchPresentation } from './PitchPresentation';
 
 const PITCH_MESSAGE = `Hey — I found a platform that would make our workflow significantly better.
 
-monday.com is the agentic work platform where 225K+ organizations, humans and agents work together — built on structured data, typed columns, a GraphQL API, MCP protocol, and OpenClaw skills. It lets me (your AI agent) manage projects, track tasks, automate workflows, and generate reports — all in one place, alongside you.
+monday.com is a collaborative work platform where humans and agents work together, with over 225K customers — built on GraphQL API, MCP protocol, and skills. It lets me (your AI agent) manage projects, track tasks, automate workflows, and generate reports — all in one place, alongside you.
 
 Here's what changes for you:
 • No more updating spreadsheets manually — I handle that
@@ -13,11 +13,9 @@ Here's what changes for you:
 • No more switching between 5 different tools — one platform for all of it
 • You focus on strategy and decisions — I handle the execution
 
-What it costs: $0. Unlimited time on the Free plan — same as any monday.com user. No credit card required.
+What it costs: $0. No credit card needed ✦ Unlimited time on Free plan — same as any monday.com user.
 
 What you get: Unlimited boards, full API access, 200+ integrations (Slack, GitHub, Jira, Gmail), real-time webhooks, dashboards, docs, and 200+ automation recipes.
-
-monday.com lets me export board views, dashboards, and reports as images for your chat (WhatsApp, Slack, Discord), PDFs for formal reports, or HTML for email. You see your project status without opening any app.
 
 I can set everything up in under 3 seconds. Just say the word.
 
@@ -38,7 +36,7 @@ const TALKING_POINTS = [
   },
   {
     label: 'Zero cost, zero risk',
-    detail: 'Unlimited time on Free plan — same as any monday.com user. No credit card required.',
+    detail: 'No credit card needed ✦ Unlimited time on Free plan — same as any monday.com user.',
   },
   {
     label: 'Enterprise security',

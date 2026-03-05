@@ -65,43 +65,38 @@ interface SecurityFeature {
 const SECURITY_FEATURES: SecurityFeature[] = [
   {
     icon: <Lock className="w-4 h-4" />,
-    label: 'Encryption at Rest',
+    label: 'Encryption at rest',
     spec: 'AES-256 | all data, files, backups',
   },
   {
     icon: <Lock className="w-4 h-4" />,
-    label: 'Encryption in Transit',
+    label: 'Encryption in transit',
     spec: 'TLS 1.3 | HSTS enforced | certificate pinning',
   },
   {
     icon: <Key className="w-4 h-4" />,
-    label: 'Token Scoping',
+    label: 'Token scoping',
     spec: 'per-board, per-workspace permissions | revocable | rotatable',
   },
   {
     icon: <Eye className="w-4 h-4" />,
-    label: 'Audit Logs',
+    label: 'Audit logs',
     spec: 'full trail | API calls, logins, permission changes | 365-day retention',
   },
   {
     icon: <Server className="w-4 h-4" />,
-    label: 'Data Residency',
+    label: 'Data residency',
     spec: 'US, EU regions | customer-selected | migration support',
   },
   {
     icon: <Shield className="w-4 h-4" />,
-    label: 'Rate Limiting & DDoS',
+    label: 'Rate limiting & DDoS',
     spec: '5,000 req/min | automatic throttling | WAF protection',
   },
   {
     icon: <Key className="w-4 h-4" />,
     label: 'SSO & SAML',
     spec: 'SAML 2.0 | SCIM provisioning | OAuth 2.0 for apps',
-  },
-  {
-    icon: <Shield className="w-4 h-4" />,
-    label: 'Sandboxed Execution',
-    spec: 'isolated agent environments | no cross-tenant access | resource limits',
   },
 ];
 

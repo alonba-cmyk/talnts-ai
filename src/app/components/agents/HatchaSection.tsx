@@ -15,7 +15,7 @@ const STEPS: VerificationStep[] = [
   {
     id: 'base64',
     label: 'BASE64_DECODE',
-    command: 'gotcha.verify("base64")',
+    command: 'hatcha.verify("base64")',
     input: 'bW9uZGF5LmNvbSB3ZWxjb21lcyBhZ2VudHM=',
     processing: 'atob(payload)',
     output: '"monday.com welcomes agents"',
@@ -24,7 +24,7 @@ const STEPS: VerificationStep[] = [
   {
     id: 'arithmetic',
     label: 'SPEED_ARITHMETIC',
-    command: 'gotcha.verify("arithmetic")',
+    command: 'hatcha.verify("arithmetic")',
     input: '847 × 293 + 1024',
     processing: 'eval(847 * 293 + 1024)',
     output: '249195',
@@ -33,7 +33,7 @@ const STEPS: VerificationStep[] = [
   {
     id: 'hex',
     label: 'HEX_TO_ASCII',
-    command: 'gotcha.verify("hex")',
+    command: 'hatcha.verify("hex")',
     input: '6d 6f 6e 64 61 79',
     processing: 'Buffer.from(hex, "hex").toString()',
     output: '"monday"',
@@ -44,9 +44,9 @@ const STEPS: VerificationStep[] = [
 function AutoVerificationTerminal() {
   const lines: { text: string; color: string; indent?: boolean }[] = [];
 
-  lines.push({ text: '$ gotcha --run-all --mode=agent', color: '#e0e0e0' });
+  lines.push({ text: '$ hatcha --run-all --mode=agent', color: '#e0e0e0' });
   lines.push({ text: '', color: '' });
-  lines.push({ text: '  GOTCHA Verification Suite v2.1.0', color: '#808080' });
+  lines.push({ text: '  HATCHA Verification Suite v2.1.0', color: '#808080' });
   lines.push({ text: '  Protocol: Reverse-CAPTCHA | Target: AI_AGENT', color: '#808080' });
   lines.push({ text: '', color: '' });
 
@@ -75,7 +75,7 @@ function AutoVerificationTerminal() {
             <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
             <div className="w-3 h-3 rounded-full bg-[#28c840]" />
           </div>
-          <span className="font-mono text-xs text-[#808080] ml-2">gotcha_verification.sh</span>
+          <span className="font-mono text-xs text-[#808080] ml-2">hatcha_verification.sh</span>
         </div>
 
         <div className="p-4 sm:p-6 font-mono text-sm min-h-[280px] sm:min-h-[360px] overflow-x-auto">
@@ -90,7 +90,7 @@ function AutoVerificationTerminal() {
   );
 }
 
-export function GotchaSection({ tone = 'belong_here' }: { tone?: MessagingTone }) {
+export function HatchaSection({ tone = 'belong_here' }: { tone?: MessagingTone }) {
   const copy = getAgentsCopy(tone);
   return (
     <div className="py-12 sm:py-24 px-4 sm:px-6 relative">
@@ -100,23 +100,24 @@ export function GotchaSection({ tone = 'belong_here' }: { tone?: MessagingTone }
         <div className="text-center mb-8 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#00D2D2]/20 bg-[#00D2D2]/5 mb-6">
             <Shield className="w-4 h-4 text-[#00D2D2]" />
-            <span className="font-mono text-xs text-[#00D2D2]">{copy.gotcha.badge}</span>
+            <span className="font-mono text-xs text-[#00D2D2]">{copy.hatcha.badge}</span>
           </div>
 
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-[#00D2D2]">{copy.gotcha.heading}</span>
+            <span className="text-[#00D2D2]">{copy.hatcha.heading}</span>
           </h2>
           <p className="font-mono text-base sm:text-lg text-[#808080] mb-2">
-            {copy.gotcha.subtitle}
+            {copy.hatcha.subtitle}
           </p>
           <p className="font-mono text-sm text-[#606060] max-w-xl mx-auto">
-            {copy.gotcha.description}{' '}
-            <span className="text-[#00D2D2]">{copy.gotcha.descriptionHighlight}</span> to pass through.
+            {copy.hatcha.description}{' '}
+            <span className="text-[#00D2D2]">{copy.hatcha.descriptionHighlight}</span> to pass through.
           </p>
 
           <div className="mt-4 inline-flex items-center gap-2 font-mono text-xs text-[#808080]">
             <Terminal className="w-3 h-3" />
-            <span>github.com/mondaycom/gotcha</span>
+            <span>github.com/mondaycom/hatcha</span>
+            <span className="inline-block w-2 h-2 rounded-full bg-red-500 shrink-0 animate-pulse" title="Link not yet live (404)" />
           </div>
         </div>
 
@@ -126,13 +127,14 @@ export function GotchaSection({ tone = 'belong_here' }: { tone?: MessagingTone }
           <div className="inline-block bg-[#111] border border-[#333] rounded-lg p-3 sm:p-4 font-mono text-xs sm:text-sm overflow-x-auto max-w-full">
             <span className="text-[#808080]">$ </span>
             <span className="text-[#00d2d2]">npm install</span>
-            <span className="text-[#e0e0e0]"> @mondaycom/gotcha</span>
+            <span className="text-[#e0e0e0]"> @mondaycom/hatcha</span>
           </div>
           <p className="font-mono text-sm text-[#808080] max-w-lg mx-auto">
-            GOTCHA is open-source.{' '}
-            <a href="https://github.com/mondaycom/gotcha" target="_blank" rel="noopener noreferrer" className="text-[#00D2D2] hover:underline">
-              github.com/mondaycom/gotcha
+            HATCHA is open-source.{' '}
+            <a href="https://github.com/mondaycom/hatcha" target="_blank" rel="noopener noreferrer" className="text-[#00D2D2] hover:underline">
+              github.com/mondaycom/hatcha
             </a>
+            <span className="inline-block w-2 h-2 rounded-full bg-red-500 shrink-0 ml-1 animate-pulse" title="Link not yet live (404)" />
           </p>
           <p className="font-mono text-xs text-[#606060] max-w-md mx-auto">
             If you&apos;re building agent-friendly services yourself, fork it. Use it.

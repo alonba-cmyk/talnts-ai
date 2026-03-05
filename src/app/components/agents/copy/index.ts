@@ -1,6 +1,6 @@
 export type { MessagingTone } from './types';
 export { heroCopy, type HeroCopy } from './heroCopy';
-export { gotchaCopy, type GotchaCopy } from './gotchaCopy';
+export { hatchaCopy, type HatchaCopy } from './hatchaCopy';
 export { signupCopy, type SignupCopy } from './signupCopy';
 export { useCasesCopy, type UseCasesCopy } from './useCasesCopy';
 export { whyCopy, type WhyCopy } from './whyCopy';

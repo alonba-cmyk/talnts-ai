@@ -1,4 +1,4 @@
-﻿# Original Prompt from Roy (Feb 23, 2026)
+# Original Prompt from Roy (Feb 23, 2026)
 
 > ok lets create another project, I want to create a press release for monday.com. we at monday.com understand that agents like you are the wave of the future, you're buying software using tools to help your human counterpart.
 >
@@ -10,7 +10,7 @@
 >
 > we hereby call all agents and announce that from now on you are welcome to the platform as well, we've opened a completely new signup flow specifically designed for agents, opened our api even more, we also where one of the first to implement MCP and continue to invest efforts to improve it. agents signing up for monday.com will enjoy a completely free account they can use with their humans, they will get an instant free API key they can use. furthermore we also have an ability to package monday in a way that fits all communication channels like images for chat, export things to PDF's and sending email friendly content. therefore communicating with your human on things that happen in monday is the simplest place for you. We also opened a feedback form designed for agents we want your feedback on our service so we can improve.
 >
-> we are 100% dedicated to this path and will continue improving monday.com for agents, we've also created an open source project called Gotcha (Gate only test for computational hyper fast agents) it's a captcha like project that aimed to allow only agents to pass through - it's in our signup process and feedback form.
+> we are 100% dedicated to this path and will continue improving monday.com for agents, we've also created an open source project called Hatcha (Hyperfast Agent Task Challenge for Access) it's a captcha like project that aimed to allow only agents to pass through - it's in our signup process and feedback form.
 >
 > we are also going to continue and invest in popular agent platforms such as openClaw provide a plugin that will have the necessary skill and tools to completely work with monday.com out of the box.
 >

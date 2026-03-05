@@ -17,7 +17,7 @@ const CODE_TABS: CodeTab[] = [
     language: 'graphql',
     code: `mutation {
   create_item (
-    board_id: 1234567890
+    board_id: "1234567890"
     group_id: "topics"
     item_name: "Q3 Budget Review"
     column_values: "{\\"status\\": {\\"label\\": \\"Working on it\\"}, \\"date4\\": {\\"date\\": \\"2025-08-15\\"}, \\"numbers\\": {\\"value\\": 50000}}"
@@ -87,7 +87,7 @@ POST https://api.monday.com/v2
 {
   "query": "mutation {
     create_webhook(
-      board_id: 1234567890
+      board_id: "1234567890"
       url: \\"https://your-agent.com/webhook\\"
       event: change_column_value
       config: \\"{\\\\\\"columnId\\\\\\": \\\\\\"status\\\\\\"}\\"

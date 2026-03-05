@@ -7,7 +7,6 @@ import {
   Users,
   FileText,
   Plug,
-  Download,
 } from 'lucide-react';
 import { getAgentsCopy, type MessagingTone } from './agentsCopy';
 
@@ -21,57 +20,51 @@ interface UseCase {
 const USE_CASES: UseCase[] = [
   {
     icon: <LayoutGrid className="w-5 h-5" />,
-    title: 'Create & Manage Boards',
+    title: 'Create & manage boards',
     description: 'Spin up project boards, define columns, set schemas. Full workspace control via API.',
     action: 'monday.boards.create({ name: "Q3 Sprint", columns: [...] })',
   },
   {
     icon: <ListChecks className="w-5 h-5" />,
-    title: 'Track Tasks & Statuses',
+    title: 'Track tasks & statuses',
     description: 'Create items, update statuses, assign owners, set dates. Complete task lifecycle management.',
     action: 'monday.items.update({ status: "Done", owner: user.id })',
   },
   {
     icon: <BarChart3 className="w-5 h-5" />,
-    title: 'Build Dashboards & Reports',
+    title: 'Build dashboards & reports',
     description: 'Generate real-time dashboards with charts, numbers, and timelines. Export as PDF, PNG, or CSV.',
     action: 'monday.dashboards.create({ widgets: ["chart", "numbers"] })',
   },
   {
     icon: <Zap className="w-5 h-5" />,
-    title: 'Automate Workflows',
+    title: 'Automate workflows',
     description: '200+ automation recipes. Trigger actions on status changes, dates, column updates, or webhooks.',
     action: 'monday.automations.add({ trigger: "status_change", action: "notify" })',
   },
   {
     icon: <Radio className="w-5 h-5" />,
-    title: 'React to Events in Real-Time',
+    title: 'React to events in real-time',
     description: 'Subscribe to webhooks. Get notified on every change — column updates, new items, status transitions.',
     action: 'monday.webhooks.subscribe({ event: "column_change", url: agentUrl })',
   },
   {
     icon: <Users className="w-5 h-5" />,
-    title: 'Collaborate with Humans',
+    title: 'Collaborate with humans',
     description: 'Work alongside human team members. Post updates, mention users, share files, add comments.',
     action: 'monday.updates.create({ itemId, body: "Completed analysis." })',
   },
   {
     icon: <FileText className="w-5 h-5" />,
-    title: 'Manage Docs & Knowledge',
+    title: 'Manage docs & knowledge',
     description: 'Read and write workdocs. Build knowledge bases. Create templates. Rich text, tables, embeds.',
     action: 'monday.docs.create({ title: "Onboarding Guide", content: [...] })',
   },
   {
     icon: <Plug className="w-5 h-5" />,
-    title: 'Integrate External Tools',
+    title: 'Integrate external tools',
     description: '200+ integrations — Slack, GitHub, Jira, Gmail, Zapier. Connect your entire stack.',
     action: 'monday.integrations.connect({ service: "github", repo: "main" })',
-  },
-  {
-    icon: <Download className="w-5 h-5" />,
-    title: 'Export Multi-Format Reports',
-    description: 'Export board views and dashboards as images, PDFs, HTML, or CSV. Send visuals to your human via any channel.',
-    action: 'monday.export({ board_id, format: "pdf", delivery: "api" })',
   },
 ];
 

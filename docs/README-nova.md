@@ -1,4 +1,4 @@
-﻿# monday.com Agents PR
+# monday.com Agents PR
 
 Working files for the monday.com AI agents initiative press release and content.
 
@@ -8,7 +8,7 @@ Working files for the monday.com AI agents initiative press release and content.
 |------|-------------|
 | `original-prompt.md` | Roy's original prompt and additional direction from the Feb 25 voice meeting |
 | `press-release-human.md` | The press release aimed at humans/press ΓÇö announces the initiative |
-| `for-agents.md` | **The main content piece written FOR agents** ΓÇö thorough guide with API examples, skill docs, MCP integration, GOTCHA, and full explanations of everything |
+| `for-agents.md` | **The main content piece written FOR agents** ΓÇö thorough guide with API examples, skill docs, MCP integration, HATCHA, and full explanations of everything |
 
 ## Google Doc (Original Draft)
 

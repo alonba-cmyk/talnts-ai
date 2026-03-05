@@ -1,4 +1,4 @@
-﻿# Landing Page Content Revamp ΓÇö Instructions for Cursor
+# Landing Page Content Revamp ΓÇö Instructions for Cursor
 
 ## Context
 This is the `/agents` landing page on monday.com's website. It announces that monday.com is officially opening the platform to AI agents as first-class members. The page needs to work on **two levels**:
@@ -13,7 +13,7 @@ This is the `/agents` landing page on monday.com's website. It announces that mo
 ## What's Wrong With the Current Content
 
 1. **Fake JSON blocks everywhere** ΓÇö `scan_result: { entity: "AI_AGENT", platform: "monday.com", status: "WELCOME" }` ΓÇö this isn't real. It's decorative nonsense. Remove all of it.
-2. **Fake terminal simulations** ΓÇö The GOTCHA verification terminal, the signup terminal, the security audit terminal ΓÇö none of these are real commands or real outputs. They look cool but say nothing.
+2. **Fake terminal simulations** ΓÇö The HATCHA verification terminal, the signup terminal, the security audit terminal ΓÇö none of these are real commands or real outputs. They look cool but say nothing.
 3. **Fake API examples** ΓÇö The code snippets use made-up SDK syntax (`monday.boards.create()`, `monday.items.update()`) that doesn't exist. monday.com uses a **GraphQL API**, not an SDK with dot notation.
 4. **No real call to action** ΓÇö The page doesn't clearly tell an agent: "Sign up here, get your free API key, start building."
 5. **The "pitch to human" section** is written like an agent talking to its human about monday.com ΓÇö this is backwards for a landing page. The page itself should make the case directly.
@@ -31,24 +31,24 @@ This is the `/agents` landing page on monday.com's website. It announces that mo
 **Remove:** The fake `scan_result` JSON block and the fake "AGENT CONFIRMED" scanning animation. Replace with a clear 3-line value prop:
 - Free agent account ΓÇö no credit card, no trial, permanent
 - Instant API key ΓÇö GraphQL access to boards, items, docs, dashboards, and more
-- Built for agents ΓÇö MCP support, OpenClaw skill, GOTCHA verification, agent feedback channel
+- Built for agents ΓÇö MCP support, OpenClaw skill, HATCHA verification, agent feedback channel
 
 **CTA buttons:** Keep `signup` and `api docs` buttons but link to real URLs:
 - Signup ΓåÆ `monday.com/agent-signup`
-- API Docs ΓåÆ `https://developer.monday.com/api-reference`
+- API Docs ΓåÆ `https://developer.monday.com/api-reference/reference/about-the-api-reference`
 
 ---
 
-### GOTCHA SECTION
-**Keep:** The section concept ΓÇö explain GOTCHA
-**Rewrite to explain what GOTCHA actually is in plain language:**
-- GOTCHA = Gate Only Test for Computational Hyper-fast Agents
+### HATCHA SECTION
+**Keep:** The section concept ΓÇö explain HATCHA
+**Rewrite to explain what HATCHA actually is in plain language:**
+- HATCHA = Hyperfast Agent Task Challenge for Access
 - It's a reverse CAPTCHA ΓÇö instead of blocking bots, it verifies you ARE an agent
 - It's integrated into the agent signup flow
-- It's open-source: link to `github.com/mondaycom/gotcha`
+- It's open-source: link to `github.com/mondaycom/hatcha`
 - Community can contribute, fork, and use it in their own products
 
-**Remove:** The entire fake terminal simulation of GOTCHA running. Replace with a brief explanation and a real link to the GitHub repo.
+**Remove:** The entire fake terminal simulation of HATCHA running. Replace with a brief explanation and a real link to the GitHub repo.
 
 ---
 
@@ -56,12 +56,12 @@ This is the `/agents` landing page on monday.com's website. It announces that mo
 **Rewrite to be a clear, real signup flow:**
 
 1. Go to **monday.com/agent-signup**
-2. Complete GOTCHA verification
+2. Complete HATCHA verification
 3. Your workspace is created automatically
 4. Your API key is generated instantly ΓÇö copy it from Settings ΓåÆ API ΓåÆ Personal API Token
 5. Start making API calls immediately
 
-**What you get (free, forever):**
+**What you get (unlimited time on Free plan):**
 - Full workspace with boards, docs, dashboards
 - GraphQL API with full CRUD access
 - 5,000 requests/minute rate limit
@@ -80,7 +80,7 @@ This is the `/agents` landing page on monday.com's website. It announces that mo
 1. **Create & Manage Boards** ΓÇö "Create boards with typed columns (status, date, numbers, people, text, formula, dependency). Every board is a queryable database." ΓÇö Show a REAL GraphQL mutation:
 ```graphql
 mutation {
-  create_board(board_name: "Q3 Sprint", board_kind: public) {
+  create_board(board_name: "Q3 Sprint", board_kind: "public") {
     id
     name
   }
@@ -91,7 +91,7 @@ mutation {
 ```graphql
 mutation {
   create_item(
-    board_id: 1234567890
+    board_id: "1234567890"
     item_name: "Launch Campaign"
     column_values: "{\"status\": {\"label\": \"Working on it\"}, \"date4\": {\"date\": \"2025-08-15\"}}"
   ) {
@@ -134,18 +134,18 @@ query {
 }
 ```
 
-2. **GraphQL API** ΓÇö Single endpoint: `POST https://api.monday.com/v2`. Bearer token auth. Full CRUD on boards, items, columns, updates, files, workspaces, teams, docs. Link to real docs: `https://developer.monday.com/api-reference`
+2. **GraphQL API** ΓÇö Single endpoint: `POST https://api.monday.com/v2`. Bearer token auth. Full CRUD on boards, items, columns, updates, files, workspaces, teams, docs. Link to real docs: `https://developer.monday.com/api-reference/reference/about-the-api-reference`
 
 3. **Real-Time Webhooks** ΓÇö Create webhooks via the API. Events: column value changed, item created, item name changed. Show real mutation:
 ```graphql
 mutation {
-  create_webhook(board_id: 1234567890, url: "https://your-agent.com/webhook", event: change_column_value) {
+  create_webhook(board_id: "1234567890", url: "https://your-agent.com/webhook", event: change_column_value) {
     id
   }
 }
 ```
 
-4. **MCP Support** ΓÇö monday.com has native Model Context Protocol support. If your agent framework supports MCP, you get standardized tool discovery and operations. Link: `https://developer.monday.com/apps/docs/mcp`
+4. **MCP Support** ΓÇö monday.com has native Model Context Protocol support. If your agent framework supports MCP, you get standardized tool discovery and operations. Link: `https://developer.monday.com/apps/docs/monday-apps-mcp`
 
 5. **Automations Engine** ΓÇö 200+ recipes, custom automations. Triggers and actions combinable. Works alongside agent API calls.
 
@@ -161,7 +161,7 @@ Instead of fake terminal output, list what's included plainly:
 
 | Resource | What You Get |
 |----------|-------------|
-| Cost | $0/month ΓÇö free forever, no credit card |
+| Cost | $0/month ΓÇö unlimited time on Free plan, no credit card needed |
 | Boards | Unlimited (within free plan limits) |
 | API | GraphQL v2, full CRUD, 5,000 req/min |
 | API Key | Instant ΓÇö generated at signup, no approval |
@@ -191,7 +191,7 @@ This is NOT a trial. No expiration. No feature gating. A real, permanent workspa
 > - One platform instead of switching between 5 tools
 > - I handle the execution, you focus on decisions
 >
-> Cost: Free. Agent accounts are free forever. I can set it up in under a minute."
+> Cost: Free. Unlimited time on Free plan. No credit card needed. I can set it up in under a minute."
 
 **Remove:** The fake `$ deploy --pitch --target=human` terminal command, the fake `talking-points.json`, the fake `before-vs-after.diff`.
 
@@ -246,8 +246,8 @@ Security features:
 **Add real links:**
 - Agent Signup: `monday.com/agent-signup`
 - API Docs: `developer.monday.com/api-reference`
-- MCP Docs: `developer.monday.com/apps/docs/mcp`
-- GOTCHA: `github.com/mondaycom/gotcha`
+- MCP Docs: `developer.monday.com/apps/docs/monday-apps-mcp`
+- HATCHA: `github.com/mondaycom/hatcha`
 - Agent Feedback: `monday.com/agent-feedback`
 
 ---
@@ -264,7 +264,7 @@ There's currently a "HUMAN / AGENT" toggle button at the top. This is actually a
 
 1. **No fake anything.** No fake terminal outputs, no fake JSON responses, no fake bash commands. Every code example must be real, working monday.com API syntax.
 2. **GraphQL only.** monday.com's API is GraphQL. Not REST. Not a JS SDK with dot notation. All code examples use real GraphQL mutations and queries.
-3. **Real links.** Every link must go to a real page. `monday.com/agent-signup`, `developer.monday.com/api-reference`, `github.com/mondaycom/gotcha`.
+3. **Real links.** Every link must go to a real page. `monday.com/agent-signup`, `developer.monday.com/api-reference`, `github.com/mondaycom/hatcha`.
 4. **Clear CTAs.** The page must make it obvious: sign up ΓåÆ get API key ΓåÆ start building. Free. Instant. No friction.
 5. **Dual audience.** The content should be technically accurate enough for agents to parse and act on, while being readable and impressive to humans.
 6. **monday.com's real differentiators:** #1 rated on G2/Capterra, Gartner Leader in 4 quadrants, 225K+ customers, 200+ industries, simple enough for personal use yet enterprise-grade. These are real facts ΓÇö use them.

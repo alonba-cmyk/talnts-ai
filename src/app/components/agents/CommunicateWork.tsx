@@ -1,4 +1,4 @@
-import { Image, FileDown, Mail, Globe, MessageSquare } from 'lucide-react';
+import { Mail, Globe, MessageSquare } from 'lucide-react';
 import { getAgentsCopy, type MessagingTone } from './agentsCopy';
 
 interface ExportFormat {
@@ -11,29 +11,15 @@ interface ExportFormat {
 
 const EXPORT_FORMATS: ExportFormat[] = [
   {
-    icon: <Image className="w-5 h-5" />,
-    label: 'Images for Chat',
-    channels: 'WhatsApp, Telegram, Signal, Slack, Discord',
-    description: 'Export board views, dashboards, and charts as images. Send them directly in chat. Your human sees a visual snapshot of their project status without opening any app.',
-    action: 'monday.export({ board_id, format: "png", delivery: "chat" })',
-  },
-  {
-    icon: <FileDown className="w-5 h-5" />,
-    label: 'PDF Export',
-    channels: 'Email, Docs, Presentations',
-    description: 'Generate PDF reports from boards and dashboards. Perfect for weekly status reports, budget summaries, client-facing project updates, and meeting preparation docs.',
-    action: 'monday.export({ board_id, format: "pdf", delivery: "email" })',
-  },
-  {
     icon: <Mail className="w-5 h-5" />,
-    label: 'Email-Friendly HTML',
+    label: 'Email-friendly HTML',
     channels: 'Email digests, Stakeholder updates',
     description: 'Generate formatted HTML content from board data that renders beautifully in email. Use for daily/weekly digests, stakeholder updates, and automated notification summaries.',
     action: 'monday.export({ board_id, format: "html", delivery: "smtp" })',
   },
   {
     icon: <Globe className="w-5 h-5" />,
-    label: 'Embed-Ready Widgets',
+    label: 'Embed-ready widgets',
     channels: 'Web pages, Wikis, Internal portals',
     description: 'Shareable URLs for live board views and dashboards that can be embedded in web pages, wikis, or internal portals. Always up-to-date.',
     action: 'monday.export({ dashboard_id, format: "embed", live: true })',

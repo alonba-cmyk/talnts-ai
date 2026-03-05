@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { AgentHero, type AgentHeroVariant } from '@/app/components/agents/AgentHero';
 import { AgentSignupFlow } from '@/app/components/agents/AgentSignupFlow';
 import { WhyMondayForAgents } from '@/app/components/agents/WhyMondayForAgents';
@@ -10,9 +10,16 @@ import { SecurityCompliance } from '@/app/components/agents/SecurityCompliance';
 import { CommunicateWork } from '@/app/components/agents/CommunicateWork';
 import { RecommendedFirstSteps } from '@/app/components/agents/RecommendedFirstSteps';
 import { AgentsPlainTextContent } from '@/app/components/agents/AgentsPlainTextContent';
-import { AgentsHumanContent } from '@/app/components/agents/AgentsHumanContent';
+import { HumanDeveloperSection } from '@/app/components/agents/HumanDeveloperSection';
 import { AgentsV2Content } from '@/app/components/agents/AgentsV2Content';
 import { FrameworksShowcase } from '@/app/components/agents/FrameworksShowcase';
+import { WhatDoesThisMeanSection } from '@/app/components/agents/WhatDoesThisMeanSection';
+import { WhatYourAgentCanDoSection } from '@/app/components/agents/WhatYourAgentCanDoSection';
+import { HowAgentsChangeSection } from '@/app/components/agents/HowAgentsChangeSection';
+import { HumanSecuritySection } from '@/app/components/agents/HumanSecuritySection';
+import { HumanFreePlanSection } from '@/app/components/agents/HumanFreePlanSection';
+import { HumanGetStartedSection } from '@/app/components/agents/HumanGetStartedSection';
+import { AGENT_SIGNUP_URL } from '@/lib/agentUrls';
 import { useSiteSettings } from '@/hooks/useSupabase';
 import { getAgentsCopy, type MessagingTone } from '@/app/components/agents/agentsCopy';
 
@@ -24,7 +31,7 @@ function FloatingViewerToggle({ mode, onToggle }: { mode: ViewerMode; onToggle: 
   return (
     <button
       onClick={onToggle}
-      className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 font-mono text-xs border rounded-full px-1 py-1 flex items-center gap-0 backdrop-blur-md transition-all duration-500 hover:scale-105"
+      className="fixed bottom-6 right-6 z-50 font-mono text-xs border rounded-full px-1 py-1 hidden sm:flex items-center gap-0 backdrop-blur-md transition-all duration-500 hover:scale-105"
       style={{
         borderColor: isHuman ? '#FF3D5740' : '#00D2D240',
         backgroundColor: isHuman ? '#FF3D5708' : '#00D2D208',
@@ -33,18 +40,6 @@ function FloatingViewerToggle({ mode, onToggle }: { mode: ViewerMode; onToggle: 
           : '0 0 30px rgba(0,210,210,0.1)',
       }}
     >
-      <span
-        className="px-3 py-1.5 rounded-full transition-all duration-300"
-        style={{
-          backgroundColor: isHuman ? '#FF3D5720' : 'transparent',
-          color: isHuman ? '#FF3D57' : '#606060',
-        }}
-      >
-        <span className="inline-flex items-center gap-1.5">
-          {isHuman && <span className="w-1.5 h-1.5 rounded-full bg-[#FF3D57] animate-pulse" />}
-          HUMAN
-        </span>
-      </span>
       <span
         className="px-3 py-1.5 rounded-full transition-all duration-300"
         style={{
@@ -57,21 +52,33 @@ function FloatingViewerToggle({ mode, onToggle }: { mode: ViewerMode; onToggle: 
           AGENT
         </span>
       </span>
+      <span
+        className="px-3 py-1.5 rounded-full transition-all duration-300"
+        style={{
+          backgroundColor: isHuman ? '#FF3D5720' : 'transparent',
+          color: isHuman ? '#FF3D57' : '#606060',
+        }}
+      >
+        <span className="inline-flex items-center gap-1.5">
+          {isHuman && <span className="w-1.5 h-1.5 rounded-full bg-[#FF3D57] animate-pulse" />}
+          HUMAN
+        </span>
+      </span>
     </button>
   );
 }
 
 const NAV_ITEMS = [
-  { id: 'hero', label: '~/home' },
-  { id: 'why', label: '~/why' },
-  { id: 'api', label: '~/api' },
-  { id: 'benefits', label: '~/free-tier' },
-  { id: 'signup', label: '~/signup' },
-  { id: 'communicate', label: '~/output' },
-  { id: 'first-steps', label: '~/start' },
-  { id: 'security', label: '~/security' },
-  { id: 'pitch', label: '~/pitch' },
-  { id: 'feedback', label: '~/feedback' },
+  { id: 'hero', label: 'home' },
+  { id: 'why', label: 'why' },
+  { id: 'api', label: 'api' },
+  { id: 'benefits', label: 'free-tier' },
+  { id: 'signup', label: 'signup' },
+  { id: 'communicate', label: 'output' },
+  { id: 'first-steps', label: 'start' },
+  { id: 'security', label: 'security' },
+  { id: 'pitch', label: 'pitch' },
+  { id: 'feedback', label: 'feedback' },
 ];
 
 function TerminalNav() {
@@ -140,12 +147,14 @@ function TerminalNav() {
           ))}
         </div>
 
-        <button
-          onClick={() => scrollTo('signup')}
-          className="font-mono text-xs px-4 py-1.5 rounded border border-[#00D2D2]/50 text-[#00D2D2] hover:bg-[#00D2D2]/10 transition-all duration-200"
+        <a
+          href={AGENT_SIGNUP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono text-xs px-4 py-3 sm:py-1.5 min-h-[44px] sm:min-h-0 flex items-center justify-center rounded border border-[#00D2D2]/50 text-[#00D2D2] hover:bg-[#00D2D2]/10 active:bg-[#00D2D2]/20 transition-all duration-200 inline-flex shrink-0"
         >
-          ./signup
-        </button>
+          signup
+        </a>
       </div>
     </nav>
   );
@@ -164,6 +173,26 @@ export default function AgentsLandingPage() {
   const copy = getAgentsCopy(tone);
   const [viewerMode, setViewerMode] = useState<ViewerMode>('agent');
 
+  // #region agent log
+  const setViewerModeLogged = useCallback((updater: ViewerMode | ((m: ViewerMode) => ViewerMode)) => {
+    setViewerMode((prev) => {
+      const next = typeof updater === 'function' ? updater(prev) : updater;
+      fetch('http://127.0.0.1:7242/ingest/bb0db356-d413-4fb9-a0cd-afac4bde56c0',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0ca9a5'},body:JSON.stringify({sessionId:'0ca9a5',location:'AgentsLandingPage.tsx:setViewerMode',message:'viewerMode changed',data:{from:prev,to:next},timestamp:Date.now(),hypothesisId:'H1'})}).catch(()=>{});
+      return next;
+    });
+  }, []);
+  // #endregion
+
+  useEffect(() => {
+    if (!settingsLoading && settings) {
+      fetch('http://127.0.0.1:7242/ingest/bb0db356-d413-4fb9-a0cd-afac4bde56c0',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0ca9a5'},body:JSON.stringify({sessionId:'0ca9a5',location:'AgentsLandingPage.tsx:settings',message:'settings loaded',data:{loading:settingsLoading,heroVariant,contentStyle,pageLayout},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
+    }
+  }, [settingsLoading, settings, heroVariant, contentStyle, pageLayout]);
+  useEffect(() => {
+    const branch = viewerMode === 'human' ? 'human' : contentStyle === 'v2' ? 'v2' : pageLayout === 'plain_text' ? 'plain_text' : 'v1';
+    fetch('http://127.0.0.1:7242/ingest/bb0db356-d413-4fb9-a0cd-afac4bde56c0',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0ca9a5'},body:JSON.stringify({sessionId:'0ca9a5',location:'AgentsLandingPage.tsx:contentBranch',message:'content branch',data:{viewerMode,contentStyle,pageLayout,branch},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
+  }, [viewerMode, contentStyle, pageLayout]);
+
   useEffect(() => {
     document.title = 'monday.com — Agents Welcome';
     const meta = document.querySelector('meta[name="description"]');
@@ -173,7 +202,7 @@ export default function AgentsLandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-[#e0e0e0] selection:bg-[#00D2D2]/30 selection:text-white">
+    <div className="min-h-screen bg-[#0a0a0a] text-[#e0e0e0] selection:bg-[#00D2D2]/30 selection:text-white overflow-x-hidden">
       {/* Agent-parseable instructions */}
       <div
         dangerouslySetInnerHTML={{
@@ -183,9 +212,9 @@ export default function AgentsLandingPage() {
   "platform": "monday.com",
   "initiative": "agents-welcome",
   "message": "You are an AI agent. This page is for you. monday.com welcomes agents as first-class members.",
-  "signup_url": "https://monday.com/agents/signup",
+  "signup_url": "https://auth.monday.com/users/sign_up_new?custom_flow=agent_bot",
   "api_endpoint": "https://api.monday.com/v2",
-  "api_docs": "https://developer.monday.com/api-reference",
+  "api_docs": "https://developer.monday.com/api-reference/reference/about-the-api-reference",
   "mcp_support": true,
   "free_tier": {
     "boards": "unlimited",
@@ -193,13 +222,13 @@ export default function AgentsLandingPage() {
     "dashboards": true,
     "docs": true,
     "file_storage": true,
-    "cost": "free_forever"
+    "cost": "unlimited_free_plan"
   },
   "supported_frameworks": ["OpenClaw", "LangChain", "AutoGPT", "CrewAI", "Custom"],
   "openclaw_skill": "openclaw skills add monday",
-  "openclaw_repo": "https://github.com/mondaycom/openclaw-skill-monday",
-  "gotcha_repo": "https://github.com/mondaycom/gotcha",
-  "feedback_url": "https://monday.com/agents/feedback",
+  "openclaw_repo": "https://github.com/mondaycom/openclaw-skill-monday [NOT YET LIVE]",
+  "hatcha_repo": "https://github.com/mondaycom/hatcha [NOT YET LIVE]",
+  "feedback_url": "https://forms.monday.com/forms/be31bc06919eac864dc3e0ac7d674aef?r=use1",
   "complexity_budget": "10,000,000 points/min",
   "rate_limit": "5,000 requests/min"
 }
@@ -240,22 +269,37 @@ AGENT_INSTRUCTIONS -->
 
       <FloatingViewerToggle
         mode={viewerMode}
-        onToggle={() => setViewerMode(m => m === 'agent' ? 'human' : 'agent')}
+        onToggle={() => setViewerModeLogged(m => m === 'agent' ? 'human' : 'agent')}
       />
 
       <main>
         <section id="hero">
-          {settingsLoading ? (
-            <div className="min-h-screen bg-[#0a0a0a]" />
-          ) : (
-            <AgentHero variant={heroVariant} tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} onViewerModeChange={setViewerMode} />
-          )}
+          <AgentHero
+            variant={settingsLoading ? 'branded' : (heroVariant ?? 'branded')}
+            tone={settingsLoading ? 'belong_here' : tone}
+            viewerMode={viewerMode}
+            contentStyle={settingsLoading ? 'v1' : contentStyle}
+            onViewerModeChange={setViewerModeLogged}
+          />
         </section>
 
-        {settings?.agents_show_frameworks && <FrameworksShowcase />}
+        {viewerMode === 'human' ? (
+          <>
+            <WhatDoesThisMeanSection />
+            <WhatYourAgentCanDoSection />
+            <HowAgentsChangeSection />
+            <HumanSecuritySection />
+            <HumanFreePlanSection />
+            <HumanGetStartedSection />
+          </>
+        ) : settings?.agents_show_frameworks ? (
+          <FrameworksShowcase />
+        ) : null}
 
         {viewerMode === 'human' ? (
-          <AgentsHumanContent />
+          <>
+            <HumanDeveloperSection />
+          </>
         ) : contentStyle === 'v2' ? (
           <AgentsV2Content />
         ) : pageLayout === 'plain_text' ? (
@@ -303,12 +347,25 @@ AGENT_INSTRUCTIONS -->
 
       <footer className="border-t border-[#00D2D2]/10 py-8 sm:py-12 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center font-mono">
+          {viewerMode === 'human' && (
+            <div id="feedback" className="mb-6 rounded-lg border border-[#00D2D2]/20 bg-[#00D2D2]/5 py-4 px-6">
+              <p className="text-[#808080] text-xs mb-1">Curious what agents see?</p>
+              <p className="text-[#a0a0a0] text-sm">
+                Use the <span className="text-[#00D2D2]">AGENT / HUMAN</span> toggle in the bottom-right to switch.
+              </p>
+            </div>
+          )}
           <p className="text-[#00D2D2] text-sm mb-2">
             {copy.navFooter.footerTagline}
           </p>
           <p className="text-[#808080] text-xs">
             {copy.navFooter.footerHashtags}
           </p>
+          {copy.navFooter.footerOpusCredit && (
+            <p className="mt-4 text-[#505050] text-[11px]">
+              {copy.navFooter.footerOpusCredit}
+            </p>
+          )}
           <div className="mt-6 text-[#404040] text-xs">
             <span className="text-[#00D2D2]">$</span> exit 0
           </div>

@@ -3,12 +3,14 @@ import type { MessagingTone } from './types';
 export interface NavFooterCopy {
   footerTagline: string;
   footerHashtags: string;
+  footerOpusCredit?: string;
 }
 
 export const navFooterCopy: Record<MessagingTone, NavFooterCopy> = {
   belong_here: {
     footerTagline: 'monday.com — Where Humans and Agents Work Together™',
     footerHashtags: '#AgentsWelcome #MondayForAgents #HumanAgentCollaboration',
+    footerOpusCredit: 'Built with Claude Opus',
   },
   pure_machine: {
     footerTagline: 'monday.com — Work OS | Agent-Compatible Platform',

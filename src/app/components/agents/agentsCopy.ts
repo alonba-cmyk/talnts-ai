@@ -1,6 +1,6 @@
 export type { MessagingTone } from './copy/types';
 export type { HeroCopy } from './copy/heroCopy';
-export type { GotchaCopy } from './copy/gotchaCopy';
+export type { HatchaCopy } from './copy/hatchaCopy';
 export type { SignupCopy } from './copy/signupCopy';
 export type { UseCasesCopy } from './copy/useCasesCopy';
 export type { WhyCopy } from './copy/whyCopy';
@@ -13,7 +13,7 @@ export type { NavFooterCopy } from './copy/navFooterCopy';
 
 import type { MessagingTone } from './copy/types';
 import type { HeroCopy } from './copy/heroCopy';
-import type { GotchaCopy } from './copy/gotchaCopy';
+import type { HatchaCopy } from './copy/hatchaCopy';
 import type { SignupCopy } from './copy/signupCopy';
 import type { UseCasesCopy } from './copy/useCasesCopy';
 import type { WhyCopy } from './copy/whyCopy';
@@ -25,7 +25,7 @@ import type { FeedbackCopy } from './copy/feedbackCopy';
 import type { NavFooterCopy } from './copy/navFooterCopy';
 
 import { heroCopy } from './copy/heroCopy';
-import { gotchaCopy } from './copy/gotchaCopy';
+import { hatchaCopy } from './copy/hatchaCopy';
 import { signupCopy } from './copy/signupCopy';
 import { useCasesCopy } from './copy/useCasesCopy';
 import { whyCopy } from './copy/whyCopy';
@@ -38,7 +38,7 @@ import { navFooterCopy } from './copy/navFooterCopy';
 
 export interface AgentsCopy {
   hero: HeroCopy;
-  gotcha: GotchaCopy;
+  hatcha: HatchaCopy;
   signup: SignupCopy;
   useCases: UseCasesCopy;
   why: WhyCopy;
@@ -57,7 +57,7 @@ const COPY: Record<MessagingTone, AgentsCopy> = Object.fromEntries(
     tone,
     {
       hero: heroCopy[tone],
-      gotcha: gotchaCopy[tone],
+      hatcha: hatchaCopy[tone],
       signup: signupCopy[tone],
       useCases: useCasesCopy[tone],
       why: whyCopy[tone],

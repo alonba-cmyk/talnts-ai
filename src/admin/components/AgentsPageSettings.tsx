@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, ExternalLink, Terminal, Code2, Radar, CheckCircle, FileText, Bot, Cpu, ScanLine, Eye, FileCode, Sparkles, Layers, Plug, Zap, Crown, Type } from 'lucide-react';
+import { Save, ExternalLink, Terminal, Code2, Radar, CheckCircle, FileText, Bot, Cpu, ScanLine, Eye, FileCode, Sparkles, Layers, Plug, Zap, Crown, Type, Activity, LayoutGrid, Radio, Ban } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 type AgentsContentStyle = 'v1' | 'v2';
@@ -118,6 +118,7 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
   const [showFrameworks, setShowFrameworks] = useState(false);
   const [brandedTitleStyle, setBrandedTitleStyle] = useState<'svg' | 'ascii'>('ascii');
   const [brandedGlowStyle, setBrandedGlowStyle] = useState<'wide' | 'logo'>('wide');
+  const [heroDemoStyle, setHeroDemoStyle] = useState<'none' | 'floating_terminal' | 'toasts' | 'typing_agent' | 'bg_stream' | 'agent_cursor'>('none');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -144,7 +145,7 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
         }
         if (sv._agents_hero_variant) {
           const v = sv._agents_hero_variant as string;
-          const deprecated = ['boot', 'neural', 'glitch', 'cli', 'agents_grid', 'agents_marquee', 'gotcha_gate', 'api_blueprint', 'signup_60s'];
+          const deprecated = ['boot', 'neural', 'glitch', 'cli', 'agents_grid', 'agents_marquee', 'hatcha_gate', 'api_blueprint', 'signup_60s'];
           setSelectedVariant(
             deprecated.includes(v) ? 'matrix' : (v as AgentHeroVariant)
           );
@@ -160,6 +161,10 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
         }
         if (sv._agents_branded_glow_style) {
           setBrandedGlowStyle(sv._agents_branded_glow_style as 'wide' | 'logo');
+        }
+        if (sv._agents_hero_demo) {
+          const demo = sv._agents_hero_demo as string;
+          setHeroDemoStyle((demo === 'scroll_reveal' ? 'none' : demo) as 'none' | 'floating_terminal' | 'toasts' | 'typing_agent' | 'bg_stream' | 'agent_cursor');
         }
       }
     } catch (err) {
@@ -193,6 +198,7 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
             _agents_show_frameworks: showFrameworks,
             _agents_branded_title_style: brandedTitleStyle,
             _agents_branded_glow_style: brandedGlowStyle,
+            _agents_hero_demo: heroDemoStyle,
           },
         });
 
@@ -468,6 +474,59 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
                 <button
                   key={option.value}
                   onClick={() => setBrandedGlowStyle(option.value)}
+                  className={`relative p-4 rounded-xl text-left transition-all duration-200 ${
+                    isSelected
+                      ? 'ring-2 bg-gray-800/80'
+                      : 'bg-gray-800/30 border-2 border-transparent hover:bg-gray-800/50 hover:border-gray-700'
+                  }`}
+                  style={isSelected ? { ringColor: option.accent, borderColor: option.accent } : {}}
+                >
+                  {isSelected && (
+                    <div className="absolute top-3 right-3">
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center"
+                        style={{ backgroundColor: option.accent }}>
+                        <CheckCircle className="w-3.5 h-3.5 text-white" />
+                      </div>
+                    </div>
+                  )}
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-3"
+                    style={{ backgroundColor: `${option.accent}20`, color: option.accent }}>
+                    {option.icon}
+                  </div>
+                  <h4 className={`font-medium text-sm mb-1 ${isSelected ? 'text-white' : 'text-gray-300'}`}>
+                    {option.label}
+                  </h4>
+                  <p className="text-xs text-gray-500 leading-relaxed">
+                    {option.description}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Hero Demo Element (only visible when Branded variant is selected) */}
+      {selectedVariant === 'branded' && (
+        <div className="bg-gray-900/60 rounded-2xl border border-gray-800/60 p-6">
+          <h3 className="text-white font-semibold text-lg mb-2">Hero Visual Element</h3>
+          <p className="text-gray-500 text-sm mb-6">
+            Choose a decorative element to display in the Branded hero. Select one to preview, then save.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {([
+              { value: 'none' as const, label: 'None', description: 'Clean hero with no additional visual elements.', icon: <Ban className="w-5 h-5" />, accent: '#808080' },
+              { value: 'floating_terminal' as const, label: 'Floating Terminal', description: 'Small terminal widget fixed to bottom-right, showing agent API calls like a chat widget.', icon: <Terminal className="w-5 h-5" />, accent: '#00D2D2' },
+              { value: 'toasts' as const, label: 'Toast Notifications', description: 'Small toast notifications sliding in from the right showing agent actions.', icon: <Zap className="w-5 h-5" />, accent: '#FFCB00' },
+              { value: 'typing_agent' as const, label: 'Agent Typing Lines', description: 'Replaces hero typing lines with agent command/response output.', icon: <Type className="w-5 h-5" />, accent: '#00ff41' },
+              { value: 'bg_stream' as const, label: 'Background Stream', description: 'Faint API call text flowing upward in the background behind hero content.', icon: <Code2 className="w-5 h-5" />, accent: '#6161FF' },
+              { value: 'agent_cursor' as const, label: 'Agent Cursor', description: 'Moving cursor icon that travels across the screen as if an agent is browsing the page.', icon: <Activity className="w-5 h-5" />, accent: '#00D2D2' },
+            ]).map((option) => {
+              const isSelected = heroDemoStyle === option.value;
+              return (
+                <button
+                  key={option.value}
+                  onClick={() => setHeroDemoStyle(option.value)}
                   className={`relative p-4 rounded-xl text-left transition-all duration-200 ${
                     isSelected
                       ? 'ring-2 bg-gray-800/80'
