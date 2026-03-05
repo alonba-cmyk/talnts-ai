@@ -31,7 +31,7 @@ export default function HowWeTellStorySlide() {
     <SlideShell dark>
       <SlideTitle dark>How to tell our story</SlideTitle>
       <SlideSubtitle dark>
-        Two approaches we can take to market — click to explore
+        Two approaches we can take to market
       </SlideSubtitle>
 
       {/* Two columns: Departments | Capabilities */}

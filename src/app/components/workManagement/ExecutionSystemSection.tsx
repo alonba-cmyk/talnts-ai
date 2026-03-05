@@ -4,321 +4,414 @@ import { useState, useCallback, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowRight,
-  Briefcase,
-  Target,
-  FileText,
-  TrendingUp,
   Bot,
-  Lightbulb,
-  Settings,
-  Heart,
-  Megaphone,
-  DollarSign,
-  type LucideIcon,
+  LayoutGrid,
+  Send,
+  Zap,
+  Plus,
 } from 'lucide-react';
-import agentPink from '@/assets/agent-pink.png';
-import agentCyan from '@/assets/agent-cyan.png';
-import agentOrange from '@/assets/agent-orange.png';
 import { useDepartments } from '@/hooks/useSupabase';
 import { WORK_MANAGEMENT_TRIAL_URL } from '@/lib/workManagementUrls';
+import {
+  DEPARTMENTS,
+  JTBD_ICONS,
+  STATUS_CONFIG,
+  PROGRESS_BY_COL,
+  type AgentInfo,
+  type BoardItem,
+} from './wmDepartmentData';
 
-const FIGMA_AGENT_ASSETS = {
-  assetsGenerator:
-    'https://www.figma.com/api/mcp/asset/a4778f09-d617-48b6-beca-66dfaea6d37d',
-  riskAnalyzer:
-    'https://www.figma.com/api/mcp/asset/9fac6eaf-0070-4330-a0e8-9b709bc7992f',
-  vendorResearcher:
-    'https://www.figma.com/api/mcp/asset/0d268e64-b934-4159-b4b4-3714996b634e',
-};
+/* ─── Active agents sidebar ─── */
 
-/* ─── Department data ─── */
-
-type Department = {
-  id: string;
-  name: string;
-  color: string;
-  icon: LucideIcon;
-  supabaseKey: string;
-  agent: {
-    label: string;
-    bgColor: string;
-    img: string;
-    fallback: string;
-    status: string;
-    description: string;
-  };
-  jtbd: string[];
-  boardItems: { id: string; label: string; columnIndex: number }[];
-};
-
-const DEPARTMENTS: Department[] = [
-  {
-    id: 'pmo',
-    name: 'PMO',
-    color: '#ff6b10',
-    icon: Briefcase,
-    supabaseKey: 'operations',
-    agent: {
-      label: 'Risk analyzer',
-      bgColor: '#FFD633',
-      img: FIGMA_AGENT_ASSETS.riskAnalyzer,
-      fallback: agentOrange,
-      status: 'Prioritizing risks',
-      description: 'Detects ticket intent, urgency, and required expertise',
-    },
-    jtbd: [
-      'Track portfolio progress',
-      'Manage resource capacity',
-      'Automate status reports',
-      'Align teams on goals',
-      'Flag project risks',
-    ],
-    boardItems: [
-      { id: 'pmo1', label: 'Q4 Portfolio review', columnIndex: 0 },
-      { id: 'pmo2', label: 'Resource allocation', columnIndex: 0 },
-      { id: 'pmo3', label: 'Budget reforecast', columnIndex: 1 },
-      { id: 'pmo4', label: 'Stakeholder update', columnIndex: 1 },
-      { id: 'pmo5', label: 'Risk assessment', columnIndex: 2 },
-      { id: 'pmo6', label: 'Sprint retrospective', columnIndex: 3 },
-    ],
-  },
-  {
-    id: 'product',
-    name: 'Product',
-    color: '#6161FF',
-    icon: Lightbulb,
-    supabaseKey: 'product',
-    agent: {
-      label: 'Assets Generator',
-      bgColor: '#93beff',
-      img: FIGMA_AGENT_ASSETS.assetsGenerator,
-      fallback: agentCyan,
-      status: 'Generating mockups',
-      description: 'Creates images from text prompts based on your brand guidelines',
-    },
-    jtbd: [
-      'Prioritize feature backlog',
-      'Analyze user feedback',
-      'Plan sprint capacity',
-      'Track release progress',
-      'Generate product specs',
-    ],
-    boardItems: [
-      { id: 'pr1', label: 'Feature discovery', columnIndex: 0 },
-      { id: 'pr2', label: 'User research', columnIndex: 0 },
-      { id: 'pr3', label: 'Design review', columnIndex: 1 },
-      { id: 'pr4', label: 'API integration', columnIndex: 2 },
-      { id: 'pr5', label: 'QA testing', columnIndex: 2 },
-      { id: 'pr6', label: 'Release notes', columnIndex: 3 },
-    ],
-  },
-  {
-    id: 'operations',
-    name: 'Operations',
-    color: '#00baff',
-    icon: Settings,
-    supabaseKey: 'operations',
-    agent: {
-      label: 'Vendor researcher',
-      bgColor: '#d7bdff',
-      img: FIGMA_AGENT_ASSETS.vendorResearcher,
-      fallback: agentPink,
-      status: 'Researching vendors',
-      description: 'Researches vendors based on pre-defined criteria',
-    },
-    jtbd: [
-      'Optimize vendor pipeline',
-      'Manage procurement flow',
-      'Track SLA compliance',
-      'Automate onboarding',
-      'Audit operational costs',
-    ],
-    boardItems: [
-      { id: 'op1', label: 'Vendor evaluation', columnIndex: 0 },
-      { id: 'op2', label: 'Contract renewal', columnIndex: 0 },
-      { id: 'op3', label: 'SLA monitoring', columnIndex: 1 },
-      { id: 'op4', label: 'Cost optimization', columnIndex: 2 },
-      { id: 'op5', label: 'Process automation', columnIndex: 3 },
-    ],
-  },
-  {
-    id: 'hr',
-    name: 'HR',
-    color: '#fc0',
-    icon: Heart,
-    supabaseKey: 'hr',
-    agent: {
-      label: 'Risk analyzer',
-      bgColor: '#FFD633',
-      img: FIGMA_AGENT_ASSETS.riskAnalyzer,
-      fallback: agentOrange,
-      status: 'Screening candidates',
-      description: 'Screens resumes and matches candidates to open roles',
-    },
-    jtbd: [
-      'Streamline hiring pipeline',
-      'Onboard new employees',
-      'Track employee engagement',
-      'Manage performance reviews',
-      'Automate leave requests',
-    ],
-    boardItems: [
-      { id: 'hr1', label: 'Job posting review', columnIndex: 0 },
-      { id: 'hr2', label: 'Candidate screening', columnIndex: 1 },
-      { id: 'hr3', label: 'Interview scheduling', columnIndex: 1 },
-      { id: 'hr4', label: 'Offer approval', columnIndex: 2 },
-      { id: 'hr5', label: 'Onboarding checklist', columnIndex: 3 },
-    ],
-  },
-  {
-    id: 'marketing',
-    name: 'Marketing',
-    color: '#ff84e4',
-    icon: Megaphone,
-    supabaseKey: 'marketing',
-    agent: {
-      label: 'Assets Generator',
-      bgColor: '#93beff',
-      img: FIGMA_AGENT_ASSETS.assetsGenerator,
-      fallback: agentCyan,
-      status: 'Generating assets',
-      description: 'Creates images from text prompts based on your brand guidelines',
-    },
-    jtbd: [
-      'Plan campaign launches',
-      'Generate creative assets',
-      'Analyze campaign ROI',
-      'Manage content calendar',
-      'Track brand consistency',
-    ],
-    boardItems: [
-      { id: 'mk1', label: 'Campaign brief', columnIndex: 0 },
-      { id: 'mk2', label: 'Creative production', columnIndex: 1 },
-      { id: 'mk3', label: 'Ad copy review', columnIndex: 1 },
-      { id: 'mk4', label: 'Landing page QA', columnIndex: 2 },
-      { id: 'mk5', label: 'Launch go/no-go', columnIndex: 2 },
-      { id: 'mk6', label: 'Performance report', columnIndex: 3 },
-    ],
-  },
-  {
-    id: 'finance',
-    name: 'Finance',
-    color: '#00D2D2',
-    icon: DollarSign,
-    supabaseKey: 'finance',
-    agent: {
-      label: 'Risk analyzer',
-      bgColor: '#FFD633',
-      img: FIGMA_AGENT_ASSETS.riskAnalyzer,
-      fallback: agentOrange,
-      status: 'Analyzing budgets',
-      description: 'Detects anomalies in financial data and flags risks',
-    },
-    jtbd: [
-      'Automate expense approval',
-      'Track budget vs. actuals',
-      'Forecast revenue trends',
-      'Manage invoice workflows',
-      'Ensure compliance',
-    ],
-    boardItems: [
-      { id: 'fn1', label: 'Monthly close', columnIndex: 0 },
-      { id: 'fn2', label: 'Expense review', columnIndex: 1 },
-      { id: 'fn3', label: 'Budget reforecast', columnIndex: 2 },
-      { id: 'fn4', label: 'Audit preparation', columnIndex: 3 },
-    ],
-  },
-];
-
-const COLUMNS = ['To Do', 'In Progress', 'Review', 'Done'];
-
-const JTBD_ICONS = [Target, Briefcase, FileText, TrendingUp, Bot];
-
-type BoardItem = {
-  id: string;
-  label: string;
-  columnIndex: number;
-  pendingApproval?: boolean;
-  isNew?: boolean;
-};
-
-function AnimatedStatus({ text, color = '#6161FF' }: { text: string; color?: string }) {
-  const [dots, setDots] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setDots((d) => (d + 1) % 4), 350);
-    return () => clearInterval(id);
-  }, []);
+function ActiveAgentsSidebar({
+  agents,
+  deptColor,
+  deptId,
+}: {
+  agents: AgentInfo[];
+  deptColor: string;
+  deptId: string;
+}) {
   return (
-    <span className="text-sm font-semibold" style={{ color }}>
-      {text}{'.'.repeat(dots)}
-    </span>
+    <div className="border-r border-gray-100 p-4 w-[180px] flex-shrink-0">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+          Active Agents
+        </span>
+        <div className="flex items-center gap-1">
+          <Bot className="w-3.5 h-3.5 text-gray-300" />
+          <Plus className="w-3 h-3 text-gray-300" />
+        </div>
+      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={deptId}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="space-y-1.5"
+        >
+          {agents.slice(0, 3).map((agent, i) => (
+            <motion.div
+              key={agent.label}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.1, duration: 0.3 }}
+              className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-gray-50/80 transition-colors"
+            >
+              <div
+                className="w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 shadow-sm"
+                style={{
+                  border: `2px solid ${agent.bgColor}40`,
+                  background: `linear-gradient(135deg, ${agent.bgColor}90, ${agent.bgColor}cc)`,
+                }}
+              >
+                <img
+                  src={agent.img}
+                  alt={agent.label}
+                  className="w-full h-full object-contain object-bottom"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = agent.fallback;
+                  }}
+                />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[10px] font-semibold text-gray-800 truncate">
+                  {agent.label}
+                </p>
+                <div className="flex items-center gap-1">
+                  <motion.div
+                    animate={{ opacity: [0.4, 1, 0.4] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                    className="w-1.5 h-1.5 rounded-full bg-green-500"
+                  />
+                  <span className="text-[9px] text-green-600 font-medium">Active</span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </AnimatePresence>
+    </div>
   );
 }
 
-/* ─── Board views with staggered Notion-style entrance ─── */
+/* ─── Task table view ─── */
 
-function BoardTasksView({
-  itemsByColumn,
-  highlightedCardId,
+function TaskTableView({
+  items,
+  agents,
+  deptColor,
   animKey,
+  highlightedIds,
 }: {
-  itemsByColumn: BoardItem[][];
-  highlightedCardId: string | null;
+  items: BoardItem[];
+  agents: AgentInfo[];
+  deptColor: string;
   animKey: string;
+  highlightedIds: Set<string>;
 }) {
   return (
-    <div className="grid grid-cols-4 gap-3">
-      {COLUMNS.map((col, colIdx) => (
+    <div className="flex-1 p-4 min-w-0">
+      <div className="grid grid-cols-[1fr_60px_78px_68px] gap-3 px-3 py-2 border-b border-gray-100">
+        <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+          Task
+        </span>
+        <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+          Agent
+        </span>
+        <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+          Status
+        </span>
+        <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+          Progress
+        </span>
+      </div>
+
+      <AnimatePresence mode="wait">
         <motion.div
-          key={`${animKey}-col-${col}`}
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: colIdx * 0.07, duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="rounded-lg bg-gray-50 border border-gray-100 p-3"
+          key={animKey}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
         >
-          <div className="text-xs font-medium text-gray-500 mb-3">{col}</div>
-          <div className="space-y-2">
-            <AnimatePresence mode="popLayout">
-              {itemsByColumn[colIdx]?.map((item, cardIdx) => (
-                <motion.div
-                  key={item.id}
-                  layout
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                    boxShadow:
-                      highlightedCardId === item.id
-                        ? '0 0 0 2px #6161FF'
-                        : 'none',
-                  }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{
-                    delay: colIdx * 0.07 + cardIdx * 0.05,
-                    type: 'spring',
-                    stiffness: 400,
-                    damping: 28,
-                  }}
-                  className={`h-8 rounded-md bg-white border flex items-center justify-between px-3 text-xs text-gray-700 ${
-                    item.pendingApproval
-                      ? 'border-amber-400 bg-amber-50/60'
-                      : 'border-gray-200'
-                  }`}
-                >
-                  <span className="truncate flex-1">{item.label}</span>
-                  {item.pendingApproval && (
-                    <span className="text-[10px] text-amber-600 shrink-0 ml-2">
-                      Pending
-                    </span>
+          {items.slice(0, 6).map((item, idx) => {
+            const status = STATUS_CONFIG[item.columnIndex] || STATUS_CONFIG[0];
+            const progress = PROGRESS_BY_COL[item.columnIndex] || 0;
+            const agentIdx = item.agentWorking ? idx % agents.length : -1;
+            const isHighlighted = highlightedIds.has(item.id);
+
+            return (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  backgroundColor: isHighlighted ? `${deptColor}08` : 'transparent',
+                }}
+                transition={{ delay: idx * 0.05, duration: 0.25 }}
+                className="grid grid-cols-[1fr_60px_78px_68px] gap-3 px-3 py-2.5 border-b border-gray-50 transition-colors rounded-md"
+                style={{
+                  boxShadow: isHighlighted
+                    ? `inset 3px 0 0 ${deptColor}`
+                    : 'none',
+                }}
+              >
+                <span className="text-[11px] text-gray-800 font-medium truncate">
+                  {item.label}
+                </span>
+
+                <div className="flex items-center justify-center">
+                  {agentIdx >= 0 ? (
+                    <div
+                      className="w-7 h-7 rounded-lg overflow-hidden shadow-sm"
+                      style={{
+                        background: `linear-gradient(135deg, ${agents[agentIdx].bgColor}90, ${agents[agentIdx].bgColor}cc)`,
+                      }}
+                    >
+                      <img
+                        src={agents[agentIdx].img}
+                        alt=""
+                        className="w-full h-full object-contain object-bottom"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            agents[agentIdx].fallback;
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-7 h-7" />
                   )}
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
+                </div>
+
+                <div className="flex items-center">
+                  <span
+                    className="text-[9px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap"
+                    style={{ color: status.color, backgroundColor: status.bg }}
+                  >
+                    {status.label}
+                  </span>
+                </div>
+
+                <div className="flex items-center">
+                  <div className="h-1.5 rounded-full bg-gray-100 w-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progress}%` }}
+                      transition={{
+                        delay: idx * 0.08 + 0.3,
+                        duration: 0.5,
+                        ease: 'easeOut',
+                      }}
+                      className="h-full rounded-full"
+                      style={{ backgroundColor: deptColor }}
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
         </motion.div>
-      ))}
+      </AnimatePresence>
     </div>
   );
+}
+
+/* ─── Floating agent cursors ─── */
+
+type CursorPosition = {
+  x: number;
+  y: number;
+  cardId: string;
+};
+
+function FloatingAgentCursor({
+  agent,
+  x,
+  y,
+  deptColor,
+}: {
+  agent: AgentInfo;
+  x: number;
+  y: number;
+  deptColor: string;
+}) {
+  return (
+    <motion.div
+      animate={{ left: `${x}%`, top: `${y}%` }}
+      transition={{ type: 'spring', stiffness: 120, damping: 20, mass: 0.8 }}
+      className="absolute z-30 pointer-events-none"
+      style={{ transform: 'translate(-50%, -50%)' }}
+    >
+      <div className="flex items-center gap-1.5">
+        <div
+          className="w-7 h-7 rounded-lg overflow-hidden shadow-md flex-shrink-0"
+          style={{
+            border: `2px solid ${deptColor}`,
+            background: `linear-gradient(135deg, ${agent.bgColor}90, ${agent.bgColor}cc)`,
+          }}
+        >
+          <img
+            src={agent.img}
+            alt={agent.label}
+            className="w-full h-full object-contain object-bottom"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = agent.fallback;
+            }}
+          />
+        </div>
+        <div
+          className="flex items-center gap-1 bg-white/95 backdrop-blur-sm rounded-full px-1.5 py-0.5 shadow-sm"
+          style={{ border: `1px solid ${deptColor}30` }}
+        >
+          <motion.span
+            animate={{ opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+            style={{ backgroundColor: deptColor }}
+          />
+          <span className="text-[8px] font-semibold text-gray-700 whitespace-nowrap">
+            {agent.label}
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function useFloatingCursors(
+  boardItems: BoardItem[],
+  deptId: string,
+) {
+  const positions = useMemo<CursorPosition[]>(() => {
+    return boardItems.slice(0, 6).map((item, idx) => ({
+      x: 52 + (idx % 3) * 14,
+      y: 38 + idx * 8,
+      cardId: item.id,
+    }));
+  }, [boardItems]);
+
+  const [tickA, setTickA] = useState(0);
+  const [tickB, setTickB] = useState(0);
+
+  useEffect(() => {
+    setTickA(0);
+    setTickB(0);
+  }, [deptId]);
+
+  useEffect(() => {
+    if (positions.length === 0) return;
+    const id = setInterval(() => setTickA((t) => t + 1), 3800);
+    return () => clearInterval(id);
+  }, [positions.length, deptId]);
+
+  useEffect(() => {
+    if (positions.length < 2) return;
+    const id = setInterval(() => setTickB((t) => t + 1), 4600);
+    return () => clearInterval(id);
+  }, [positions.length, deptId]);
+
+  const n = positions.length;
+  const idxA = n > 0 ? tickA % n : -1;
+  const offset = Math.max(1, Math.floor(n / 2));
+  const idxB = n >= 2 ? (tickB + offset) % n : -1;
+
+  const posA = idxA >= 0 ? positions[idxA] : null;
+  const posB = idxB >= 0 ? positions[idxB] : null;
+
+  const cardIdA = posA?.cardId ?? '';
+  const cardIdB = posB?.cardId ?? '';
+
+  const highlightedCardIds = useMemo(() => {
+    const ids = new Set<string>();
+    if (cardIdA) ids.add(cardIdA);
+    if (cardIdB) ids.add(cardIdB);
+    return ids;
+  }, [cardIdA, cardIdB]);
+
+  return { posA, posB, highlightedCardIds };
+}
+
+/* ─── Human orchestrator cursor ─── */
+
+const HUMAN_PERSONAS = [
+  { name: 'Sarah K.', color: '#475569' },
+  { name: 'Alex M.', color: '#1e40af' },
+];
+
+const HUMAN_WAYPOINTS = [
+  { x: 10, y: 42 },
+  { x: 14, y: 56 },
+  { x: 8, y: 68 },
+  { x: 16, y: 48 },
+  { x: 12, y: 62 },
+  { x: 10, y: 75 },
+];
+
+function FloatingHumanCursor({
+  name,
+  color,
+  x,
+  y,
+}: {
+  name: string;
+  color: string;
+  x: number;
+  y: number;
+}) {
+  return (
+    <motion.div
+      animate={{ left: `${x}%`, top: `${y}%` }}
+      transition={{ type: 'spring', stiffness: 70, damping: 16, mass: 1.4 }}
+      className="absolute z-[19] pointer-events-none"
+      style={{ transform: 'translate(-2px, -2px)' }}
+    >
+      <svg
+        width="12"
+        height="16"
+        viewBox="0 0 14 18"
+        fill="none"
+        className="drop-shadow-sm"
+      >
+        <path
+          d="M1 1L1 13.5L4.8 10L8 16.5L10.5 15.2L7.3 9L12.5 9L1 1Z"
+          fill={color}
+          stroke="white"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+      </svg>
+      <div
+        className="flex items-center gap-1 rounded-full px-1.5 py-px shadow-sm mt-0.5 ml-2"
+        style={{ backgroundColor: `${color}ee` }}
+      >
+        <span className="text-[8px] font-semibold text-white whitespace-nowrap">
+          {name}
+        </span>
+      </div>
+    </motion.div>
+  );
+}
+
+function useHumanCursors(deptId: string) {
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    setTick(0);
+  }, [deptId]);
+
+  useEffect(() => {
+    const id = setInterval(() => setTick((t) => t + 1), 5400);
+    return () => clearInterval(id);
+  }, [deptId]);
+
+  const n = HUMAN_WAYPOINTS.length;
+  const wp = HUMAN_WAYPOINTS[tick % n];
+
+  return { human: { ...HUMAN_PERSONAS[0], x: wp.x, y: wp.y } };
 }
 
 /* ─── Main component ─── */
@@ -326,8 +419,6 @@ function BoardTasksView({
 export function ExecutionSystemSection() {
   const [selectedDeptIndex, setSelectedDeptIndex] = useState(0);
   const [selectedJtbd, setSelectedJtbd] = useState(0);
-  const [highlightedCardId, setHighlightedCardId] = useState<string | null>(null);
-
   const { departments: supabaseDepts } = useDepartments();
 
   const avatarMap = useMemo(() => {
@@ -340,16 +431,23 @@ export function ExecutionSystemSection() {
 
   const dept = DEPARTMENTS[selectedDeptIndex];
   const boardItems = dept.boardItems as BoardItem[];
-  const itemsByColumn = COLUMNS.map((_, colIdx) =>
-    boardItems.filter((i) => i.columnIndex === colIdx)
-  );
   const animKey = dept.id;
+
+  const { posA, posB, highlightedCardIds } = useFloatingCursors(
+    boardItems,
+    dept.id,
+  );
+
+  const { human } = useHumanCursors(dept.id);
 
   const handleDeptChange = useCallback((index: number) => {
     setSelectedDeptIndex(index);
     setSelectedJtbd(0);
-    setHighlightedCardId(null);
   }, []);
+
+  const DeptIcon = dept.icon;
+  const avatar = avatarMap[dept.supabaseKey];
+  const avatarColor = avatar?.color || dept.color;
 
   return (
     <section className="relative pt-12 sm:pt-16 pb-20 sm:pb-24 lg:pb-28 px-4 sm:px-6 bg-white">
@@ -402,9 +500,9 @@ export function ExecutionSystemSection() {
           <div className="inline-flex items-center gap-5 md:gap-6 px-6 py-4 rounded-xl border border-gray-200 bg-gray-50/40">
             {DEPARTMENTS.map((d, i) => {
               const isSelected = selectedDeptIndex === i;
-              const DeptIcon = d.icon;
-              const avatar = avatarMap[d.supabaseKey];
-              const avatarColor = avatar?.color || d.color;
+              const DepIcon = d.icon;
+              const av = avatarMap[d.supabaseKey];
+              const avColor = av?.color || d.color;
               return (
                 <motion.button
                   key={d.id}
@@ -426,21 +524,25 @@ export function ExecutionSystemSection() {
                         }
                       `}
                       style={{
-                        backgroundColor: avatarColor,
-                        ...(isSelected ? { ['--tw-ring-color' as string]: avatarColor } : {}),
+                        backgroundColor: avColor,
+                        ...(isSelected
+                          ? { ['--tw-ring-color' as string]: avColor }
+                          : {}),
                       }}
                     >
-                      {avatar?.image ? (
+                      {av?.image ? (
                         <img
-                          src={avatar.image}
+                          src={av.image}
                           alt={d.name}
                           className="w-full h-full object-cover"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <DeptIcon
+                          <DepIcon
                             className={`text-white transition-all duration-300 ${
-                              isSelected ? 'w-6 h-6 md:w-7 md:h-7' : 'w-5 h-5 md:w-6 md:h-6'
+                              isSelected
+                                ? 'w-6 h-6 md:w-7 md:h-7'
+                                : 'w-5 h-5 md:w-6 md:h-6'
                             }`}
                             strokeWidth={2}
                           />
@@ -461,7 +563,7 @@ export function ExecutionSystemSection() {
                           ease: 'easeInOut',
                         }}
                         className="absolute inset-0 rounded-full pointer-events-none"
-                        style={{ boxShadow: `0 0 20px ${avatarColor}` }}
+                        style={{ boxShadow: `0 0 20px ${avColor}` }}
                       />
                     )}
                   </div>
@@ -483,156 +585,305 @@ export function ExecutionSystemSection() {
           </div>
         </motion.div>
 
-        {/* ── Main workspace ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="rounded-2xl border border-gray-200 bg-gray-50/30 shadow-xl shadow-black/[0.04] overflow-hidden"
-        >
-          {/* Content area: sidebar + board + agent */}
-          <div className="grid grid-cols-[200px_1fr] min-h-[460px]">
-            {/* ── Left sidebar: JTBD ── */}
-            <div className="border-r border-gray-100 bg-gray-50/40 p-4">
-              <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-4">
-                Jobs to be done
-              </div>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={dept.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="space-y-1"
-                >
-                  {dept.jtbd.map((job, i) => {
-                    const Icon = JTBD_ICONS[i % JTBD_ICONS.length];
-                    return (
-                      <motion.button
-                        key={job}
-                        initial={{ opacity: 0, x: -8 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.04, duration: 0.25 }}
-                        onClick={() => setSelectedJtbd(i)}
-                        className={`w-full flex items-start gap-2.5 px-3 py-2.5 rounded-lg text-left transition-all ${
-                          selectedJtbd === i
-                            ? 'bg-white shadow-sm border border-gray-200 text-gray-900'
-                            : 'text-gray-600 hover:bg-white/70 hover:text-gray-800'
-                        }`}
-                      >
-                        <Icon
-                          className={`w-4 h-4 mt-0.5 shrink-0 ${
-                            selectedJtbd === i ? 'text-[#6161FF]' : 'text-gray-400'
-                          }`}
-                        />
-                        <span className="text-xs font-medium leading-snug">
-                          {job}
-                        </span>
-                      </motion.button>
-                    );
-                  })}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* ── Board + floating agent ── */}
-            <div className="relative p-6 pb-8">
-              {/* Board content */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={animKey}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
-                >
-                  <BoardTasksView
-                    itemsByColumn={itemsByColumn}
-                    highlightedCardId={highlightedCardId}
-                    animKey={animKey}
-                  />
-                </motion.div>
-              </AnimatePresence>
-
-              {/* ── Floating agent card ── */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={dept.id}
-                  initial={{ opacity: 0, y: 24, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 12, scale: 0.94 }}
-                  transition={{ type: 'spring', stiffness: 240, damping: 20, delay: 0.15 }}
-                  className="absolute bottom-4 right-5 w-[300px] rounded-2xl bg-white overflow-visible"
-                  style={{
-                    border: `1.5px solid ${dept.agent.bgColor}50`,
-                    boxShadow: `0 12px 40px ${dept.agent.bgColor}30, 0 4px 12px rgba(0,0,0,0.08)`,
-                  }}
-                >
-                  {/* Agent illustration -- large, overflowing top */}
-                  <div
-                    className="relative rounded-t-2xl overflow-hidden"
-                    style={{ background: `linear-gradient(135deg, ${dept.agent.bgColor}, ${dept.agent.bgColor}cc)` }}
+        {/* ── Main workspace (Platform-style card) ── */}
+        <div style={{ perspective: '1800px' }}>
+          <motion.div
+            initial={{ opacity: 0, y: 30, rotateX: 4 }}
+            whileInView={{ opacity: 1, y: 0, rotateX: 1.5 }}
+            viewport={{ once: true }}
+            transition={{
+              duration: 0.7,
+              delay: 0.2,
+              ease: [0.25, 0.46, 0.45, 0.94],
+            }}
+            className="rounded-2xl border border-gray-200 bg-white overflow-hidden"
+            style={{
+              boxShadow:
+                '0 20px 60px -12px rgba(0,0,0,0.12), 0 4px 20px -4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03)',
+              transformOrigin: 'center bottom',
+            }}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[480px] relative">
+              {/* ── Left panel: team info + JTBD ── */}
+              <div className="lg:col-span-4 border-r border-gray-100 bg-gradient-to-b from-gray-50/60 to-white p-6 flex flex-col">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={dept.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex flex-col flex-1"
                   >
-                    <div className="relative h-48 flex items-end justify-center">
-                      <img
-                        src={dept.agent.img}
-                        alt={dept.agent.label}
-                        className="h-[110%] w-auto max-w-none object-contain object-bottom drop-shadow-lg"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = dept.agent.fallback;
+                    {/* Team header block */}
+                    <div className="relative mb-6">
+                      <motion.h3
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.35 }}
+                        className="text-2xl font-extrabold text-gray-900 tracking-tight mb-1"
+                      >
+                        {dept.name} team
+                      </motion.h3>
+                      <p className="text-[13px] text-gray-500 leading-relaxed mb-5">
+                        {dept.description}
+                      </p>
+
+                      {/* Avatars stack */}
+                      <div className="flex items-center mb-2">
+                        <div className="flex items-center -space-x-2.5">
+                          {/* Department avatar */}
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.7 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.1, type: 'spring', stiffness: 300, damping: 20 }}
+                            className="relative z-10 w-12 h-12 rounded-full overflow-hidden flex-shrink-0 shadow-lg"
+                            style={{
+                              backgroundColor: avatarColor,
+                              border: '3px solid white',
+                            }}
+                          >
+                            {avatar?.image ? (
+                              <img
+                                src={avatar.image}
+                                alt={dept.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <DeptIcon className="w-5 h-5 text-white" />
+                              </div>
+                            )}
+                          </motion.div>
+
+                          {/* Agent avatars */}
+                          {dept.agents.slice(0, 3).map((agent, i) => (
+                            <motion.div
+                              key={agent.label}
+                              initial={{ opacity: 0, scale: 0.6, x: -12 }}
+                              animate={{ opacity: 1, scale: 1, x: 0 }}
+                              transition={{
+                                delay: 0.18 + i * 0.08,
+                                type: 'spring',
+                                stiffness: 280,
+                                damping: 22,
+                              }}
+                              className="relative w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 shadow-md"
+                              style={{
+                                border: '3px solid white',
+                                zIndex: 9 - i,
+                                background: `linear-gradient(135deg, ${agent.bgColor}90, ${agent.bgColor}cc)`,
+                              }}
+                            >
+                              <img
+                                src={agent.img}
+                                alt={agent.label}
+                                className="w-full h-full object-contain object-bottom"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).src =
+                                    agent.fallback;
+                                }}
+                              />
+                            </motion.div>
+                          ))}
+                        </div>
+
+                        {/* Agent count badge */}
+                        <motion.span
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.4, type: 'spring', stiffness: 200 }}
+                          className="text-[11px] font-bold px-3 py-1.5 rounded-full ml-3 whitespace-nowrap shadow-sm"
+                          style={{
+                            color: dept.color,
+                            backgroundColor: `${dept.color}12`,
+                            border: `1.5px solid ${dept.color}25`,
+                          }}
+                        >
+                          +{dept.agents.length} agents
+                        </motion.span>
+                      </div>
+
+                      {/* Colored accent line */}
+                      <motion.div
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        transition={{ delay: 0.3, duration: 0.4, ease: 'easeOut' }}
+                        className="h-0.5 rounded-full mt-5 origin-left"
+                        style={{
+                          background: `linear-gradient(to right, ${dept.color}, ${dept.color}20)`,
                         }}
                       />
                     </div>
-                    {/* Bottom gradient into white */}
-                    <div
-                      className="absolute inset-x-0 bottom-0 h-16 pointer-events-none"
-                      style={{ background: 'linear-gradient(to top, white, transparent)' }}
-                    />
-                    {/* AI badge floating on image */}
-                    <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-white/90 backdrop-blur-sm rounded-full px-2.5 py-1 shadow-sm">
-                      <motion.span
-                        animate={{ opacity: [0.5, 1, 0.5] }}
-                        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                        className="w-2 h-2 rounded-full"
-                        style={{ backgroundColor: dept.color }}
+
+                    {/* JTBD list */}
+                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+                      Jobs to be done
+                    </div>
+                    <div className="space-y-1 flex-1">
+                      {dept.jtbd.map((job, i) => {
+                        const Icon = JTBD_ICONS[i % JTBD_ICONS.length];
+                        const isActive = selectedJtbd === i;
+                        return (
+                          <motion.button
+                            key={job}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: i * 0.05, duration: 0.25 }}
+                            onClick={() => setSelectedJtbd(i)}
+                            className={`w-full flex items-start gap-2.5 px-3 py-2.5 rounded-lg text-left transition-all duration-200 ${
+                              isActive
+                                ? 'bg-white shadow-md border border-gray-200 text-gray-900'
+                                : 'text-gray-500 hover:bg-white/80 hover:text-gray-700 hover:shadow-sm'
+                            }`}
+                            style={
+                              isActive
+                                ? {
+                                    boxShadow: `0 2px 8px ${dept.color}15, 0 1px 3px rgba(0,0,0,0.06)`,
+                                    borderColor: `${dept.color}30`,
+                                  }
+                                : undefined
+                            }
+                          >
+                            <Icon
+                              className={`w-4 h-4 mt-0.5 shrink-0 transition-colors duration-200 ${
+                                isActive ? '' : 'text-gray-400'
+                              }`}
+                              style={isActive ? { color: dept.color } : undefined}
+                            />
+                            <span className="text-xs font-medium leading-snug">
+                              {job}
+                            </span>
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* ── Right panel: product card ── */}
+              <div className="lg:col-span-8 flex flex-col">
+                {/* Card header */}
+                <div className="flex items-center gap-3 px-5 py-3 border-b border-gray-100">
+                  <div
+                    className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0"
+                    style={{ backgroundColor: avatarColor }}
+                  >
+                    {avatar?.image ? (
+                      <img
+                        src={avatar.image}
+                        alt={dept.name}
+                        className="w-full h-full object-cover"
                       />
-                      <span className="text-[10px] font-bold text-gray-700">AI Agent</span>
-                    </div>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <DeptIcon className="w-4 h-4 text-white" />
+                      </div>
+                    )}
                   </div>
-
-                  {/* Agent info */}
-                  <div className="px-5 pt-2 pb-4">
-                    <div className="flex items-center gap-2.5 mb-2">
-                      <span className="text-lg font-bold text-gray-900">
-                        {dept.agent.label}
-                      </span>
-                      <span
-                        className="text-[10px] font-bold text-white px-2 py-0.5 rounded-full"
-                        style={{ backgroundColor: dept.color }}
-                      >
-                        {dept.name}
-                      </span>
-                    </div>
-                    <AnimatedStatus text={dept.agent.status} color={dept.color} />
-                    <p className="text-xs text-gray-500 mt-2 leading-relaxed line-clamp-2">
-                      {dept.agent.description}
-                    </p>
+                  <div className="min-w-0">
+                    <span className="text-sm font-bold text-gray-900 block">
+                      {dept.name}
+                    </span>
+                    <span className="text-[11px] text-gray-500 block truncate">
+                      {dept.description}
+                    </span>
                   </div>
+                  <span className="ml-auto flex items-center gap-1 text-[10px] font-semibold text-violet-600 bg-violet-50 px-2.5 py-1 rounded-full whitespace-nowrap">
+                    <Zap className="w-3 h-3" />
+                    AI-powered
+                  </span>
+                </div>
 
-                  {/* Ambient glow behind card */}
-                  <motion.div
-                    animate={{ opacity: [0.06, 0.18, 0.06] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                    className="absolute -inset-2 rounded-3xl pointer-events-none -z-10"
-                    style={{ boxShadow: `0 0 50px ${dept.agent.bgColor}` }}
+                {/* Traffic lights + JTBD title bar */}
+                <div className="flex items-center gap-3 px-5 py-2.5 border-b border-gray-100 bg-gray-50/30">
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+                  </div>
+                  <div className="w-px h-4 bg-gray-200" />
+                  <LayoutGrid className="w-3.5 h-3.5 text-gray-400" />
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={`${dept.id}-${selectedJtbd}`}
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-[11px] font-semibold text-gray-700"
+                    >
+                      {dept.jtbd[selectedJtbd]}
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
+
+                {/* Content: agents sidebar + table */}
+                <div className="flex flex-1 relative">
+                  <ActiveAgentsSidebar
+                    agents={dept.agents}
+                    deptColor={dept.color}
+                    deptId={dept.id}
+                  />
+                  <TaskTableView
+                    items={boardItems}
+                    agents={dept.agents}
+                    deptColor={dept.color}
+                    animKey={animKey}
+                    highlightedIds={highlightedCardIds}
+                  />
+                </div>
+
+                {/* Ask Sidekick input */}
+                <div className="px-4 py-3 border-t border-gray-100">
+                  <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors cursor-pointer">
+                    <Bot className="w-4 h-4 text-violet-400 flex-shrink-0" />
+                    <span className="text-[11px] text-gray-400 flex-1">
+                      Ask Sidekick...
+                    </span>
+                    <Send className="w-3.5 h-3.5 text-gray-300" />
+                  </div>
+                </div>
+              </div>
+
+              {/* ── Floating cursors overlay ── */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`cursors-${dept.id}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.4, delay: 0.5 }}
+                  className="absolute inset-0 pointer-events-none z-20"
+                >
+                  {posA && dept.agents[0] && (
+                    <FloatingAgentCursor
+                      agent={dept.agents[0]}
+                      x={posA.x}
+                      y={posA.y}
+                      deptColor={dept.color}
+                    />
+                  )}
+                  {posB && dept.agents[1] && (
+                    <FloatingAgentCursor
+                      agent={dept.agents[1]}
+                      x={posB.x}
+                      y={posB.y}
+                      deptColor={dept.color}
+                    />
+                  )}
+                  <FloatingHumanCursor
+                    name={human.name}
+                    color={human.color}
+                    x={human.x}
+                    y={human.y}
                   />
                 </motion.div>
               </AnimatePresence>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

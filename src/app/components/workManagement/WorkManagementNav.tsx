@@ -1,17 +1,17 @@
 import { Link } from 'react-router-dom';
-import wmFullLogo from '@/assets/monday-work-management-logo.png';
 
 export function WorkManagementNav() {
   return (
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2.5">
             <img
-              src={wmFullLogo}
-              alt="monday.com Work Management"
-              className="h-8 w-auto"
+              src="/monday-mark.png"
+              alt="monday.com"
+              className="h-8 w-8 object-contain"
             />
+            <span className="text-lg font-semibold text-gray-900">monday.com</span>
           </Link>
           <div className="hidden md:flex items-center gap-8">
             <a href="https://monday.com/product" className="text-sm font-medium text-gray-700 hover:text-gray-900">

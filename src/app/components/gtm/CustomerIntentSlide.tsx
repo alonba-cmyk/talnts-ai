@@ -20,6 +20,12 @@ export default function CustomerIntentSlide() {
         How each department balances core business work with day‑to‑day operations.
       </SlideSubtitle>
 
+      <div className="mt-4 mb-2 flex justify-center">
+        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs text-white/40 border border-white/[0.1] bg-white/[0.02]">
+          No validation on the information
+        </span>
+      </div>
+
       <div className="space-y-6 max-w-3xl">
         <StaggerChild index={0}>
           <div className="flex justify-between text-xs text-white/40 mb-1">
@@ -100,12 +106,6 @@ export default function CustomerIntentSlide() {
           </div>
         </div>
       </StaggerChild>
-
-      <div className="mt-6 flex justify-center">
-        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs text-white/40 border border-white/[0.1] bg-white/[0.02]">
-          No validation on the information
-        </span>
-      </div>
     </SlideShell>
   );
 }
