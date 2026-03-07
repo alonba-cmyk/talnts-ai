@@ -1,9 +1,10 @@
 name: Sync to Monday.com Repository
 
 on:
-  push:
-    branches: [ master, main ]
-  workflow_dispatch: # Allow manual triggering
+  # push disabled — MONDAY_GITHUB_TOKEN not available in this repo
+  # push:
+  #   branches: [ master, main ]
+  workflow_dispatch: # Run manually only (requires token in repo secrets)
 
 jobs:
   sync-to-monday:
