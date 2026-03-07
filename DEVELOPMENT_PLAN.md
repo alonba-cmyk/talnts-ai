@@ -1,7 +1,14 @@
 # Development Plan — monday.com AI Platform Landing Pages
 
-> **Last updated:** 2026-03-07
+> **Last updated:** 2025-03-07
 > **Purpose:** Full handoff document so a fresh AI model (or developer) can pick up exactly where we left off.
+
+### Recent Updates (commit 08cf21e)
+
+- **WorkManagementLandingPage** — Passes full `settings` object to `WorkManagementFirstFold` for admin-driven customization
+- **WorkManagementFirstFold** — Refinements and improvements (~300 lines changed)
+- **wmDepartmentData** — New agent asset images: `agent-assets-generator.png`, `agent-risk-analyzer.png`, `agent-vendor-researcher.png` (in `src/assets/`)
+- **AgentsLandingPage / AgentHero** — Layout and hero updates
 
 ---
 
@@ -59,6 +66,10 @@ A suite of marketing landing pages for monday.com's AI Platform — covering the
 src/
 ├── main.tsx                          # Route definitions + providers
 ├── lib/supabase.ts                   # Supabase client + getImageUrl()
+├── assets/                           # Agent/product images (imported in code)
+│   ├── agent-assets-generator.png
+│   ├── agent-risk-analyzer.png
+│   └── agent-vendor-researcher.png
 ├── hooks/useSupabase.ts              # ALL data hooks + SiteSettings interface
 ├── types/database.ts                 # Supabase Database type
 ├── styles/
@@ -182,7 +193,7 @@ Supabase site_settings (row 'main')
 
 - **Agents Page** (`/agents`) — Hero with 5 variants, messaging tones, demo styles, frameworks showcase, human/agent toggle, mobile-optimized
 - **Admin Panel** (`/admin`) — Full CRUD for settings, pages, case studies, design assets, battle cards, competitors
-- **Work Management Page** (`/work-management`) — 8 sections assembled, 5 hero variants, interactive board with department switching, platform layers, solutions, enterprise, differentiators, CTA, footer
+- **Work Management Page** (`/work-management`) — 8 sections assembled, 5 hero variants, interactive board with department switching, platform layers, solutions, enterprise, differentiators, CTA, footer. `WorkManagementLandingPage` passes full `settings` to `WorkManagementFirstFold` for variant/avatar overrides.
 - **WM Admin Settings** — Complete control panel for all WM layout/variant/style options with department avatar/color/order customization
 - **GTM Presentation** (`/gtm`) — Slides, assumptions, market trends, competitors
 - **Homepage, Platform, Dynamic Pages** — All functional
@@ -199,6 +210,14 @@ Supabase site_settings (row 'main')
 | What Sets Us Apart | `WorkManagementWhatSetsUsApart` | Complete — 4 differentiator cards |
 | CTA | `WorkManagementCTASection` | Complete — purple gradient |
 | Footer | `WorkManagementFooter` | Complete |
+
+### Agent Assets (src/assets/)
+
+| Asset | Purpose |
+|-------|---------|
+| `agent-assets-generator.png` | Agent icon used in `wmDepartmentData` / board |
+| `agent-risk-analyzer.png` | Agent icon used in `wmDepartmentData` / board |
+| `agent-vendor-researcher.png` | Agent icon used in `wmDepartmentData` / board |
 
 ### Built But Not in Page Layout
 
