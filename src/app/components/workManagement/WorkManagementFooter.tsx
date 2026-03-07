@@ -38,13 +38,13 @@ const FOOTER_LINKS = {
 
 export function WorkManagementFooter() {
   return (
-    <footer className="bg-white border-t border-gray-100">
+    <footer className="bg-white dark:bg-[#0a0a0a] border-t border-gray-100 dark:border-white/10">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
           <div>
             <Link
               to="/"
-              className="text-2xl font-bold text-black block mb-6"
+              className="text-2xl font-bold text-black dark:text-white block mb-6"
             >
               monday.com
             </Link>
@@ -63,7 +63,7 @@ export function WorkManagementFooter() {
             </nav>
           </div>
           <div>
-            <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-6">
+            <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-6">
               Features
             </h4>
             <nav className="flex flex-col gap-4">
@@ -81,7 +81,7 @@ export function WorkManagementFooter() {
             </nav>
           </div>
           <div>
-            <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-6">
+            <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-6">
               Company
             </h4>
             <nav className="flex flex-col gap-4">
@@ -99,7 +99,7 @@ export function WorkManagementFooter() {
             </nav>
           </div>
           <div>
-            <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-6">
+            <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-6">
               Resources
             </h4>
             <nav className="flex flex-col gap-4">
@@ -117,29 +117,29 @@ export function WorkManagementFooter() {
             </nav>
           </div>
         </div>
-        <div className="pt-8 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex flex-wrap justify-center sm:justify-start gap-4 text-sm text-gray-500">
-            <a href="https://monday.com/security" className="hover:text-black">
+        <div className="pt-8 border-t border-gray-100 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex flex-wrap justify-center sm:justify-start gap-4 text-sm text-gray-500 dark:text-gray-400">
+            <a href="https://monday.com/security" className="hover:text-black dark:hover:text-white">
               Security
             </a>
             <span>|</span>
-            <a href="https://monday.com/terms" className="hover:text-black">
+            <a href="https://monday.com/terms" className="hover:text-black dark:hover:text-white">
               Terms and privacy
             </a>
             <span>|</span>
-            <a href="https://monday.com/privacy" className="hover:text-black">
+            <a href="https://monday.com/privacy" className="hover:text-black dark:hover:text-white">
               Privacy policy
             </a>
             <span>|</span>
-            <a href="https://monday.com/cookies" className="hover:text-black">
+            <a href="https://monday.com/cookies" className="hover:text-black dark:hover:text-white">
               Cookie settings
             </a>
             <span>|</span>
-            <a href="https://status.monday.com" className="hover:text-black">
+            <a href="https://status.monday.com" className="hover:text-black dark:hover:text-white">
               Status
             </a>
           </div>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             All Rights Reserved © monday.com
           </p>
         </div>

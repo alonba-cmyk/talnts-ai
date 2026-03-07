@@ -1,0 +1,170 @@
+# monday.com AI Platform Landing Pages — Cursor Rules
+
+## Shell Environment
+
+- **Windows PowerShell** — NEVER use `&&` to chain commands (use `;` or separate calls)
+- No heredocs — pass strings directly or use files
+- Use `pnpm` as the package manager (not npm or yarn)
+
+## Tech Stack Rules
+
+- **React 18.3** — functional components only, no class components
+- **TypeScript strict** — no `any` types unless absolutely unavoidable; prefer explicit interfaces
+- **Tailwind CSS 4** via `@tailwindcss/vite` — there is NO `tailwind.config.js`; all theme tokens live in `src/styles/theme.css` using `@theme inline`
+- **motion/react** (Framer Motion) — import from `motion/react`, not `framer-motion`
+- **Path alias** — use `@/` for imports from `src/` (e.g., `@/hooks/useSupabase`)
+- **Supabase** — client in `src/lib/supabase.ts`, all hooks in `src/hooks/useSupabase.ts`
+
+## Naming Conventions
+
+### Files & Directories
+
+- **Components**: PascalCase with `.tsx` extension (e.g., `WorkManagementFirstFold.tsx`)
+- **Data/utility files**: camelCase with `.ts` extension (e.g., `wmDepartmentData.ts`, `aiCompanies.ts`)
+- **Hooks**: camelCase starting with `use` (e.g., `useSupabase.ts`)
+- **Component directories**: camelCase matching the page area (e.g., `workManagement/`, `agents/`, `platform/`)
+- **Page components**: PascalCase ending with `Page` or `App` (e.g., `WorkManagementLandingPage.tsx`, `AdminApp.tsx`)
+
+### Code
+
+- **Components**: PascalCase (`WorkManagementNav`, `ExecutionSystemSection`)
+- **Hooks**: camelCase with `use` prefix (`useSiteSettings`, `useImageUpload`)
+- **Interfaces/Types**: PascalCase (`SiteSettings`, `BoardItem`, `Department`)
+- **Constants**: UPPER_SNAKE_CASE for static data arrays (`DEPARTMENTS`, `SQUAD_DEPARTMENTS`, `STATUS_CONFIG`)
+- **Supabase keys**: Underscore-prefixed in DB (`_wm_dark_mode`), camelCase in TypeScript after hook parsing (`wm_dark_mode` → read as `settings.wm_dark_mode`)
+- **CSS variables**: Kebab-case with `--` prefix (`--color-brand-teal`, `--radius-lg`)
+- **Event handlers**: `on` prefix for props (`onDeptChange`), `handle` prefix for internal (`handleClick`)
+
+### Prefix Conventions
+
+- `Wm` prefix for Work Management variants/types (`WmHeroLiveDelegation`, `WmFirstFoldVariant`)
+- `agents_` prefix for Agents settings fields
+- `wm_` prefix for Work Management settings fields
+- `platform_` prefix for Platform settings fields
+
+## Folder Structure Rules
+
+```
+src/app/components/{pageName}/     — All components for a specific page
+src/app/{PageName}LandingPage.tsx  — Page assembly (composes sections in order)
+src/admin/components/              — All admin panel components
+src/hooks/                         — Shared hooks (keep useSupabase.ts as single source)
+src/lib/                           — Client libraries (Supabase, etc.)
+src/styles/                        — CSS files only (no JS config)
+public/                            — Static assets (logos, images, avatars)
+public/logos/                      — Company logo SVGs/PNGs
+public/avatars/                    — Person avatar images
+public/department-avatars/         — Department lead avatars
+```
+
+## Component Architecture Patterns
+
+### Page Assembly Pattern
+
+Each page has a single assembly file that composes section components in order:
+
+```tsx
+export default function WorkManagementLandingPage() {
+  const { settings } = useSiteSettings();
+  return (
+    <div>
+      <WorkManagementNav />
+      <WorkManagementFirstFold />
+      <WorkManagementPlatformLayers />
+      {/* ...more sections */}
+      <WorkManagementFooter />
+    </div>
+  );
+}
+```
+
+### Section Component Pattern
+
+Each section is a self-contained component in its own file. It reads its own settings via `useSiteSettings()` and renders independently.
+
+### Variant Pattern
+
+Configurable sections use variant enums. The admin sets a variant string in Supabase; the component switches rendering:
+
+```tsx
+const { settings } = useSiteSettings();
+switch (settings.wm_first_fold_variant) {
+  case 'live_delegation': return <WmHeroLiveDelegation {...props} />;
+  case 'cinematic_assembly': return <WmHeroCinematicAssembly {...props} />;
+  default: return <DefaultHero {...props} />;
+}
+```
+
+### Settings Flow
+
+```
+Admin saves → Supabase site_settings.sections_visibility (underscore-prefixed keys)
+  → useSiteSettings() strips prefixes, merges defaults
+    → Component reads specific field → conditional render
+```
+
+## Preferred Libraries
+
+| Purpose | Library | Import |
+|---------|---------|--------|
+| Animation | motion | `from 'motion/react'` |
+| Icons | lucide-react | `from 'lucide-react'` |
+| UI primitives | Radix UI | `from '@radix-ui/react-*'` |
+| Complex UI | MUI | `from '@mui/material'` (use sparingly) |
+| Class merging | tailwind-merge + clsx | `cn()` utility |
+| Toasts | sonner | `from 'sonner'` |
+| Drag & drop | @dnd-kit | `from '@dnd-kit/core'` |
+| Date utilities | date-fns | `from 'date-fns'` |
+| Forms | react-hook-form | `from 'react-hook-form'` |
+| Charts | recharts | `from 'recharts'` |
+| Routing | react-router-dom | `from 'react-router-dom'` |
+| Backend | @supabase/supabase-js | Via `@/lib/supabase` |
+
+## Design Tokens
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| Brand teal | `#00D2D2` | CTAs, accents, highlights |
+| Dark background | `#0a0a0a` | Page backgrounds |
+| Card background | `#141414` | Card/panel fills |
+| Card border | `#1e1e1e` | Card borders |
+| Red | `#FF3D57` | Status dots, alerts |
+| Yellow | `#FFCB00` | Status dots, warnings |
+| Green | `#00D2D2` | Status dots, success |
+| Blue | `#6161FF` | Status dots, info |
+| Purple | `#A25DDC` | Status dots, special |
+
+## Animation Guidelines
+
+- Use `motion.div` (not `motion("div")`) for animated elements
+- Prefer `AnimatePresence` for mount/unmount animations
+- Use `whileInView` for scroll-triggered reveals
+- Keep durations between 0.3s–0.8s for UI transitions
+- Use `ease` or `[0.25, 0.46, 0.45, 0.94]` for smooth easing
+- Stagger children with `transition.staggerChildren`
+
+## Supabase Rules
+
+- All settings go through `useSiteSettings()` — never query `site_settings` directly in components
+- New settings: add key to `SiteSettings` interface in `useSupabase.ts`, add default value, add `_` prefixed key mapping
+- Image uploads go to the `Vibe` storage bucket via `useImageUpload()`
+- Design assets use `useDesignAssets(category)` hook
+
+## Code Quality
+
+- No comments that just narrate what code does
+- No `console.log` in production code (remove after debugging)
+- Prefer `const` over `let`; never use `var`
+- Destructure props and hook returns
+- Keep components under 400 lines; extract sub-components for large sections
+- Use `key` props correctly in lists (never use array index as key for dynamic lists)
+
+## What NOT to Do
+
+- Do NOT create a `tailwind.config.js` — Tailwind 4 uses CSS-based config in `theme.css`
+- Do NOT install `framer-motion` — use `motion` package (import from `motion/react`)
+- Do NOT use `npm` or `yarn` — use `pnpm`
+- Do NOT chain PowerShell commands with `&&` — use `;` or separate lines
+- Do NOT add new Supabase tables without updating `useSupabase.ts` hooks
+- Do NOT use inline styles for colors that exist as design tokens
+- Do NOT create separate CSS modules — use Tailwind classes or `theme.css` variables

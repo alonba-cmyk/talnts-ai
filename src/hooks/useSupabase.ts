@@ -345,6 +345,18 @@ export interface SiteSettings {
   agents_branded_title_style: 'svg' | 'ascii';
   agents_branded_glow_style: 'wide' | 'logo';
   agents_hero_demo: 'none' | 'floating_terminal' | 'toasts' | 'typing_agent' | 'bg_stream' | 'agent_cursor';
+  wm_platform_layers_variant: 'grid' | 'masonry_expand';
+  wm_bento_style: 'dark_gradient' | 'glass_blur';
+  wm_dark_mode: boolean;
+  wm_dept_avatar_overrides: Record<string, string>;
+  wm_dept_color_overrides: Record<string, string>;
+  wm_dept_order: string[];
+  wm_first_fold_variant: 'default' | 'live_delegation' | 'cinematic_assembly' | 'split_reveal' | 'roster_board';
+  wm_squad_split_chat: boolean;
+  wm_roster_layout: 'mirrored' | 'vertical';
+  wm_member_avatar_overrides: Record<string, string>;
+  wm_board_style: 'default' | 'kanban' | 'workflow' | 'focused' | 'minimal';
+  wm_card_layout: 'default' | 'board_only' | 'compact_squad' | 'squad_header';
 }
 
 const defaultSectionsVisibility: SectionsVisibility = {
@@ -445,6 +457,18 @@ export function useSiteSettings() {
     agents_branded_title_style: 'ascii',
     agents_branded_glow_style: 'wide',
     agents_hero_demo: 'none',
+    wm_platform_layers_variant: 'grid',
+    wm_bento_style: 'dark_gradient',
+    wm_dark_mode: false,
+    wm_dept_avatar_overrides: {},
+    wm_dept_color_overrides: {},
+    wm_dept_order: [],
+    wm_first_fold_variant: 'default',
+    wm_squad_split_chat: false,
+    wm_roster_layout: 'mirrored',
+    wm_member_avatar_overrides: {},
+    wm_board_style: 'default',
+    wm_card_layout: 'default',
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -467,7 +491,7 @@ export function useSiteSettings() {
       if (data) {
         // Extract _order and _teams_agents_v2_layout from sections_visibility if they exist
         const sectionsVisibilityData = data.sections_visibility || {};
-        const { _order, _teams_agents_v2_layout, _team_flanked_featured_agents, _ai_platform_arch_layout, _platform_architecture_variant, _platform_page_version, _platform_context_toggle, _platform_sidekick_panel_style, _platform_v3_team_avatars, _platform_v3_minimal_chat, _platform_sidebar_left, _platform_v4_left_panel, _platform_showcase_section, _platform_show_jtbd_sidebar, _platform_show_inline_sidekick, _platform_show_department_bar, _platform_showcase_show_jtbd_sidebar, _platform_showcase_show_inline_sidekick, _platform_showcase_show_department_bar, _platform_showcase_variant, _platform_show_intro, _platform_intro_style, _platform_hero_variant, _platform_use_cases_variant, _agents_hero_variant, _agents_messaging_tone, _agents_page_layout, _agents_content_style, _agents_show_frameworks, _agents_branded_title_style, _agents_branded_glow_style, _agents_hero_demo, ...sectionsVisibilityWithoutOrder } = sectionsVisibilityData;
+        const { _order, _teams_agents_v2_layout, _team_flanked_featured_agents, _ai_platform_arch_layout, _platform_architecture_variant, _platform_page_version, _platform_context_toggle, _platform_sidekick_panel_style, _platform_v3_team_avatars, _platform_v3_minimal_chat, _platform_sidebar_left, _platform_v4_left_panel, _platform_showcase_section, _platform_show_jtbd_sidebar, _platform_show_inline_sidekick, _platform_show_department_bar, _platform_showcase_show_jtbd_sidebar, _platform_showcase_show_inline_sidekick, _platform_showcase_show_department_bar, _platform_showcase_variant, _platform_show_intro, _platform_intro_style, _platform_hero_variant, _platform_use_cases_variant, _agents_hero_variant, _agents_messaging_tone, _agents_page_layout, _agents_content_style, _agents_show_frameworks, _agents_branded_title_style, _agents_branded_glow_style, _agents_hero_demo, _wm_platform_layers_variant, _wm_bento_style, _wm_dark_mode, _wm_dept_avatar_overrides, _wm_dept_color_overrides, _wm_dept_order, _wm_first_fold_variant, _wm_squad_split_chat, _wm_roster_layout, _wm_member_avatar_overrides, _wm_board_style, _wm_card_layout, ...sectionsVisibilityWithoutOrder } = sectionsVisibilityData;
         
         // #region agent log
         fetch('http://127.0.0.1:7242/ingest/bb0db356-d413-4fb9-a0cd-afac4bde56c0',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0ca9a5'},body:JSON.stringify({sessionId:'0ca9a5',location:'useSupabase.ts:fetchSettings',message:'settings fetched',data:{hasData:!!data,_agents_hero_variant:(data?.sections_visibility as any)?._agents_hero_variant,_agents_content_style:(data?.sections_visibility as any)?._agents_content_style,_agents_page_layout:(data?.sections_visibility as any)?._agents_page_layout},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
@@ -526,6 +550,18 @@ export function useSiteSettings() {
             const d = _agents_hero_demo || 'none';
             return d === 'scroll_reveal' ? 'none' : d;
           })(),
+          wm_platform_layers_variant: _wm_platform_layers_variant || 'grid',
+          wm_bento_style: _wm_bento_style || 'dark_gradient',
+          wm_dark_mode: _wm_dark_mode ?? false,
+          wm_dept_avatar_overrides: _wm_dept_avatar_overrides || {},
+          wm_dept_color_overrides: _wm_dept_color_overrides || {},
+          wm_dept_order: _wm_dept_order || [],
+          wm_first_fold_variant: _wm_first_fold_variant || 'default',
+          wm_squad_split_chat: _wm_squad_split_chat ?? false,
+          wm_roster_layout: _wm_roster_layout || 'mirrored',
+          wm_member_avatar_overrides: _wm_member_avatar_overrides || {},
+          wm_board_style: _wm_board_style || 'default',
+          wm_card_layout: _wm_card_layout || 'default',
         });
       }
     } catch (err: any) {

@@ -29,7 +29,7 @@ export function WorkManagementSolutionsSection() {
   };
 
   return (
-    <section className="py-16 sm:py-24 px-4 sm:px-6 bg-white">
+    <section className="py-16 sm:py-24 px-4 sm:px-6 bg-white dark:bg-[#0a0a0a]">
       <div className="max-w-[1200px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -37,7 +37,7 @@ export function WorkManagementSolutionsSection() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-black tracking-[-0.03em] leading-[1.1] mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-black dark:text-white tracking-[-0.03em] leading-[1.1] mb-6">
             Solutions for every team,
             <br />
             at any scale
@@ -77,7 +77,7 @@ export function WorkManagementSolutionsSection() {
                 key={i}
                 onClick={() => scrollToSlide(i)}
                 className={`w-2 h-2 rounded-full transition-colors ${
-                  activeDot === i ? 'bg-black' : 'bg-gray-300'
+                  activeDot === i ? 'bg-black dark:bg-white' : 'bg-gray-300 dark:bg-white/30'
                 }`}
                 aria-label={`Go to slide ${i + 1}`}
               />
@@ -95,7 +95,7 @@ export function WorkManagementSolutionsSection() {
             href={WORK_MANAGEMENT_TRIAL_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 h-12 px-6 bg-black hover:bg-gray-800 text-white font-medium text-base rounded-[40px] transition-colors"
+            className="inline-flex items-center justify-center gap-2 h-12 px-6 bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 dark:text-black text-white font-medium text-base rounded-[40px] transition-colors"
           >
             Get started
             <ArrowRight className="w-5 h-5" strokeWidth={2} />

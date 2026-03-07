@@ -1,5 +1,5 @@
 import { useState, lazy, Suspense, Component, type ReactNode } from 'react';
-import { Globe, Monitor, FileText, Pencil, AlertTriangle, Bot } from 'lucide-react';
+import { Globe, Monitor, FileText, Pencil, AlertTriangle, Bot, Layers } from 'lucide-react';
 import { usePageComponents, usePages } from '@/hooks/useSupabase';
 
 // Lazy-load ComponentBankView so its import chain doesn't block the Pages tab
@@ -48,6 +48,7 @@ export interface SiteBuilderViewProps {
   onEditPage: (pageId: 'homepage' | 'platform') => void;
   onOpenDynamicPages: () => void;
   onOpenAgentsPage?: () => void;
+  onOpenWmPage?: () => void;
 }
 
 type TabId = 'pages' | 'component_bank';
@@ -60,7 +61,7 @@ export function SiteBuilderView(props: SiteBuilderViewProps) {
   );
 }
 
-function SiteBuilderInner({ onEditPage, onOpenDynamicPages, onOpenAgentsPage }: SiteBuilderViewProps) {
+function SiteBuilderInner({ onEditPage, onOpenDynamicPages, onOpenAgentsPage, onOpenWmPage }: SiteBuilderViewProps) {
   const [activeTab, setActiveTab] = useState<TabId>('pages');
 
   const { components: homepageComponents, error: hpError } = usePageComponents('homepage');
@@ -186,6 +187,38 @@ function SiteBuilderInner({ onEditPage, onOpenDynamicPages, onOpenAgentsPage }: 
                 onOpenAgentsPage?.();
               }}
               className="flex items-center gap-2 px-3 py-1.5 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors w-fit"
+            >
+              <Pencil className="w-3.5 h-3.5" />
+              Edit
+            </button>
+          </div>
+
+          {/* Work Management Page Card */}
+          <div
+            className="group relative flex flex-col p-5 rounded-xl border border-gray-800/60 bg-gray-900/40 hover:border-emerald-500/40 hover:bg-gray-900/60 transition-all cursor-pointer"
+            onClick={() => onOpenWmPage?.()}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && onOpenWmPage?.()}
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                <Layers className="w-5 h-5 text-emerald-400" />
+              </div>
+              <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-xs font-medium">
+                2 variants
+              </span>
+            </div>
+            <h3 className="text-white font-semibold mb-1">Work Management Page</h3>
+            <p className="text-gray-500 text-sm mb-4 flex-1">
+              AI Work Platform page at /work-management
+            </p>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenWmPage?.();
+              }}
+              className="flex items-center gap-2 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-colors w-fit"
             >
               <Pencil className="w-3.5 h-3.5" />
               Edit

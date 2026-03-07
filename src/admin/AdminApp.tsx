@@ -15,10 +15,11 @@ import { BattleKnowledgeEditor } from './components/BattleKnowledgeEditor';
 import { SiteBuilderView } from './components/SiteBuilderView';
 import { PageBuilderEditor } from './components/PageBuilderEditor';
 import { AgentsPageSettings } from './components/AgentsPageSettings';
+import { WorkManagementPageSettings } from './components/WorkManagementPageSettings';
 import { SidekickThemeProvider } from '@/contexts/SidekickThemeContext';
 import { Globe, Target, AlertCircle, Sparkles, Building2, Package, Rocket, ExternalLink, CheckCircle, X, Wand2, FileText, BookOpen, Palette, Cpu, Swords, Users, FolderOpen, LayoutDashboard, Bot } from 'lucide-react';
 
-type NavigationSection = 'site_builder' | 'site_settings' | 'knowledge_base' | 'ai_products' | 'sidekick_settings' | 'outcomes' | 'pain_points' | 'ai_transformations' | 'departments' | 'business_values' | 'pages' | 'case_studies' | 'design_assets' | 'competitors' | 'battle_cards' | 'battle_knowledge' | 'agents_page' | null;
+type NavigationSection = 'site_builder' | 'site_settings' | 'knowledge_base' | 'ai_products' | 'sidekick_settings' | 'outcomes' | 'pain_points' | 'ai_transformations' | 'departments' | 'business_values' | 'pages' | 'case_studies' | 'design_assets' | 'competitors' | 'battle_cards' | 'battle_knowledge' | 'agents_page' | 'wm_page' | null;
 
 type KnowledgeTab = 'products' | 'agents' | 'vibeapps' | 'sidekick';
 
@@ -188,6 +189,7 @@ export default function AdminApp() {
               onEditPage={(pageId) => setEditingPageId(pageId)}
               onOpenDynamicPages={() => setActiveNavSection('pages')}
               onOpenAgentsPage={() => setActiveNavSection('agents_page')}
+              onOpenWmPage={() => setActiveNavSection('wm_page')}
             />
           )}
 
@@ -299,6 +301,11 @@ export default function AdminApp() {
           {/* Agents Page Settings */}
           {activeNavSection === 'agents_page' && (
             <AgentsPageSettings onBack={() => setActiveNavSection(null)} />
+          )}
+
+          {/* Work Management Page Settings */}
+          {activeNavSection === 'wm_page' && (
+            <WorkManagementPageSettings onBack={() => setActiveNavSection(null)} />
           )}
 
           {/* Welcome Screen */}

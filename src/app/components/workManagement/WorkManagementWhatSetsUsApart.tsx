@@ -31,13 +31,13 @@ const CARDS = [
 
 export function WorkManagementWhatSetsUsApart() {
   return (
-    <section className="py-20 sm:py-28 px-4 sm:px-6 bg-white">
+    <section className="py-20 sm:py-28 px-4 sm:px-6 bg-white dark:bg-[#0a0a0a]">
       <div className="max-w-[1200px] mx-auto">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-4xl sm:text-5xl font-bold text-black tracking-[-0.03em] text-center mb-16"
+          className="text-4xl sm:text-5xl font-bold text-black dark:text-white tracking-[-0.03em] text-center mb-16"
         >
           What sets us apart
         </motion.h2>
@@ -51,7 +51,7 @@ export function WorkManagementWhatSetsUsApart() {
           {CARDS.map((card) => (
             <div
               key={card.title}
-              className="border border-[#cacbcd] rounded-2xl p-8 flex flex-col gap-10"
+              className="border border-[#cacbcd] dark:border-white/10 rounded-2xl p-8 flex flex-col gap-10 dark:bg-[#141414]"
             >
               <div
                 className={`w-14 h-14 rounded-xl flex items-center justify-center ${card.iconColor} bg-current/10`}
@@ -59,10 +59,10 @@ export function WorkManagementWhatSetsUsApart() {
                 <card.icon className={`w-7 h-7 ${card.iconColor}`} />
               </div>
               <div className="flex flex-col gap-8">
-                <h3 className="text-2xl font-bold text-black leading-tight">
+                <h3 className="text-2xl font-bold text-black dark:text-white leading-tight">
                   {card.title}
                 </h3>
-                <p className="text-base text-black/80 leading-relaxed">
+                <p className="text-base text-black/80 dark:text-gray-300 leading-relaxed">
                   {card.desc}
                 </p>
               </div>

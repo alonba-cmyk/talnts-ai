@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Home, Globe, Target, AlertCircle, Sparkles, Building2, Package, Wand2, FileText, BookOpen, Palette, Cpu, ChevronDown, ExternalLink, Swords, Users, SlidersHorizontal, FolderOpen, LayoutDashboard, Bot } from 'lucide-react';
 
-type NavigationSection = 'site_builder' | 'site_settings' | 'knowledge_base' | 'ai_products' | 'sidekick_settings' | 'outcomes' | 'pain_points' | 'ai_transformations' | 'departments' | 'business_values' | 'pages' | 'case_studies' | 'design_assets' | 'competitors' | 'battle_cards' | 'battle_knowledge' | 'agents_page' | null;
+type NavigationSection = 'site_builder' | 'site_settings' | 'knowledge_base' | 'ai_products' | 'sidekick_settings' | 'outcomes' | 'pain_points' | 'ai_transformations' | 'departments' | 'business_values' | 'pages' | 'case_studies' | 'design_assets' | 'competitors' | 'battle_cards' | 'battle_knowledge' | 'agents_page' | 'wm_page' | null;
 
 interface AdminSidebarProps {
   activeNavSection: NavigationSection;

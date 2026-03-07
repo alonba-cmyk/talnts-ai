@@ -10,7 +10,7 @@ import {
   Zap,
   Plus,
 } from 'lucide-react';
-import { useDepartments } from '@/hooks/useSupabase';
+import { useDepartments, useSiteSettings } from '@/hooks/useSupabase';
 import { WORK_MANAGEMENT_TRIAL_URL } from '@/lib/workManagementUrls';
 import {
   DEPARTMENTS,
@@ -420,6 +420,17 @@ export function ExecutionSystemSection() {
   const [selectedDeptIndex, setSelectedDeptIndex] = useState(0);
   const [selectedJtbd, setSelectedJtbd] = useState(0);
   const { departments: supabaseDepts } = useDepartments();
+  const { settings: siteSettings } = useSiteSettings();
+
+  const colorOverrides = siteSettings?.wm_dept_color_overrides ?? {};
+  const deptOrderSetting = siteSettings?.wm_dept_order ?? [];
+
+  const orderedDepts = useMemo(() => {
+    if (deptOrderSetting.length === 0) return DEPARTMENTS;
+    const ordered = deptOrderSetting.map(id => DEPARTMENTS.find(d => d.id === id)).filter(Boolean) as typeof DEPARTMENTS;
+    const missing = DEPARTMENTS.filter(d => !deptOrderSetting.includes(d.id));
+    return [...ordered, ...missing];
+  }, [deptOrderSetting]);
 
   const avatarMap = useMemo(() => {
     const map: Record<string, { image: string; color: string }> = {};
@@ -429,7 +440,7 @@ export function ExecutionSystemSection() {
     return map;
   }, [supabaseDepts]);
 
-  const dept = DEPARTMENTS[selectedDeptIndex];
+  const dept = orderedDepts[selectedDeptIndex];
   const boardItems = dept.boardItems as BoardItem[];
   const animKey = dept.id;
 
@@ -498,11 +509,11 @@ export function ExecutionSystemSection() {
           className="flex justify-center mb-8"
         >
           <div className="inline-flex items-center gap-5 md:gap-6 px-6 py-4 rounded-xl border border-gray-200 bg-gray-50/40">
-            {DEPARTMENTS.map((d, i) => {
+            {orderedDepts.map((d, i) => {
               const isSelected = selectedDeptIndex === i;
               const DepIcon = d.icon;
               const av = avatarMap[d.supabaseKey];
-              const avColor = av?.color || d.color;
+              const avColor = colorOverrides[d.id] || av?.color || d.color;
               return (
                 <motion.button
                   key={d.id}
