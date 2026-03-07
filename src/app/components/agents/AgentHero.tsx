@@ -3,7 +3,6 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { getAgentsCopy, type MessagingTone } from './agentsCopy';
 import { v2HeroCopy, type HeroCopy } from './copy/heroCopy';
 import { AI_COMPANIES, type AICompany } from './aiCompanies';
-import { useSiteSettings } from '@/hooks/useSupabase';
 import { AGENT_SIGNUP_URL } from '@/lib/agentUrls';
 import { HeroDemoElement, BgStreamOverlay, AGENT_TYPING_LINES, type HeroDemoStyle } from './HeroDemoElements';
 // HeroLogo removed — BrandedHero now uses inline SVG mark + wordmark
@@ -201,6 +200,9 @@ interface AgentHeroProps {
   viewerMode?: ViewerMode;
   contentStyle?: ContentStyle;
   onViewerModeChange?: (mode: ViewerMode) => void;
+  titleStyle?: 'svg' | 'ascii';
+  glowStyle?: 'wide' | 'logo';
+  heroDemoStyle?: HeroDemoStyle;
 }
 
 interface VariantProps {
@@ -208,6 +210,9 @@ interface VariantProps {
   viewerMode?: ViewerMode;
   contentStyle?: ContentStyle;
   onViewerModeChange?: (mode: ViewerMode) => void;
+  titleStyle?: 'svg' | 'ascii';
+  glowStyle?: 'wide' | 'logo';
+  heroDemoStyle?: HeroDemoStyle;
 }
 
 function useHeroCopy(tone: MessagingTone = 'belong_here', contentStyle: ContentStyle = 'v1'): HeroCopy {
@@ -1208,12 +1213,8 @@ function MondayWordmark({ className = '' }: { className?: string }) {
   );
 }
 
-function BrandedHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1', onViewerModeChange }: VariantProps) {
+function BrandedHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1', onViewerModeChange, titleStyle = 'ascii', glowStyle = 'wide', heroDemoStyle = 'none' }: VariantProps) {
   const hero = useHeroCopy(tone, contentStyle);
-  const { settings } = useSiteSettings();
-  const titleStyle = settings?.agents_branded_title_style || 'ascii';
-  const glowStyle = settings?.agents_branded_glow_style || 'wide';
-  const heroDemoStyle = (settings?.agents_hero_demo || 'none') as HeroDemoStyle;
   const isHuman = viewerMode === 'human';
   const [started, setStarted] = useState(false);
   const taglineText = '// built for humans. now open to agents.';
@@ -1386,11 +1387,11 @@ function BrandedHero({ tone = 'belong_here', viewerMode = 'agent', contentStyle 
 
 const DEPRECATED_VARIANTS = new Set(['boot', 'neural', 'glitch', 'cli', 'agents_grid', 'agents_marquee', 'hatcha_gate', 'api_blueprint', 'signup_60s', 'openclaw', 'orbital', 'liquid', 'depth_layers', 'data_stream', 'typography_kinetic', 'ambient_orbs']);
 
-export function AgentHero({ variant = 'matrix', tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1', onViewerModeChange }: AgentHeroProps) {
+export function AgentHero({ variant = 'matrix', tone = 'belong_here', viewerMode = 'agent', contentStyle = 'v1', onViewerModeChange, titleStyle, glowStyle, heroDemoStyle }: AgentHeroProps) {
   const v = DEPRECATED_VARIANTS.has(variant ?? '') ? 'matrix' : variant;
 
   switch (v) {
-    case 'branded': return <BrandedHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} onViewerModeChange={onViewerModeChange} />;
+    case 'branded': return <BrandedHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} onViewerModeChange={onViewerModeChange} titleStyle={titleStyle} glowStyle={glowStyle} heroDemoStyle={heroDemoStyle} />;
     case 'matrix_v2': return <MatrixRainHeroV2 tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
     case 'radar': return <RadarScanHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;
     case 'mcp_connect': return <McpConnectHero tone={tone} viewerMode={viewerMode} contentStyle={contentStyle} />;

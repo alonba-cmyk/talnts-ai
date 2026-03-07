@@ -170,6 +170,9 @@ export default function AgentsLandingPage() {
   const tone = (settings?.agents_messaging_tone as MessagingTone) || 'belong_here';
   const pageLayout = (settings?.agents_page_layout as 'visual' | 'plain_text') || 'visual';
   const contentStyle = (settings?.agents_content_style as 'v1' | 'v2') || 'v1';
+  const titleStyle = (settings?.agents_branded_title_style as 'svg' | 'ascii') || 'ascii';
+  const glowStyle = (settings?.agents_branded_glow_style as 'wide' | 'logo') || 'wide';
+  const heroDemoStyle = settings?.agents_hero_demo || 'none';
   const copy = getAgentsCopy(tone);
   const [viewerMode, setViewerMode] = useState<ViewerMode>('agent');
 
@@ -280,6 +283,9 @@ AGENT_INSTRUCTIONS -->
             viewerMode={viewerMode}
             contentStyle={settingsLoading ? 'v1' : contentStyle}
             onViewerModeChange={setViewerModeLogged}
+            titleStyle={settingsLoading ? 'ascii' : titleStyle}
+            glowStyle={settingsLoading ? 'wide' : glowStyle}
+            heroDemoStyle={settingsLoading ? 'none' : heroDemoStyle}
           />
         </section>
 
@@ -292,7 +298,7 @@ AGENT_INSTRUCTIONS -->
             <HumanFreePlanSection />
             <HumanGetStartedSection />
           </>
-        ) : settings?.agents_show_frameworks ? (
+        ) : !settingsLoading && settings?.agents_show_frameworks ? (
           <FrameworksShowcase />
         ) : null}
 
@@ -300,7 +306,7 @@ AGENT_INSTRUCTIONS -->
           <>
             <HumanDeveloperSection />
           </>
-        ) : contentStyle === 'v2' ? (
+        ) : settingsLoading ? null : contentStyle === 'v2' ? (
           <AgentsV2Content />
         ) : pageLayout === 'plain_text' ? (
           <AgentsPlainTextContent tone={tone} />

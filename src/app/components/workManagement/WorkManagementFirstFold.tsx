@@ -9,7 +9,7 @@ import {
   LayoutGrid,
   Send,
 } from 'lucide-react';
-import { useDepartments, useSiteSettings } from '@/hooks/useSupabase';
+import { useDepartments, useSiteSettings, type SiteSettings } from '@/hooks/useSupabase';
 import { WORK_MANAGEMENT_TRIAL_URL } from '@/lib/workManagementUrls';
 import {
   DEPARTMENTS,
@@ -50,7 +50,7 @@ function AgentBubbleContent({ message, accentColor }: { message: string; accentC
   const [showText, setShowText] = useState(false);
   useEffect(() => {
     setShowText(false);
-    const t = setTimeout(() => setShowText(true), 1200);
+    const t = setTimeout(() => setShowText(true), 1800);
     return () => clearTimeout(t);
   }, [message]);
 
@@ -80,6 +80,26 @@ function AgentBubbleContent({ message, accentColor }: { message: string; accentC
   );
 }
 
+/* ─── Typewriter text component ─── */
+function TypewriterText({ text, onDone }: { text: string; onDone?: () => void }) {
+  const [displayed, setDisplayed] = useState('');
+  const idxRef = useRef(0);
+  useEffect(() => {
+    setDisplayed('');
+    idxRef.current = 0;
+    const interval = setInterval(() => {
+      idxRef.current += 1;
+      setDisplayed(text.slice(0, idxRef.current));
+      if (idxRef.current >= text.length) {
+        clearInterval(interval);
+        onDone?.();
+      }
+    }, 20);
+    return () => clearInterval(interval);
+  }, [text]);
+  return <span>{displayed}<span className="opacity-0">|</span></span>;
+}
+
 /* ─── Story intro overlay — centered face-to-face conversation ─── */
 
 function StoryIntro({
@@ -99,15 +119,15 @@ function StoryIntro({
   agentMessage: string;
   deptColor: string;
 }) {
-  // Sequential phases: 0=idle, 1=humanDots, 2=humanText, 3=agentDots, 4=agentText
+  // Sequential phases: 0=idle, 1=humanDots, 2=humanTyping, 3=agentDots, 4=agentTyping
   const [phase, setPhase] = useState(0);
   useEffect(() => {
     setPhase(0);
     const timers = [
-      setTimeout(() => setPhase(1), 800),
-      setTimeout(() => setPhase(2), 2400),
-      setTimeout(() => setPhase(3), 4200),
-      setTimeout(() => setPhase(4), 6000),
+      setTimeout(() => setPhase(1), 1000),
+      setTimeout(() => setPhase(2), 3000),
+      setTimeout(() => setPhase(3), 5500),
+      setTimeout(() => setPhase(4), 7500),
     ];
     return () => timers.forEach(clearTimeout);
   }, [humanMessage, agentMessage]);
@@ -119,44 +139,45 @@ function StoryIntro({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.7, ease: 'easeInOut' }}
       className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none"
-      style={{ backgroundColor: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(6px)' }}
+      style={{ backgroundColor: 'rgba(10,10,10,0.88)', backdropFilter: 'blur(8px)' }}
     >
-      <div className="flex items-start gap-8 max-w-[560px] w-full px-6">
+      <div className="flex items-start gap-10 max-w-[680px] w-full px-8">
         {/* Human side */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3, duration: 0.5 }}
-          className="flex flex-col items-center gap-3 flex-1"
+          className="flex flex-col items-center gap-4 flex-1"
         >
           {humanAvatar && (
             <div
-              className="w-16 h-16 rounded-full overflow-hidden shadow-lg ring-2 ring-white/20"
+              className="w-24 h-24 rounded-full overflow-hidden shadow-xl ring-2 ring-white/20"
               style={{ backgroundColor: humanAvatarBg }}
             >
               <img src={humanAvatar} alt={humanName} className="w-full h-full object-cover" />
             </div>
           )}
-          <span className="text-[11px] font-semibold text-white/80">{humanName}</span>
+          <span className="text-[13px] font-semibold text-white/90">{humanName}</span>
           {phase >= 1 && (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="px-4 py-2.5 rounded-xl text-[12px] leading-relaxed text-white shadow-lg max-w-[220px] text-center"
+              className="px-5 py-3.5 rounded-2xl text-[14px] leading-relaxed text-white shadow-lg w-full text-center"
               style={{
-                backgroundColor: 'rgba(255,255,255,0.08)',
-                border: '1px solid rgba(255,255,255,0.12)',
+                backgroundColor: 'rgba(255,255,255,0.09)',
+                border: '1px solid rgba(255,255,255,0.14)',
+                minHeight: '54px',
               }}
             >
               <AnimatePresence mode="wait">
                 {phase === 1 ? (
-                  <motion.div key="hdots" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <motion.div key="hdots" className="flex justify-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
                     <TypingDots color="#ffffff" />
                   </motion.div>
                 ) : (
-                  <motion.div key="htext" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35 }}>
-                    {humanMessage}
+                  <motion.div key="htext" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>
+                    <TypewriterText text={humanMessage} />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -165,10 +186,10 @@ function StoryIntro({
         </motion.div>
 
         {/* Divider */}
-        <div className="flex flex-col items-center gap-2 pt-8">
-          <div className="w-px h-12 bg-white/10" />
-          <Sparkles className="w-4 h-4 text-white/30" />
-          <div className="w-px h-12 bg-white/10" />
+        <div className="flex flex-col items-center gap-2 pt-10 flex-shrink-0">
+          <div className="w-px h-16 bg-white/10" />
+          <Sparkles className="w-5 h-5 text-white/30" />
+          <div className="w-px h-16 bg-white/10" />
         </div>
 
         {/* Agent side */}
@@ -176,10 +197,10 @@ function StoryIntro({
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          className="flex flex-col items-center gap-3 flex-1"
+          className="flex flex-col items-center gap-4 flex-1"
         >
           <div
-            className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg"
+            className="w-24 h-24 rounded-2xl overflow-hidden shadow-xl"
             style={{ border: `2.5px solid ${deptColor}`, backgroundColor: agent.bgColor }}
           >
             <img
@@ -189,26 +210,27 @@ function StoryIntro({
               onError={(e) => { (e.target as HTMLImageElement).src = agent.fallback; }}
             />
           </div>
-          <span className="text-[11px] font-semibold text-white/80">{agent.label}</span>
+          <span className="text-[13px] font-semibold text-white/90">{agent.label}</span>
           {phase >= 3 && (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="px-4 py-2.5 rounded-xl text-[12px] leading-relaxed text-white shadow-lg max-w-[220px] text-center"
+              className="px-5 py-3.5 rounded-2xl text-[14px] leading-relaxed text-white shadow-lg w-full text-center"
               style={{
-                backgroundColor: `${agent.bgColor}15`,
-                border: `1px solid ${agent.bgColor}30`,
+                backgroundColor: `${agent.bgColor}18`,
+                border: `1px solid ${agent.bgColor}35`,
+                minHeight: '54px',
               }}
             >
               <AnimatePresence mode="wait">
                 {phase === 3 ? (
-                  <motion.div key="adots" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <motion.div key="adots" className="flex justify-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
                     <TypingDots color={agent.bgColor} />
                   </motion.div>
                 ) : (
-                  <motion.div key="atext" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35 }}>
-                    {agentMessage}
+                  <motion.div key="atext" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>
+                    <TypewriterText text={agentMessage} />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -240,7 +262,7 @@ function FloatingAgentCursor({
       animate={{ left: `${x}%`, top: `${y}%` }}
       transition={{ type: 'spring', stiffness: 40, damping: 18, mass: 1.6 }}
       className="absolute z-30 pointer-events-none"
-      style={{ transform: 'translate(-50%, -50%)' }}
+      style={{ transform: isDragging ? 'translate(-50%, 0)' : 'translate(-50%, -50%)' }}
     >
       {isDragging ? (
         <div className="flex flex-col items-center gap-0.5 flex-shrink-0">
@@ -346,6 +368,7 @@ function FloatingHumanCursor({
   deptColor,
   message,
   isDragging,
+  showTyping,
 }: {
   name: string;
   color: string;
@@ -355,6 +378,7 @@ function FloatingHumanCursor({
   deptColor: string;
   message?: string;
   isDragging?: boolean;
+  showTyping?: boolean;
 }) {
   const flipBubble = x > 60;
   return (
@@ -362,7 +386,7 @@ function FloatingHumanCursor({
       animate={{ left: `${x}%`, top: `${y}%` }}
       transition={{ type: 'spring', stiffness: 35, damping: 18, mass: 1.8 }}
       className="absolute z-[19] pointer-events-none"
-      style={{ transform: 'translate(-2px, -2px)' }}
+      style={{ transform: isDragging ? 'translate(-2px, 0)' : 'translate(-2px, -2px)' }}
     >
       <div className={`flex items-start gap-2.5 ${flipBubble ? 'flex-row-reverse' : ''}`}>
         <div className="relative flex flex-col items-center gap-0.5">
@@ -411,12 +435,12 @@ function FloatingHumanCursor({
           >
             <span className="text-[11px] font-semibold text-white whitespace-nowrap">{name}</span>
           </div>
-          {message && (
+          {(showTyping || message) && (
             <motion.div
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.25 }}
-              className="relative px-3 py-1.5 rounded-lg text-[11px] max-w-[180px] shadow-md"
+              className="relative px-3 py-1.5 rounded-lg text-[11px] max-w-[200px] shadow-md flex items-center justify-center min-h-[32px]"
               style={{
                 backgroundColor: 'rgba(20,20,20,0.92)',
                 color: '#e0e0e0',
@@ -424,7 +448,7 @@ function FloatingHumanCursor({
                 backdropFilter: 'blur(8px)',
               }}
             >
-              {message}
+              {showTyping ? <TypingDots color={deptColor} /> : message}
             </motion.div>
           )}
         </div>
@@ -1443,7 +1467,8 @@ interface DragEvent {
   phase: DragPhase;
 }
 
-const KANBAN_COL_X = [15, 37, 62, 85];
+// Column X positions — tuned so human cursor touches card during drag (e.g. Landing page QA)
+const KANBAN_COL_X = [18, 42, 58, 74];
 
 function useDragAnimation(
   litAgentIndices: Set<number>,
@@ -1537,9 +1562,11 @@ interface StoryScene {
   agentMessages?: Record<number, string>;
   drag?: { itemId: string; toCol: number; isHuman: boolean };
   duration?: number;
+  /** Delay (ms) before starting drag — used for Scene 1 so human speaks first */
+  dragStartDelay?: number;
 }
 
-const SCENE_DURATION_DEFAULT = 9000;
+const SCENE_DURATION_DEFAULT = 12000;
 
 const MARKETING_SCENES: StoryScene[] = [
   // Scene 0 — Intro: face-to-face conversation
@@ -1549,15 +1576,16 @@ const MARKETING_SCENES: StoryScene[] = [
     humanActive: true,
     humanMessage: 'I need to launch a Q4 campaign for our new product — can you set up everything?',
     agentMessages: { 0: 'Setting up your campaign board — brief, creatives, ad copy, landing page, and performance tracking.' },
-    duration: 10000,
+    duration: 13000,
   },
-  // Scene 1 — Board: human kicks off, agent starts working
+  // Scene 1 — Board: human kicks off, agent starts working (human types first, then agent drags)
   {
     litAgentIndices: [0],
     humanActive: true,
     humanMessage: 'Let\'s kick off with the campaign brief',
     agentMessages: { 0: 'On it — pulling target audience data and brand assets' },
     drag: { itemId: 'mk1', toCol: 1, isHuman: false },
+    dragStartDelay: 4500,
   },
   // Scene 2 — Board: Assets Generator creates variants
   {
@@ -1566,11 +1594,14 @@ const MARKETING_SCENES: StoryScene[] = [
     agentMessages: { 0: 'Creating 3 visual variants based on brand guidelines...' },
     drag: { itemId: 'mk2', toCol: 2, isHuman: false },
   },
-  // Scene 3 — Board: Vendor Researcher analyzes channels
+  // Scene 3 — Board: Vendor Researcher + Campaign Optimizer
   {
     litAgentIndices: [1, 2],
     humanActive: false,
-    agentMessages: { 1: 'Analyzing top-performing channels for Q4...' },
+    agentMessages: {
+      1: 'Analyzing top-performing channels for Q4...',
+      2: 'Cross-referencing with budget and timeline',
+    },
     drag: { itemId: 'mk3', toCol: 2, isHuman: false },
   },
   // Scene 4 — Board: Human reviews and approves → drags to Done
@@ -1608,8 +1639,9 @@ function useMarketingStory(
     setDragEvent(null);
   }, [deptId]);
 
+  // Scene timer — starts as soon as isActive, independent of paused/IntersectionObserver.
   useEffect(() => {
-    if (!isActive || paused) return;
+    if (!isActive) return;
     const scene = MARKETING_SCENES[sceneIndex];
     const dur = scene.duration ?? SCENE_DURATION_DEFAULT;
     const id = setTimeout(() => {
@@ -1620,7 +1652,7 @@ function useMarketingStory(
       });
     }, dur);
     return () => clearTimeout(id);
-  }, [isActive, deptId, sceneIndex, paused]);
+  }, [isActive, deptId, sceneIndex]);
 
   const scene = MARKETING_SCENES[sceneIndex];
 
@@ -1640,43 +1672,61 @@ function useMarketingStory(
   const columnOverridesRef = useRef(columnOverrides);
   columnOverridesRef.current = columnOverrides;
 
+  // Scene 1 phased display: 0=human typing, 1=human message, 2=agent drag
+  const [storyPhase, setStoryPhase] = useState(0);
   useEffect(() => {
-    if (!isActive || paused) { setDragEvent(null); return; }
+    if (!isActive || sceneIndex !== 1) { setStoryPhase(2); return; }
+    setStoryPhase(0);
+    const t1 = setTimeout(() => setStoryPhase(1), 2500);
+    const t2 = setTimeout(() => setStoryPhase(2), 4500);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [isActive, sceneIndex]);
+
+  useEffect(() => {
+    if (!isActive) { setDragEvent(null); return; }
 
     const drag = scene.drag;
     if (!drag) { setDragEvent(null); return; }
 
-    const overrides = columnOverridesRef.current;
-    const item = boardItemsRef.current.find(it => it.id === drag.itemId);
-    if (!item) { setDragEvent(null); return; }
+    const delay = scene.dragStartDelay ?? 0;
 
-    const fromCol = overrides.get(item.id) ?? item.columnIndex;
-    const toCol = drag.toCol;
-    if (fromCol === toCol || fromCol > toCol) { setDragEvent(null); return; }
+    const startId = setTimeout(() => {
+      const overrides = columnOverridesRef.current;
+      const item = boardItemsRef.current.find(it => it.id === drag.itemId);
+      if (!item) { setDragEvent(null); return; }
 
-    const dragAgentIdx = drag.isHuman ? -1 : scene.litAgentIndices[0];
+      const fromCol = overrides.get(item.id) ?? item.columnIndex;
+      const toCol = drag.toCol;
+      if (fromCol === toCol || fromCol > toCol) { setDragEvent(null); return; }
 
-    setDragEvent({
-      itemId: drag.itemId,
-      fromCol,
-      toCol,
-      agentIdx: dragAgentIdx,
-      isHuman: drag.isHuman,
-      phase: 'idle',
-    });
+      const dragAgentIdx = drag.isHuman ? -1 : scene.litAgentIndices[0];
 
-    const timers = [
-      setTimeout(() => setDragEvent(prev => prev?.itemId === drag.itemId ? { ...prev, phase: 'approaching' } : prev), 3500),
-      setTimeout(() => setDragEvent(prev => prev?.itemId === drag.itemId ? { ...prev, phase: 'lifting' } : prev), 4800),
-      setTimeout(() => setDragEvent(prev => prev?.itemId === drag.itemId ? { ...prev, phase: 'moving' } : prev), 5800),
-      setTimeout(() => {
-        setDragEvent(prev => prev?.itemId === drag.itemId ? { ...prev, phase: 'dropped' } : prev);
-        setColumnOverrides(prev => new Map(prev).set(drag.itemId, toCol));
-      }, 7500),
-    ];
+      setDragEvent({
+        itemId: drag.itemId,
+        fromCol,
+        toCol,
+        agentIdx: dragAgentIdx,
+        isHuman: drag.isHuman,
+        phase: 'idle',
+      });
 
-    return () => timers.forEach(clearTimeout);
-  }, [sceneIndex, isActive, deptId, paused]);
+      const timers = [
+        setTimeout(() => setDragEvent(prev => prev?.itemId === drag.itemId ? { ...prev, phase: 'approaching' } : prev), 3500),
+        setTimeout(() => setDragEvent(prev => prev?.itemId === drag.itemId ? { ...prev, phase: 'lifting' } : prev), 4800),
+        setTimeout(() => setDragEvent(prev => prev?.itemId === drag.itemId ? { ...prev, phase: 'moving' } : prev), 5800),
+        setTimeout(() => {
+          setDragEvent(prev => prev?.itemId === drag.itemId ? { ...prev, phase: 'dropped' } : prev);
+          setColumnOverrides(prev => new Map(prev).set(drag.itemId, toCol));
+        }, 7500),
+      ];
+
+      return () => timers.forEach(clearTimeout);
+    }, delay);
+
+    if (delay > 0) setDragEvent(null);
+
+    return () => clearTimeout(startId);
+  }, [sceneIndex, isActive, deptId]);
 
   return {
     litAgentIndices,
@@ -1688,16 +1738,18 @@ function useMarketingStory(
     agentMessages: scene.agentMessages,
     isIntro: !!scene.isIntro,
     isActive,
+    storyPhase,
   };
 }
 
 /* ─── Main component ─── */
 
-export function WorkManagementFirstFold() {
+export function WorkManagementFirstFold({ settings: externalSettings }: { settings?: SiteSettings } = {}) {
   const [selectedDeptIndex, setSelectedDeptIndex] = useState(0);
   const [selectedJtbd, setSelectedJtbd] = useState(0);
   const { departments: supabaseDepts } = useDepartments();
-  const { settings: siteSettings } = useSiteSettings();
+  const { settings: ownSettings } = useSiteSettings();
+  const siteSettings = externalSettings ?? ownSettings;
 
   const sectionRef = useRef<HTMLElement>(null);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -1810,6 +1862,7 @@ export function WorkManagementFirstFold() {
   const storyHumanMessage = story.isActive ? story.humanMessage : undefined;
   const storyAgentMessages = story.isActive ? story.agentMessages : undefined;
   const storyIsIntro = story.isActive && story.isIntro;
+  const storyPhase = story.storyPhase ?? 2; // 0=human typing, 1=human message, 2=agent drag
 
   const litAgents = useMemo(() => Array.from(litAgentIndices), [litAgentIndices]);
 
@@ -1901,7 +1954,7 @@ export function WorkManagementFirstFold() {
       const colItems = items.filter(it => it.columnIndex === colIdx);
       const cardPos = colItems.findIndex(it => it.id === dragEvent.itemId);
       const idx = Math.max(0, cardPos);
-      return Math.min(18 + idx * 16, 70);
+      return Math.min(20 + idx * 15, 65);
     };
 
     if (dragEvent.phase === 'approaching' || dragEvent.phase === 'lifting') {
@@ -1912,6 +1965,18 @@ export function WorkManagementFirstFold() {
     }
     return null;
   }, [dragEvent, boardStyle, boardItems, story.isActive, story.columnOverrides, genericDrag.columnOverrides]);
+
+  // When one cursor is dragging, push the other to the lower-center of the opposite half.
+  // Activates as soon as the drag event exists (even in idle phase) to prevent overlap.
+  const nonDragSafePos = useMemo(() => {
+    if (!dragEvent) return null;
+    // Base safe side on where the drag is heading, not on dragCursorOverride (which starts null)
+    const destX = KANBAN_COL_X[dragEvent.toCol] ?? 50;
+    // Keep the non-dragging cursor in the lower-middle area on the opposite side,
+    // but not pushed all the way to the edge (avoids clipping).
+    const oppositeX = destX > 50 ? 25 : 60;
+    return { x: oppositeX, y: 70 };
+  }, [dragEvent]);
 
   const variantSharedProps: WmHeroVariantProps = {
     orderedDepts,
@@ -2362,7 +2427,7 @@ export function WorkManagementFirstFold() {
             whileInView={{ opacity: 1, y: 0, rotateX: 1.5 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className={`rounded-2xl overflow-hidden ${
+            className={`rounded-2xl ${
               isRoster
                 ? 'border border-white/[0.08] bg-[#141414]'
                 : 'border border-gray-200 dark:border-white/10 bg-white dark:bg-[#141414]'
@@ -2374,7 +2439,7 @@ export function WorkManagementFirstFold() {
               transformOrigin: 'center bottom',
             }}
           >
-            <div className={`grid grid-cols-1 min-h-[520px] ${
+            <div className={`grid grid-cols-1 min-h-[520px] overflow-hidden rounded-2xl ${
               cardLayout === 'board_only'
                 ? 'lg:grid-cols-[84px_minmax(0,1fr)]'
                 : cardLayout === 'compact_squad'
@@ -2879,38 +2944,52 @@ export function WorkManagementFirstFold() {
                       transition={{ duration: 1, ease: 'easeInOut' }}
                       className="absolute inset-0 pointer-events-none z-20 overflow-visible"
                     >
-                      {posA && litAgents[0] !== undefined && dept.agents[litAgents[0]] && (
-                        <FloatingAgentCursor
-                          agent={dept.agents[litAgents[0]]}
-                          x={dragCursorOverride && dragEvent && !dragEvent.isHuman && dragEvent.agentIdx === litAgents[0] ? dragCursorOverride.x : posA.x}
-                          y={dragCursorOverride && dragEvent && !dragEvent.isHuman && dragEvent.agentIdx === litAgents[0] ? dragCursorOverride.y : posA.y}
-                          deptColor={dept.color}
-                          message={storyAgentMessages?.[litAgents[0]]}
-                          isDragging={!!dragEvent && !dragEvent.isHuman && dragEvent.agentIdx === litAgents[0] && dragEvent.phase !== 'idle' && dragEvent.phase !== 'dropped'}
-                        />
-                      )}
-                      {posB && litAgents[1] !== undefined && dept.agents[litAgents[1]] && (
-                        <FloatingAgentCursor
-                          agent={dept.agents[litAgents[1]]}
-                          x={dragCursorOverride && dragEvent && !dragEvent.isHuman && dragEvent.agentIdx === litAgents[1] ? dragCursorOverride.x : posB.x}
-                          y={dragCursorOverride && dragEvent && !dragEvent.isHuman && dragEvent.agentIdx === litAgents[1] ? dragCursorOverride.y : posB.y}
-                          deptColor={dept.color}
-                          message={storyAgentMessages?.[litAgents[1]]}
-                          isDragging={!!dragEvent && !dragEvent.isHuman && dragEvent.agentIdx === litAgents[1] && dragEvent.phase !== 'idle' && dragEvent.phase !== 'dropped'}
-                        />
-                      )}
-                      {humanActive && (
-                        <FloatingHumanCursor
-                          name={humanCursor.name}
-                          color={humanCursor.color}
-                          x={dragCursorOverride && dragEvent?.isHuman ? dragCursorOverride.x : humanCursor.x}
-                          y={dragCursorOverride && dragEvent?.isHuman ? dragCursorOverride.y : humanCursor.y}
-                          avatarImage={centerAvatarImage}
-                          deptColor={avatarColor}
-                          message={storyHumanMessage ?? getTeamLeadRequest(dept.jtbd[selectedJtbd])}
-                          isDragging={!!dragEvent && !!dragEvent.isHuman && dragEvent.phase !== 'idle' && dragEvent.phase !== 'dropped'}
-                        />
-                      )}
+                      {posA && litAgents[0] !== undefined && dept.agents[litAgents[0]] && (() => {
+                        const isThisAgentDragging = !!dragEvent && !dragEvent.isHuman && dragEvent.agentIdx === litAgents[0];
+                        const fallbackPos = !isThisAgentDragging && nonDragSafePos ? nonDragSafePos : posA;
+                        return (
+                          <FloatingAgentCursor
+                            agent={dept.agents[litAgents[0]]}
+                            x={isThisAgentDragging && dragCursorOverride ? dragCursorOverride.x : fallbackPos.x}
+                            y={isThisAgentDragging && dragCursorOverride ? dragCursorOverride.y : fallbackPos.y}
+                            deptColor={dept.color}
+                            message={storyAgentMessages?.[litAgents[0]]}
+                            isDragging={isThisAgentDragging && dragEvent?.phase !== 'idle' && dragEvent?.phase !== 'dropped'}
+                          />
+                        );
+                      })()}
+                      {posB && litAgents[1] !== undefined && dept.agents[litAgents[1]] && (() => {
+                        const isThisAgentDragging = !!dragEvent && !dragEvent.isHuman && dragEvent.agentIdx === litAgents[1];
+                        const fallbackPos = !isThisAgentDragging && nonDragSafePos ? nonDragSafePos : posB;
+                        return (
+                          <FloatingAgentCursor
+                            agent={dept.agents[litAgents[1]]}
+                            x={isThisAgentDragging && dragCursorOverride ? dragCursorOverride.x : fallbackPos.x}
+                            y={isThisAgentDragging && dragCursorOverride ? dragCursorOverride.y : fallbackPos.y}
+                            deptColor={dept.color}
+                            message={storyAgentMessages?.[litAgents[1]]}
+                            isDragging={isThisAgentDragging && dragEvent?.phase !== 'idle' && dragEvent?.phase !== 'dropped'}
+                          />
+                        );
+                      })()}
+                      {humanActive && (() => {
+                        const isHumanDragging = !!dragEvent && !!dragEvent.isHuman;
+                        const humanX = isHumanDragging && dragCursorOverride ? dragCursorOverride.x : (!isHumanDragging && nonDragSafePos ? nonDragSafePos.x : humanCursor.x);
+                        const humanY = isHumanDragging && dragCursorOverride ? dragCursorOverride.y : (!isHumanDragging && nonDragSafePos ? nonDragSafePos.y : humanCursor.y);
+                        return (
+                          <FloatingHumanCursor
+                            name={humanCursor.name}
+                            color={humanCursor.color}
+                            x={humanX}
+                            y={humanY}
+                            avatarImage={centerAvatarImage}
+                            deptColor={avatarColor}
+                            message={storyPhase >= 1 ? (storyHumanMessage ?? getTeamLeadRequest(dept.jtbd[selectedJtbd])) : undefined}
+                            showTyping={storyPhase === 0}
+                            isDragging={isHumanDragging && dragEvent?.phase !== 'idle' && dragEvent?.phase !== 'dropped'}
+                          />
+                        );
+                      })()}
                     </motion.div>
                   )}
                 </AnimatePresence>

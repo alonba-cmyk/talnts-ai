@@ -16,14 +16,14 @@ import {
 import agentPink from '@/assets/agent-pink.png';
 import agentCyan from '@/assets/agent-cyan.png';
 import agentOrange from '@/assets/agent-orange.png';
+import agentAssetsGenerator from '@/assets/agent-assets-generator.png';
+import agentRiskAnalyzer from '@/assets/agent-risk-analyzer.png';
+import agentVendorResearcher from '@/assets/agent-vendor-researcher.png';
 
 export const FIGMA_AGENT_ASSETS = {
-  assetsGenerator:
-    'https://www.figma.com/api/mcp/asset/a4778f09-d617-48b6-beca-66dfaea6d37d',
-  riskAnalyzer:
-    'https://www.figma.com/api/mcp/asset/9fac6eaf-0070-4330-a0e8-9b709bc7992f',
-  vendorResearcher:
-    'https://www.figma.com/api/mcp/asset/0d268e64-b934-4159-b4b4-3714996b634e',
+  assetsGenerator: agentAssetsGenerator,
+  riskAnalyzer: agentRiskAnalyzer,
+  vendorResearcher: agentVendorResearcher,
 };
 
 export type AgentInfo = {

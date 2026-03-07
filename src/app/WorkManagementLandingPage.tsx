@@ -1,4 +1,4 @@
-import { useSiteSettings } from '@/hooks/useSupabase';
+import { useSiteSettings, type SiteSettings } from '@/hooks/useSupabase';
 import { WorkManagementNav } from '@/app/components/workManagement/WorkManagementNav';
 import { WorkManagementFirstFold } from '@/app/components/workManagement/WorkManagementFirstFold';
 import { WorkManagementPlatformLayers } from '@/app/components/workManagement/WorkManagementPlatformLayers';
@@ -19,7 +19,7 @@ export default function WorkManagementLandingPage() {
   return (
     <div className={`min-h-screen scroll-smooth ${isDark ? 'dark bg-[#0a0a0a] text-white' : 'bg-white text-gray-900'}`}>
       <WorkManagementNav isDark={isDark} />
-      <WorkManagementFirstFold />
+      <WorkManagementFirstFold settings={settings as SiteSettings} />
       <WorkManagementPlatformLayers />
       <WorkManagementSolutionsSection />
       <WorkManagementEnterpriseSection />
