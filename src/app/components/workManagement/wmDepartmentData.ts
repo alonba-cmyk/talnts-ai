@@ -105,11 +105,11 @@ export const DEPARTMENTS: Department[] = [
       },
     ],
     jtbd: [
-      'Plan campaign launches',
-      'Generate creative assets',
-      'Analyze campaign ROI',
-      'Manage content calendar',
-      'Track brand consistency',
+      'Campaign plans that build themselves',
+      'Creative assets, no designer needed',
+      'Know which campaigns actually worked',
+      'Content calendars that fill themselves',
+      'Off-brand assets caught instantly',
     ],
     boardItems: [
       { id: 'mk1', label: 'Campaign brief', columnIndex: 0, priority: 'high', tag: 'Q4 Launch', tagColor: '#97aeff' },

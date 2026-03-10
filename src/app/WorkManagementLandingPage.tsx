@@ -1,30 +1,91 @@
+import { useEffect, useMemo, lazy, Suspense } from 'react';
 import { useSiteSettings, type SiteSettings } from '@/hooks/useSupabase';
 import { WorkManagementNav } from '@/app/components/workManagement/WorkManagementNav';
 import { WorkManagementFirstFold } from '@/app/components/workManagement/WorkManagementFirstFold';
-import { WorkManagementPlatformLayers } from '@/app/components/workManagement/WorkManagementPlatformLayers';
-import { WorkManagementSolutionsSection } from '@/app/components/workManagement/WorkManagementSolutionsSection';
-import { WorkManagementEnterpriseSection } from '@/app/components/workManagement/WorkManagementEnterpriseSection';
-import { WorkManagementWhatSetsUsApart } from '@/app/components/workManagement/WorkManagementWhatSetsUsApart';
-import { WorkManagementCTASection } from '@/app/components/workManagement/WorkManagementCTASection';
 import { WorkManagementFooter } from '@/app/components/workManagement/WorkManagementFooter';
+
+const WorkManagementPlatformLayers = lazy(() => import('@/app/components/workManagement/WorkManagementPlatformLayers').then(m => ({ default: m.WorkManagementPlatformLayers })));
+const WorkManagementSolutionsSection = lazy(() => import('@/app/components/workManagement/WorkManagementSolutionsSection').then(m => ({ default: m.WorkManagementSolutionsSection })));
+const WorkManagementUseCasesSection = lazy(() => import('@/app/components/workManagement/WorkManagementUseCasesSection').then(m => ({ default: m.WorkManagementUseCasesSection })));
+const WorkManagementEnterpriseSection = lazy(() => import('@/app/components/workManagement/WorkManagementEnterpriseSection').then(m => ({ default: m.WorkManagementEnterpriseSection })));
+const WorkManagementWhatSetsUsApart = lazy(() => import('@/app/components/workManagement/WorkManagementWhatSetsUsApart').then(m => ({ default: m.WorkManagementWhatSetsUsApart })));
+const WorkManagementCTASection = lazy(() => import('@/app/components/workManagement/WorkManagementCTASection').then(m => ({ default: m.WorkManagementCTASection })));
+const WorkManagementAgentCatalog = lazy(() => import('@/app/components/workManagement/WorkManagementAgentCatalog').then(m => ({ default: m.WorkManagementAgentCatalog })));
+const WorkManagementVibeSection = lazy(() => import('@/app/components/workManagement/WorkManagementVibeSection').then(m => ({ default: m.WorkManagementVibeSection })));
+
+const DEFAULT_SECTIONS_ORDER = ['first_fold', 'demo', 'platform_layers', 'solutions', 'use_cases', 'agent_catalog', 'vibe', 'enterprise', 'what_sets_us_apart', 'cta'];
 
 export default function WorkManagementLandingPage() {
   const { settings, loading } = useSiteSettings();
   const isDark = settings?.wm_dark_mode ?? false;
+
+  useEffect(() => {
+    document.title = 'monday.com';
+  }, []);
+
+  const sectionsOrder = settings?.wm_sections_order?.length ? settings.wm_sections_order : DEFAULT_SECTIONS_ORDER;
+  const sectionsVis = settings?.wm_sections_visibility ?? {};
+  const sectionsGap = settings?.wm_sections_gap ?? 0;
+  const isSectionVisible = (id: string) => sectionsVis[id] !== false;
+
+  const sectionElements = useMemo(() => {
+    if (!settings) return null;
+    const s = settings as SiteSettings;
+
+    const sectionMap: Record<string, React.ReactNode> = {
+      first_fold: <WorkManagementFirstFold key="first_fold" settings={s} hideDemo />,
+      demo: <WorkManagementFirstFold key="demo" settings={s} hideHero />,
+      platform_layers: <WorkManagementPlatformLayers key="platform_layers" />,
+      solutions: <WorkManagementSolutionsSection key="solutions" />,
+      use_cases:
+        s.wm_use_cases_variant && s.wm_use_cases_variant !== 'none' ? (
+          <WorkManagementUseCasesSection
+            key="use_cases"
+            variant={s.wm_use_cases_variant}
+            isDark={isDark}
+            jtbdBgOverrides={s.wm_jtbd_bg_overrides}
+            jtbdPositionOverrides={s.wm_jtbd_position_overrides}
+            jtbdZoomOverrides={s.wm_jtbd_zoom_overrides}
+            jtbdGlobalPosterPos={s.wm_jtbd_global_poster_pos}
+            jtbdGlobalPosterZoom={s.wm_jtbd_global_poster_zoom}
+            jtbdGlobalExpandedPos={s.wm_jtbd_global_expanded_pos}
+            jtbdGlobalExpandedZoom={s.wm_jtbd_global_expanded_zoom}
+            jtbdExpandedOverlayOpacity={s.wm_jtbd_expanded_overlay_opacity}
+          />
+        ) : null,
+      agent_catalog:
+        (s.wm_agent_catalog_variant ?? 'compact_grid') !== 'none' ? (
+          <WorkManagementAgentCatalog
+            key="agent_catalog"
+            variant={s.wm_agent_catalog_variant ?? 'compact_grid'}
+            showCarousel={s.wm_show_agent_carousel ?? false}
+          />
+        ) : null,
+      vibe: <WorkManagementVibeSection key="vibe" collageImageOverrides={s.wm_vibe_collage_images} />,
+      enterprise: <WorkManagementEnterpriseSection key="enterprise" />,
+      what_sets_us_apart: <WorkManagementWhatSetsUsApart key="what_sets_us_apart" />,
+      cta: <WorkManagementCTASection key="cta" />,
+    };
+
+    return sectionsOrder
+      .filter(id => isSectionVisible(id) && sectionMap[id] !== undefined)
+      .map(id => sectionMap[id]);
+  }, [settings, sectionsOrder, sectionsVis, isDark]);
 
   if (loading) {
     return <div className="min-h-screen bg-[#0a0a0a]" />;
   }
 
   return (
-    <div className={`min-h-screen scroll-smooth ${isDark ? 'dark bg-[#0a0a0a] text-white' : 'bg-white text-gray-900'}`}>
+    <div className={`min-h-screen scroll-smooth overflow-x-hidden ${isDark ? 'dark bg-[#0a0a0a] text-white' : 'bg-white text-gray-900'}`}>
       <WorkManagementNav isDark={isDark} />
-      <WorkManagementFirstFold settings={settings as SiteSettings} />
-      <WorkManagementPlatformLayers />
-      <WorkManagementSolutionsSection />
-      <WorkManagementEnterpriseSection />
-      <WorkManagementWhatSetsUsApart />
-      <WorkManagementCTASection />
+      <Suspense fallback={null}>
+        {sectionsGap !== 0
+          ? (sectionElements as React.ReactNode[])?.map((el, i) => (
+              <div key={i} style={i > 0 ? { marginTop: sectionsGap } : undefined}>{el}</div>
+            ))
+          : sectionElements}
+      </Suspense>
       <WorkManagementFooter />
     </div>
   );

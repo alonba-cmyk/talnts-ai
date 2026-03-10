@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, CheckCheck, Zap } from 'lucide-react';
 import type { AgentInfo, BoardItem } from './wmDepartmentData';
@@ -53,6 +53,7 @@ export interface WmHeroVariantProps {
   deptJtbd?: string[];
   rosterLayout?: 'mirrored' | 'vertical';
   memberAvatarOverrides?: Record<string, string>;
+  onSplitChatComplete?: () => void;
 }
 
 /* ─── Shared: department selector tabs ─── */
@@ -97,7 +98,7 @@ function WmDeptTabs({
                 }}
               >
                 {leaderImg ? (
-                  <img src={leaderImg} alt={d.name} className="w-full h-full object-cover" />
+                  <img src={leaderImg} alt={d.name} className="w-full h-full object-cover" loading="lazy" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <DepIcon className="w-5 h-5 text-white" strokeWidth={2} />
@@ -191,6 +192,7 @@ export function SplitRosterView({
   deptJtbd = [],
   layout = 'mirrored',
   memberAvatarOverrides = {},
+  onComplete,
 }: {
   humans: SquadMemberData[];
   agents: SquadMemberData[];
@@ -204,6 +206,7 @@ export function SplitRosterView({
   deptJtbd?: string[];
   layout?: 'mirrored' | 'vertical';
   memberAvatarOverrides?: Record<string, string>;
+  onComplete?: () => void;
 }) {
   const lead = humans.find(m => m.role === 'Team Lead');
   const nonLead = humans.filter(m => m.role !== 'Team Lead');
@@ -214,6 +217,9 @@ export function SplitRosterView({
   const [activePair, setActivePair] = useState(0);
   const [phase, setPhase] = useState<RosterConvoPhase>('idle');
   const [jtbdIdx, setJtbdIdx] = useState(0);
+
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   useEffect(() => {
     setActivePair(0);
@@ -234,13 +240,18 @@ export function SplitRosterView({
       timeout = setTimeout(() => setPhase('agent_message'), 1000);
     } else if (phase === 'agent_message') {
       timeout = setTimeout(() => {
-        setActivePair(prev => (prev + 1) % pairCount);
+        const nextPair = activePair + 1;
+        if (nextPair >= pairCount) {
+          onCompleteRef.current?.();
+          return;
+        }
+        setActivePair(nextPair);
         setJtbdIdx(prev => (prev + 1) % Math.max(deptJtbd.length, 1));
         setPhase('person_typing');
       }, 1800);
     }
     return () => clearTimeout(timeout);
-  }, [phase, pairCount, deptJtbd.length]);
+  }, [phase, activePair, pairCount, deptJtbd.length]);
 
   const getHumanAvatar = (member: SquadMemberData) => {
     if (member.role === 'Team Lead') return centerAvatarImage;
@@ -310,7 +321,7 @@ export function SplitRosterView({
         }}
       >
         {humanAvatar ? (
-          <img src={humanAvatar} alt={human.label} className="w-full h-full object-cover" />
+          <img src={humanAvatar} alt={human.label} className="w-full h-full object-cover" loading="lazy" />
         ) : (
           <span className="w-full h-full flex items-center justify-center text-white font-bold text-base">
             {human.fallback || human.label.charAt(0)}
@@ -341,6 +352,7 @@ export function SplitRosterView({
           src={agent.img}
           alt={agent.label}
           className="w-full h-full object-contain object-bottom"
+          loading="lazy"
           onError={(e) => { if (agent.fallback) (e.target as HTMLImageElement).src = agent.fallback; }}
         />
       </motion.div>
@@ -627,7 +639,7 @@ export function WmHeroLiveDelegation({
                 }}
               >
                 {centerAvatarImage ? (
-                  <img src={centerAvatarImage} alt="Team Lead" className="w-full h-full object-cover" />
+                  <img src={centerAvatarImage} alt="Team Lead" className="w-full h-full object-cover" loading="lazy" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <span className="text-white font-bold text-3xl">H</span>
@@ -732,6 +744,7 @@ export function WmHeroLiveDelegation({
                     src={agent.img}
                     alt={agent.label}
                     className="w-full h-full object-contain object-bottom"
+                    loading="lazy"
                     onError={(e) => {
                       if (agent.fallback) (e.target as HTMLImageElement).src = agent.fallback;
                     }}
@@ -947,17 +960,18 @@ export function WmHeroCinematicAssembly({
                         ['--tw-ring-color' as string]: isAgent ? `${member.bgColor}70` : `${avatarColor}50`,
                       }}
                     >
-                      {showImage ? (
-                        <img
-                          src={showImage}
-                          alt={member.label}
-                          className={`w-full h-full ${isAgent ? 'object-contain object-bottom' : 'object-cover'}`}
-                          onError={(e) => {
-                            if (member.fallback && isAgent) {
-                              (e.target as HTMLImageElement).src = member.fallback;
-                            }
-                          }}
-                        />
+                        {showImage ? (
+                          <img
+                            src={showImage}
+                            alt={member.label}
+                            className={`w-full h-full ${isAgent ? 'object-contain object-bottom' : 'object-cover'}`}
+                            loading="lazy"
+                            onError={(e) => {
+                              if (member.fallback && isAgent) {
+                                (e.target as HTMLImageElement).src = member.fallback;
+                              }
+                            }}
+                          />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
                           <span className={`text-white font-bold ${isCenter ? 'text-2xl' : 'text-base'}`}>
@@ -990,7 +1004,7 @@ export function WmHeroCinematicAssembly({
                     animate={revealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 4 }}
                     transition={{ duration: 0.3, delay: 0.2 }}
                     className="text-xs font-medium text-center max-w-[5rem] leading-tight min-h-[2rem]"
-                    style={{ color: revealed ? (isAgent ? member.bgColor : deptColor) : '#9ca3af' }}
+                    style={{ color: revealed ? '#ffffff' : '#9ca3af' }}
                   >
                     {member.label}
                   </motion.span>
@@ -1057,6 +1071,7 @@ export function WmHeroSplitReveal({
   deptJtbd = [],
   rosterLayout = 'mirrored',
   memberAvatarOverrides = {},
+  onSplitChatComplete,
 }: WmHeroVariantProps) {
   const agentIndices = useMemo(
     () => squadMembers.map((m, i) => ({ i, isAgent: m.isAgent })).filter((x) => x.isAgent).map((x) => x.i),
@@ -1129,6 +1144,7 @@ export function WmHeroSplitReveal({
               deptJtbd={deptJtbd}
               layout={rosterLayout}
               memberAvatarOverrides={memberAvatarOverrides}
+              onComplete={onSplitChatComplete}
             />
           </motion.div>
         ) : (
@@ -1227,6 +1243,7 @@ export function WmHeroSplitReveal({
                           src={showImage}
                           alt={member.label}
                           className={`w-full h-full ${isAgent ? 'object-contain object-bottom' : 'object-cover'}`}
+                          loading="lazy"
                           onError={(e) => {
                             if (member.fallback && isAgent) {
                               (e.target as HTMLImageElement).src = member.fallback;
@@ -1267,9 +1284,9 @@ export function WmHeroSplitReveal({
                     animate={{
                       color: isAgent
                         ? isRevealed
-                          ? member.bgColor
+                          ? '#ffffff'
                           : '#9ca3af'
-                        : deptColor,
+                        : '#ffffff',
                     }}
                     transition={{ duration: 0.5 }}
                     className="text-xs font-medium text-center max-w-[5rem] leading-tight min-h-[2rem]"
@@ -1529,6 +1546,7 @@ export function WmHeroRosterBoard({
                             src={showImage}
                             alt={member.label}
                             className={`w-full h-full ${isAgent ? 'object-contain object-bottom' : 'object-cover'}`}
+                            loading="lazy"
                             onError={(e) => {
                               if (member.fallback && isAgent) {
                                 (e.target as HTMLImageElement).src = member.fallback;
@@ -1591,6 +1609,7 @@ export function WmHeroRosterBoard({
                           src={deptAgents[litAgentIdx].img}
                           alt=""
                           className="w-full h-full object-contain object-bottom"
+                          loading="lazy"
                           onError={(e) => {
                             (e.target as HTMLImageElement).src = deptAgents[litAgentIdx].fallback;
                           }}

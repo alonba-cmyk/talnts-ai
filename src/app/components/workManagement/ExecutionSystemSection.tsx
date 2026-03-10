@@ -71,6 +71,7 @@ function ActiveAgentsSidebar({
                   src={agent.img}
                   alt={agent.label}
                   className="w-full h-full object-contain object-bottom"
+                  loading="lazy"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = agent.fallback;
                   }}
@@ -176,6 +177,7 @@ function TaskTableView({
                         src={agents[agentIdx].img}
                         alt=""
                         className="w-full h-full object-contain object-bottom"
+                        loading="lazy"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src =
                             agents[agentIdx].fallback;
@@ -258,6 +260,7 @@ function FloatingAgentCursor({
             src={agent.img}
             alt={agent.label}
             className="w-full h-full object-contain object-bottom"
+            loading="lazy"
             onError={(e) => {
               (e.target as HTMLImageElement).src = agent.fallback;
             }}
@@ -546,6 +549,7 @@ export function ExecutionSystemSection() {
                           src={av.image}
                           alt={d.name}
                           className="w-full h-full object-cover"
+                          loading="lazy"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
@@ -659,6 +663,7 @@ export function ExecutionSystemSection() {
                                 src={avatar.image}
                                 alt={dept.name}
                                 className="w-full h-full object-cover"
+                                loading="lazy"
                               />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center">
@@ -690,6 +695,7 @@ export function ExecutionSystemSection() {
                                 src={agent.img}
                                 alt={agent.label}
                                 className="w-full h-full object-contain object-bottom"
+                                loading="lazy"
                                 onError={(e) => {
                                   (e.target as HTMLImageElement).src =
                                     agent.fallback;
@@ -786,6 +792,7 @@ export function ExecutionSystemSection() {
                         src={avatar.image}
                         alt={dept.name}
                         className="w-full h-full object-cover"
+                        loading="lazy"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">

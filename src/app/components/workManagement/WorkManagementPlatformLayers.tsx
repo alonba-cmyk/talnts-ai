@@ -80,7 +80,7 @@ function ExecutionLayerPanel({ people }: { people: DeptAvatar[] }) {
             style={{ backgroundColor: person.color }}
           >
             {person.img
-              ? <img src={person.img} alt={person.name} className="w-full h-full object-cover" />
+              ? <img src={person.img} alt={person.name} className="w-full h-full object-cover" loading="lazy" />
               : <span className="w-full h-full flex items-center justify-center text-white text-[10px] font-bold">{person.name.charAt(0)}</span>
             }
           </motion.div>
@@ -96,7 +96,7 @@ function ExecutionLayerPanel({ people }: { people: DeptAvatar[] }) {
             className="w-10 h-10 rounded-xl overflow-hidden shadow-sm"
             style={{ background: `linear-gradient(135deg, ${agent.color}cc, ${agent.color})` }}
           >
-            <img src={agent.img} alt={agent.name} className="w-full h-full object-contain object-bottom" />
+            <img src={agent.img} alt={agent.name} className="w-full h-full object-contain object-bottom" loading="lazy" />
           </motion.div>
         ))}
         <motion.span
@@ -232,7 +232,7 @@ function ExecutionExpandedDual({ people }: { people: DeptAvatar[] }) {
               style={{ backgroundColor: person.color }}
             >
               {person.img
-                ? <img src={person.img} alt={person.name} className="w-full h-full object-cover" />
+                ? <img src={person.img} alt={person.name} className="w-full h-full object-cover" loading="lazy" />
                 : <span className="w-full h-full flex items-center justify-center text-white text-sm font-bold">{person.name.charAt(0)}</span>
               }
             </div>
@@ -254,7 +254,7 @@ function ExecutionExpandedDual({ people }: { people: DeptAvatar[] }) {
               className="w-14 h-14 rounded-xl overflow-hidden shadow-md"
               style={{ background: `linear-gradient(135deg, ${agent.color}bb, ${agent.color})` }}
             >
-              <img src={agent.img} alt={agent.name} className="w-full h-full object-contain object-bottom" />
+              <img src={agent.img} alt={agent.name} className="w-full h-full object-contain object-bottom" loading="lazy" />
             </div>
             <span className="text-[10px] font-medium text-gray-400 whitespace-nowrap">{agent.name.split(' ')[0]}</span>
           </motion.div>
@@ -664,7 +664,7 @@ function DataLayerPanel() {
               className="w-8 h-8 rounded-lg bg-white border border-gray-200 flex items-center justify-center shadow-sm hover:shadow-md hover:border-gray-300 transition-all"
               title={tool.name}
             >
-              <img src={LOGO(tool.domain)} alt={tool.name} className="w-4 h-4" />
+              <img src={LOGO(tool.domain)} alt={tool.name} className="w-4 h-4" loading="lazy" />
             </motion.div>
           ))}
           <div className="w-8 h-8 rounded-lg bg-gray-50 border border-dashed border-gray-300 flex items-center justify-center">
@@ -709,6 +709,7 @@ function DataLayerPanel() {
 const PANEL_META = [
   {
     id: 'execution' as const,
+    layerNumber: '01',
     accent: '#6161ff',
     icon: Users,
     title: 'Execution Layer',
@@ -719,6 +720,7 @@ const PANEL_META = [
   },
   {
     id: 'surface' as const,
+    layerNumber: '02',
     accent: '#00d2d2',
     icon: LayoutGrid,
     title: 'Work Surface & Context',
@@ -729,6 +731,7 @@ const PANEL_META = [
   },
   {
     id: 'data' as const,
+    layerNumber: '03',
     accent: '#10b981',
     icon: Database,
     title: 'Data Layer',
@@ -919,7 +922,7 @@ function FeaturedExecutionVisual({ people, dark }: { people: DeptAvatar[]; dark:
                   }}
                 >
                   {person.img
-                    ? <img src={person.img} alt={person.name} className="w-full h-full object-cover" />
+                    ? <img src={person.img} alt={person.name} className="w-full h-full object-cover" loading="lazy" />
                     : <span className="w-full h-full flex items-center justify-center text-white font-bold text-base">{person.name.charAt(0)}</span>
                   }
                 </motion.div>
@@ -983,7 +986,7 @@ function FeaturedExecutionVisual({ people, dark }: { people: DeptAvatar[]; dark:
                     border: isActive ? `3px solid ${dark ? '#8b5cf6' : '#8b5cf6aa'}` : `3px solid ${ringColor}`,
                   }}
                 >
-                  <img src={agent.img} alt={agent.name} className="w-full h-full object-contain object-bottom" />
+                  <img src={agent.img} alt={agent.name} className="w-full h-full object-contain object-bottom" loading="lazy" />
                 </motion.div>
                 <div className="flex flex-col justify-center overflow-hidden" style={{ width: 80, height: 36 }}>
                   <AnimatePresence mode="wait">
@@ -1427,7 +1430,7 @@ function DataIntegrationsView({ dark }: { dark: boolean }) {
             className="rounded-xl flex items-center gap-2.5 px-3 py-2.5"
             style={{ background: cellBg, border: cellBorder }}
           >
-            <img src={LOGO(tool.domain)} alt={tool.name} className="w-6 h-6 rounded flex-shrink-0" />
+            <img src={LOGO(tool.domain)} alt={tool.name} className="w-6 h-6 rounded flex-shrink-0" loading="lazy" />
             <div className="min-w-0">
               <p className={`text-[11px] font-semibold truncate ${dark ? 'text-gray-300' : 'text-gray-700'}`}>{tool.name}</p>
               <div className="flex items-center gap-1 mt-0.5">
@@ -1588,7 +1591,7 @@ function CompactExecutionPreview({ people, dark }: { people: DeptAvatar[]; dark:
               opacity: 0.8,
             }}
           >
-            {p.img ? <img src={p.img} alt="" className="w-full h-full object-cover" /> : (
+            {p.img ? <img src={p.img} alt="" className="w-full h-full object-cover" loading="lazy" /> : (
               <span className="w-full h-full flex items-center justify-center text-white text-xs font-bold">{p.name.charAt(0)}</span>
             )}
           </div>
@@ -1615,7 +1618,7 @@ function CompactExecutionPreview({ people, dark }: { people: DeptAvatar[]; dark:
               opacity: 0.8,
             }}
           >
-            <img src={a.img} alt="" className="w-full h-full object-contain object-bottom" />
+            <img src={a.img} alt="" className="w-full h-full object-contain object-bottom" loading="lazy" />
           </div>
         ))}
       </div>
@@ -1708,22 +1711,29 @@ function MasonryExpandVariant({ people, bentoStyle, pageDark }: { people: DeptAv
     return <CompactDataPreview dark={dark} />;
   };
 
-  const cardBg = dark
-    ? 'linear-gradient(145deg, #0c0c18, #111128)'
-    : undefined;
+  const cardBg = dark ? '#141414' : undefined;
 
   const cardBorder = dark
     ? `1px solid rgba(255,255,255,0.06)`
     : '1px solid #e5e7eb';
 
-  const sideBg = dark
-    ? 'linear-gradient(145deg, #0e0e1a, #13132a)'
-    : undefined;
+  const sideBg = dark ? '#111111' : undefined;
 
   return (
     <div className="relative">
-      {/* Glass blur: background gradient orbs */}
-      {!dark && (
+      {/* Background gradient orbs */}
+      {dark ? (
+        <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+          <div
+            className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full blur-3xl"
+            style={{ background: 'radial-gradient(ellipse, #6161ff07 0%, transparent 65%)' }}
+          />
+          <div
+            className="absolute top-1/2 right-0 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-3xl"
+            style={{ background: 'radial-gradient(ellipse, #00d2d206 0%, transparent 65%)' }}
+          />
+        </div>
+      ) : (
         <div className="absolute inset-0 -z-10 overflow-hidden rounded-3xl pointer-events-none">
           <div className="absolute -top-20 -left-20 w-80 h-80 rounded-full opacity-20 blur-3xl" style={{ background: `radial-gradient(circle, ${featured.accent}40, transparent 70%)` }} />
           <div className="absolute -bottom-20 -right-20 w-80 h-80 rounded-full opacity-15 blur-3xl" style={{ background: 'radial-gradient(circle, #00d2d240, transparent 70%)' }} />
@@ -1766,6 +1776,9 @@ function MasonryExpandVariant({ people, bentoStyle, pageDark }: { people: DeptAv
                 }}
               >
                 <div className="mb-5">
+                  <span className={`text-[11px] font-bold tracking-[0.18em] mb-2 block ${dark ? 'text-gray-600' : 'text-gray-400'}`}>
+                    {featured.layerNumber}
+                  </span>
                   <h3 className={`text-[28px] font-bold tracking-[-0.02em] leading-tight ${dark ? 'text-white' : 'text-gray-900'}`}>
                     {featured.title}
                   </h3>
@@ -1837,6 +1850,9 @@ function MasonryExpandVariant({ people, bentoStyle, pageDark }: { people: DeptAv
                   <SIcon className="w-5 h-5" style={{ color: `${panel.accent}${dark ? 'aa' : '88'}` }} />
                 </div>
                 <div className="flex-1 min-w-0">
+                  <span className={`text-[10px] font-bold tracking-[0.18em] mb-1 block ${dark ? 'text-gray-600' : 'text-gray-400'}`}>
+                    {panel.layerNumber}
+                  </span>
                   <h3 className={`text-xl font-bold leading-tight flex items-center gap-2 ${dark ? 'text-white' : 'text-gray-900'}`}>
                     {panel.title}
                     <ArrowRight className={`w-4 h-4 flex-shrink-0 opacity-0 -translate-x-1 group-hover:opacity-70 group-hover:translate-x-0 transition-all duration-200 ${dark ? 'text-gray-400' : 'text-gray-400'}`} />
@@ -1918,9 +1934,7 @@ export function WorkManagementPlatformLayers() {
     <section
       className="py-20 sm:py-28 px-4 sm:px-6 relative"
       style={{
-        background: dark
-          ? 'linear-gradient(180deg, #050508 0%, #0a0a14 50%, #050508 100%)'
-          : 'white',
+        background: dark ? '#0a0a0a' : 'white',
       }}
     >
       <div className="max-w-[1280px] mx-auto">
@@ -1946,9 +1960,9 @@ export function WorkManagementPlatformLayers() {
             AI Work Platform
           </motion.span>
           <h2 className={`text-4xl sm:text-5xl lg:text-[56px] font-bold tracking-[-0.03em] leading-[1.1] mb-4 ${dark ? 'text-white' : 'text-black'}`}>
-            One platform.
+            One platform built for
             <br />
-            Three powerful layers.
+            humans and agents.
           </h2>
           <p className={`text-lg sm:text-xl leading-relaxed max-w-[800px] mx-auto ${dark ? 'text-gray-500' : 'text-gray-600'}`}>
             Everything you need to plan, execute, and scale work — with AI built into every layer.

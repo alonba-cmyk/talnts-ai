@@ -27,6 +27,7 @@ export function WorkManagementCTASection() {
               src={sidekickLogo}
               alt="Sidekick"
               className="w-8 h-8 object-contain"
+              loading="lazy"
             />
             <span className="text-sm font-medium text-gray-700">
               Powered by AI

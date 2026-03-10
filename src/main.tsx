@@ -31,7 +31,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/battle-cards" element={<BattleCardsApp />} />
           <Route path="/platform" element={<PlatformLandingPage />} />
           <Route path="/agents" element={<AgentsLandingPage />} />
-          <Route path="/work-management" element={<WorkManagementLandingPage />} />
+          <Route path="/monday-homepage" element={<WorkManagementLandingPage />} />
           <Route path="/gtm" element={<GTMStrategyPresentation />} />
           <Route path="/preview/:sectionId" element={<SectionPreviewPage />} />
           <Route path="/p/:slug" element={<DynamicPage />} />

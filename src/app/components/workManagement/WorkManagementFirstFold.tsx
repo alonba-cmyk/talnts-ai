@@ -18,7 +18,7 @@ import {
   type BoardItem,
   type AgentInfo,
 } from './wmDepartmentData';
-import { SQUAD_DEPARTMENTS } from './WorkManagementSquadSection';
+import { SQUAD_DEPARTMENTS } from './squadData';
 import {
   WmHeroLiveDelegation,
   WmHeroCinematicAssembly,
@@ -154,7 +154,7 @@ function StoryIntro({
               className="w-24 h-24 rounded-full overflow-hidden shadow-xl ring-2 ring-white/20"
               style={{ backgroundColor: humanAvatarBg }}
             >
-              <img src={humanAvatar} alt={humanName} className="w-full h-full object-cover" />
+              <img src={humanAvatar} alt={humanName} className="w-full h-full object-cover" loading="lazy" />
             </div>
           )}
           <span className="text-[13px] font-semibold text-white/90">{humanName}</span>
@@ -207,6 +207,7 @@ function StoryIntro({
               src={agent.img}
               alt={agent.label}
               className="w-full h-full object-contain object-bottom"
+              loading="lazy"
               onError={(e) => { (e.target as HTMLImageElement).src = agent.fallback; }}
             />
           </div>
@@ -288,6 +289,7 @@ function FloatingAgentCursor({
               src={agent.img}
               alt={agent.label}
               className="w-full h-full object-contain object-bottom"
+              loading="lazy"
               onError={(e) => {
                 (e.target as HTMLImageElement).src = agent.fallback;
               }}
@@ -308,6 +310,7 @@ function FloatingAgentCursor({
                 src={agent.img}
                 alt={agent.label}
                 className="w-full h-full object-contain object-bottom"
+                loading="lazy"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = agent.fallback;
                 }}
@@ -424,7 +427,7 @@ function FloatingHumanCursor({
                 background: `linear-gradient(145deg, ${deptColor}ee, ${deptColor})`,
               }}
             >
-              <img src={avatarImage} alt={name} className="w-full h-full object-cover" />
+              <img src={avatarImage} alt={name} className="w-full h-full object-cover" loading="lazy" />
             </motion.div>
           )}
         </div>
@@ -566,19 +569,22 @@ function SquadMember({
   deptColor,
   delay,
   status,
+  anyActive,
 }: {
   agent: AgentInfo;
   isLit: boolean;
   deptColor: string;
   delay: number;
   status?: string;
+  anyActive?: boolean;
 }) {
+  const dimmedOpacity = anyActive ? 0.28 : 0.65;
   return (
     <motion.div
       initial={{ opacity: 0, x: -12 }}
-      animate={{ opacity: isLit ? 1 : 0.65, x: 0 }}
-      transition={{ delay, duration: 0.35 }}
-      className="flex items-center gap-3 relative rounded-lg px-2 -mx-2 transition-all duration-300"
+      animate={{ opacity: isLit ? 1 : dimmedOpacity, x: 0, filter: (!isLit && anyActive) ? 'saturate(0.3)' : 'saturate(1)' }}
+      transition={{ delay, duration: 0.35, opacity: { duration: 0.5 }, filter: { duration: 0.5 } }}
+      className="flex items-center gap-3 relative rounded-lg px-2 py-1.5 -mx-2 transition-all duration-300"
       style={isLit ? {
         backgroundColor: `${agent.bgColor}18`,
         boxShadow: `0 0 10px 1px ${agent.bgColor}12`,
@@ -606,6 +612,7 @@ function SquadMember({
             src={agent.img}
             alt={agent.label}
             className="w-full h-full object-contain object-bottom"
+            loading="lazy"
             onError={(e) => {
               (e.target as HTMLImageElement).src = agent.fallback;
             }}
@@ -721,7 +728,7 @@ function HumanMember({
           }}
         >
           {avatarImage ? (
-            <img src={avatarImage} alt={label} className="w-full h-full object-cover" />
+            <img src={avatarImage} alt={label} className="w-full h-full object-cover" loading="lazy" />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <span className={`text-white font-bold ${isLead ? 'text-lg' : 'text-xs'}`}>
@@ -753,6 +760,7 @@ function TaskRow({
   isHighlighted,
   delay,
   avatarPool,
+  anyActive,
 }: {
   item: BoardItem;
   agents: AgentInfo[];
@@ -760,6 +768,7 @@ function TaskRow({
   isHighlighted: boolean;
   delay: number;
   avatarPool: { image: string; color: string }[];
+  anyActive?: boolean;
 }) {
   const status = STATUS_CONFIG[item.columnIndex] || STATUS_CONFIG[0];
   const progress = PROGRESS_BY_COL[item.columnIndex] || 0;
@@ -768,16 +777,18 @@ function TaskRow({
     ? Math.abs(item.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0)) % avatarPool.length
     : -1;
   const ownerAvatar = ownerAvatarIndex >= 0 ? avatarPool[ownerAvatarIndex] : null;
+  const isDimmed = anyActive && !isHighlighted;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 6 }}
       animate={{
-        opacity: 1,
+        opacity: isDimmed ? 0.28 : 1,
         y: 0,
         backgroundColor: isHighlighted ? `${deptColor}08` : 'transparent',
+        filter: isDimmed ? 'saturate(0.3)' : 'saturate(1)',
       }}
-      transition={{ delay, duration: 0.25 }}
+      transition={{ delay, duration: 0.25, opacity: { duration: 0.5 }, filter: { duration: 0.5 } }}
       className="grid grid-cols-[1fr_64px_56px_80px_72px] gap-2 px-3 py-3 border-b border-gray-50 dark:border-white/[0.03] rounded-md transition-colors"
       style={{
         boxShadow: isHighlighted ? `inset 3px 0 0 ${deptColor}` : 'none',
@@ -795,7 +806,7 @@ function TaskRow({
                 background: `linear-gradient(145deg, ${item.avatarColor || ownerAvatar.color}ee, ${item.avatarColor || ownerAvatar.color})`,
               }}
             >
-              <img src={ownerAvatar.image} alt="" className="w-full h-full object-cover" />
+              <img src={ownerAvatar.image} alt="" className="w-full h-full object-cover" loading="lazy" />
             </div>
           ) : (
             <div
@@ -822,6 +833,7 @@ function TaskRow({
               src={agents[agentIdx].img}
               alt=""
               className="w-full h-full object-contain object-bottom"
+              loading="lazy"
               onError={(e) => {
                 (e.target as HTMLImageElement).src = agents[agentIdx].fallback;
               }}
@@ -866,6 +878,8 @@ function KanbanBoard({
   avatarPool,
   dragEvent,
   columnOverrides,
+  highlightedTaskIds,
+  anyActive,
 }: {
   items: BoardItem[];
   agents: AgentInfo[];
@@ -874,6 +888,8 @@ function KanbanBoard({
   avatarPool: { image: string; color: string }[];
   dragEvent?: DragEvent | null;
   columnOverrides?: Map<string, number>;
+  highlightedTaskIds?: Set<string>;
+  anyActive?: boolean;
 }) {
   const columns = [
     { label: 'To Do', color: '#94a3b8', idx: 0 },
@@ -920,6 +936,8 @@ function KanbanBoard({
                   const isMoving = isDragging && dragEvent?.phase === 'moving';
                   const isDropped = isDragging && dragEvent?.phase === 'dropped';
                   const isElevated = isLifting || isMoving;
+                  const isHighlighted = highlightedTaskIds?.has(item.id) ?? false;
+                  const isDimmed = anyActive && !isHighlighted && !isDragging;
 
                   const agentIdx = item.agentWorking ? Math.abs(item.id.charCodeAt(item.id.length - 1)) % agents.length : -1;
                   const ownerIdx = item.hasAvatar && avatarPool.length > 0
@@ -931,10 +949,14 @@ function KanbanBoard({
                       layout
                       animate={{
                         scale: isElevated ? 1.05 : 1,
+                        opacity: isDimmed ? 0.28 : 1,
+                        filter: isDimmed ? 'saturate(0.3)' : 'saturate(1)',
                       }}
                       transition={{
                         layout: { duration: 0.7, ease: [0.25, 0.1, 0.25, 1] },
                         scale: { duration: 0.35, ease: 'easeOut' },
+                        opacity: { duration: 0.5, ease: 'easeInOut' },
+                        filter: { duration: 0.5, ease: 'easeInOut' },
                       }}
                       className={`rounded-lg p-3 border relative ${
                         isDark
@@ -948,6 +970,9 @@ function KanbanBoard({
                         } : {}),
                         ...(isDropped ? {
                           boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        } : {}),
+                        ...(isHighlighted && anyActive ? {
+                          boxShadow: `0 0 0 1.5px ${deptColor}60`,
                         } : {}),
                       }}
                     >
@@ -968,7 +993,7 @@ function KanbanBoard({
                             className="w-6 h-6 rounded-full overflow-hidden ring-1 ring-white/10 flex-shrink-0"
                             style={{ backgroundColor: avatarPool[ownerIdx].color }}
                           >
-                            <img src={avatarPool[ownerIdx].image} alt="" className="w-full h-full object-cover" />
+                            <img src={avatarPool[ownerIdx].image} alt="" className="w-full h-full object-cover" loading="lazy" />
                           </div>
                         )}
                         {agentIdx >= 0 && (
@@ -976,7 +1001,7 @@ function KanbanBoard({
                             className="w-6 h-6 rounded-md overflow-hidden flex-shrink-0"
                             style={{ backgroundColor: agents[agentIdx].bgColor }}
                           >
-                            <img src={agents[agentIdx].img} alt="" className="w-full h-full object-contain object-bottom" />
+                            <img src={agents[agentIdx].img} alt="" className="w-full h-full object-contain object-bottom" loading="lazy" />
                           </div>
                         )}
                         {item.priority && (
@@ -1077,7 +1102,7 @@ function WorkflowBoard({
                   className="w-9 h-9 rounded-full overflow-hidden ring-2 ring-white/10"
                   style={{ backgroundColor: avatarPool[ownerIdx].color }}
                 >
-                  <img src={avatarPool[ownerIdx].image} alt="" className="w-full h-full object-cover" />
+                  <img src={avatarPool[ownerIdx].image} alt="" className="w-full h-full object-cover" loading="lazy" />
                 </div>
               )}
               <span className={`text-lg ${isDark ? 'text-gray-500' : 'text-gray-300'}`}>→</span>
@@ -1086,7 +1111,7 @@ function WorkflowBoard({
                   className="w-9 h-9 rounded-lg overflow-hidden ring-2"
                   style={{ backgroundColor: agents[agentIdx].bgColor, borderColor: `${agents[agentIdx].bgColor}60` }}
                 >
-                  <img src={agents[agentIdx].img} alt="" className="w-full h-full object-contain object-bottom" />
+                  <img src={agents[agentIdx].img} alt="" className="w-full h-full object-contain object-bottom" loading="lazy" />
                 </div>
               )}
             </div>
@@ -1262,7 +1287,7 @@ function FocusedBoard({
                   className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-white/10"
                   style={{ backgroundColor: avatarPool[ownerIdx].color }}
                 >
-                  <img src={avatarPool[ownerIdx].image} alt="" className="w-full h-full object-cover" />
+                  <img src={avatarPool[ownerIdx].image} alt="" className="w-full h-full object-cover" loading="lazy" />
                 </div>
                 <div>
                   <p className={`text-[11px] font-semibold ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>Owner</p>
@@ -1279,7 +1304,7 @@ function FocusedBoard({
                   className="w-10 h-10 rounded-lg overflow-hidden"
                   style={{ backgroundColor: agents[agentIdx].bgColor }}
                 >
-                  <img src={agents[agentIdx].img} alt="" className="w-full h-full object-contain object-bottom" />
+                  <img src={agents[agentIdx].img} alt="" className="w-full h-full object-contain object-bottom" loading="lazy" />
                 </div>
                 <div>
                   <p className={`text-[11px] font-semibold ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>{agents[agentIdx].label}</p>
@@ -1383,7 +1408,7 @@ function MinimalBoard({
                     className="w-8 h-8 rounded-full overflow-hidden ring-2 z-10"
                     style={{ backgroundColor: avatarPool[ownerIdx].color, borderColor: isDark ? '#141414' : '#fff' }}
                   >
-                    <img src={avatarPool[ownerIdx].image} alt="" className="w-full h-full object-cover" />
+                    <img src={avatarPool[ownerIdx].image} alt="" className="w-full h-full object-cover" loading="lazy" />
                   </div>
                 )}
                 {agentIdx >= 0 && agents[agentIdx] && (
@@ -1391,7 +1416,7 @@ function MinimalBoard({
                     className="w-8 h-8 rounded-lg overflow-hidden ring-2"
                     style={{ backgroundColor: agents[agentIdx].bgColor, borderColor: isDark ? '#141414' : '#fff' }}
                   >
-                    <img src={agents[agentIdx].img} alt="" className="w-full h-full object-contain object-bottom" />
+                    <img src={agents[agentIdx].img} alt="" className="w-full h-full object-contain object-bottom" loading="lazy" />
                   </div>
                 )}
               </div>
@@ -1742,9 +1767,116 @@ function useMarketingStory(
   };
 }
 
+/* ─── Trust Bar ─── */
+
+function TrustBar({ isRoster }: { isRoster: boolean }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [scrollRatio, setScrollRatio] = useState(0);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onScroll = () => {
+      const rect = el.getBoundingClientRect();
+      const windowH = window.innerHeight;
+      const triggerZone = windowH * 0.35;
+      const progress = Math.max(0, Math.min(1, (windowH - rect.top) / triggerZone));
+      setScrollRatio(progress);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const logos = [
+    {
+      id: 'holt',
+      node: (
+        <span className="flex items-center gap-1.5 font-black tracking-tight text-[13px]" style={{ fontFamily: 'Arial Black, Arial, sans-serif' }}>
+          <span className={`inline-flex items-center justify-center w-[19px] h-[19px] rounded-[2px] text-[7px] font-black shrink-0 ${isRoster ? 'bg-gray-800 text-gray-500' : 'bg-gray-400 text-gray-600'}`}>CAT</span>
+          HOLT
+        </span>
+      ),
+    },
+    {
+      id: 'universal',
+      node: (
+        <span className="flex flex-col items-center leading-none">
+          <span className="font-serif italic text-[12px] tracking-widest uppercase font-bold">Universal</span>
+          <span className="font-sans text-[7px] tracking-[0.15em] uppercase mt-0.5 opacity-60">Music Group</span>
+        </span>
+      ),
+    },
+    {
+      id: 'cocacola',
+      node: (
+        <span className="italic text-[18px] font-black" style={{ fontFamily: 'Georgia, Times New Roman, serif', letterSpacing: '-0.02em' }}>
+          Coca‑Cola
+        </span>
+      ),
+    },
+    {
+      id: 'lionsgate',
+      node: (
+        <span className="font-bold tracking-[0.14em] text-[12px] uppercase" style={{ fontFamily: 'Arial Narrow, Arial, sans-serif' }}>
+          Lionsgate
+        </span>
+      ),
+    },
+    {
+      id: 'carrefour',
+      node: (
+        <span className="font-bold text-[13px]" style={{ fontFamily: 'Arial, sans-serif' }}>
+          Carrefour
+        </span>
+      ),
+    },
+    {
+      id: 'bd',
+      node: (
+        <span className="font-bold text-[13px] tracking-wide" style={{ fontFamily: 'Arial, sans-serif' }}>
+          BD
+        </span>
+      ),
+    },
+    {
+      id: 'glossier',
+      node: (
+        <span className="font-bold text-[14px] tracking-[0.04em]" style={{ fontFamily: 'Georgia, serif' }}>
+          Glossier.
+        </span>
+      ),
+    },
+  ];
+
+  return (
+    <div
+      ref={ref}
+      className={`flex flex-col items-center gap-5 py-8 border-t border-b transition-opacity duration-300 ${
+        isRoster ? 'border-white/[0.07]' : 'border-gray-100 dark:border-white/[0.07]'
+      }`}
+      style={{ opacity: 0.06 + scrollRatio * 0.94 }}
+    >
+      <p className={`text-[10px] font-normal tracking-wide ${isRoster ? 'text-gray-600' : 'text-gray-500'}`}>
+        Trusted by over 60% of the Fortune 500
+      </p>
+      <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 sm:gap-x-12">
+        {logos.map((logo) => (
+          <div
+            key={logo.id}
+            className={`transition-colors duration-200 ${isRoster ? 'text-gray-600 hover:text-gray-400' : 'text-gray-500 hover:text-gray-300'}`}
+          >
+            {logo.node}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ─── Main component ─── */
 
-export function WorkManagementFirstFold({ settings: externalSettings }: { settings?: SiteSettings } = {}) {
+export function WorkManagementFirstFold({ settings: externalSettings, hideHero, hideDemo }: { settings?: SiteSettings; hideHero?: boolean; hideDemo?: boolean } = {}) {
   const [selectedDeptIndex, setSelectedDeptIndex] = useState(0);
   const [selectedJtbd, setSelectedJtbd] = useState(0);
   const { departments: supabaseDepts } = useDepartments();
@@ -1752,20 +1884,21 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
   const siteSettings = externalSettings ?? ownSettings;
 
   const sectionRef = useRef<HTMLElement>(null);
+  const demoRef = useRef<HTMLDivElement>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const hasTriggered = useRef(false);
 
   useEffect(() => {
-    const el = sectionRef.current;
+    const el = demoRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !hasTriggered.current) {
           hasTriggered.current = true;
-          setTimeout(() => setIsAnimating(true), 2000);
+          setIsAnimating(true);
         }
       },
-      { threshold: 0.3 },
+      { threshold: 0.35 },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -1865,6 +1998,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
   const storyPhase = story.storyPhase ?? 2; // 0=human typing, 1=human message, 2=agent drag
 
   const litAgents = useMemo(() => Array.from(litAgentIndices), [litAgentIndices]);
+  const anyActive = litAgentIndices.size > 0 || humanActive;
 
   const [litMemberIndex, setLitMemberIndex] = useState(2);
   const [isShowAllPhase, setIsShowAllPhase] = useState(true);
@@ -1872,6 +2006,10 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
   const splitChatEnabled = siteSettings?.wm_squad_split_chat ?? false;
   const rosterLayout = siteSettings?.wm_roster_layout ?? 'mirrored';
   const [splitPhase, setSplitPhase] = useState<'together' | 'chatting'>('together');
+
+  const handleSplitChatComplete = useCallback(() => {
+    setTimeout(() => setSplitPhase('together'), 1600);
+  }, []);
 
   const handleDeptChange = useCallback((index: number) => {
     setSelectedDeptIndex(index);
@@ -2001,6 +2139,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
     deptJtbd: dept.jtbd,
     rosterLayout,
     memberAvatarOverrides,
+    onSplitChatComplete: splitChatEnabled ? handleSplitChatComplete : undefined,
   };
 
   const isRoster = firstFoldVariant === 'roster_board';
@@ -2008,7 +2147,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
   return (
     <section
       ref={sectionRef}
-      className={`relative pt-24 sm:pt-28 lg:pt-32 pb-32 sm:pb-40 lg:pb-48 px-4 sm:px-6 lg:px-8 min-h-[85vh] flex flex-col justify-center ${
+      className={`relative ${hideHero ? 'pt-2 pb-16 sm:pb-20' : hideDemo ? 'pt-24 sm:pt-28 lg:pt-32 pb-4 min-h-[85vh] flex flex-col justify-center' : 'pt-24 sm:pt-28 lg:pt-32 pb-32 sm:pb-40 lg:pb-48 min-h-[85vh] flex flex-col justify-center'} px-4 sm:px-6 lg:px-8 ${
         isRoster
           ? 'bg-[#0a0a0a] text-white'
           : 'bg-white dark:bg-[#0a0a0a]'
@@ -2039,6 +2178,8 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
         />
       )}
       <div className="max-w-[1200px] mx-auto w-full">
+        {/* ═══ HERO SECTION ═══ */}
+        {!hideHero && (<>
         {/* Department selector — full width above the grid (default variant only) */}
         {firstFoldVariant === 'default' && (
           <motion.div
@@ -2047,7 +2188,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
             transition={{ duration: 0.5, delay: 0.1 }}
             className="flex justify-center w-full mb-10 sm:mb-12"
           >
-            <div className={`flex items-center justify-around w-full max-w-4xl px-6 py-3 rounded-xl border ${
+            <div className={`flex items-center justify-start sm:justify-around w-full max-w-4xl px-4 sm:px-6 py-3 rounded-xl border overflow-x-auto scrollbar-hide gap-4 sm:gap-0 ${
               isRoster
                 ? 'border-white/[0.08] bg-white/[0.03]'
                 : 'border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.03]'
@@ -2062,7 +2203,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                     key={d.id}
                     whileTap={{ scale: 0.93 }}
                     onClick={() => handleDeptChange(i)}
-                    className="flex flex-col items-center gap-1 cursor-pointer group"
+                    className="flex flex-col items-center gap-1 cursor-pointer group flex-shrink-0"
                   >
                     <div
                       className={`rounded-full overflow-hidden transition-all w-10 h-10 ${isSelected ? 'ring-[2.5px] ring-offset-2' : 'opacity-55 hover:opacity-80'}`}
@@ -2072,7 +2213,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                       }}
                     >
                       {leaderImg ? (
-                        <img src={leaderImg} alt={d.name} className="w-full h-full object-cover" />
+                        <img src={leaderImg} alt={d.name} className="w-full h-full object-cover" loading="lazy" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
                           <DepIcon className="w-5 h-5 text-white" strokeWidth={2} />
@@ -2200,6 +2341,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                     deptJtbd={dept.jtbd}
                     layout={rosterLayout}
                     memberAvatarOverrides={memberAvatarOverrides}
+                    onComplete={handleSplitChatComplete}
                   />
                 </motion.div>
               ) : (
@@ -2298,6 +2440,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                                 src={showImage}
                                 alt={member.label}
                                 className={`w-full h-full ${member.isAgent ? 'object-contain object-bottom' : 'object-cover'}`}
+                                loading="lazy"
                                 onError={(e) => {
                                   if (member.fallback && member.isAgent) {
                                     (e.target as HTMLImageElement).src = member.fallback;
@@ -2388,6 +2531,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                                   src={memberImg}
                                   alt={activeMember.label}
                                   className={`w-full h-full ${activeMember.isAgent ? 'object-contain object-bottom' : 'object-cover'}`}
+                                  loading="lazy"
                                 />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center">
@@ -2419,9 +2563,30 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
           </div>
           )}
         </motion.div>
+        {/* ═══ TRUST BAR ═══ */}
+        <TrustBar isRoster={isRoster} />
+        </>)}
+
+        {/* ═══ DEMO SECTION ═══ */}
+        {!hideDemo && (<div ref={demoRef}>
+        {/* Section title above demo */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mt-16 lg:mt-20 mb-8"
+        >
+          <h2 className={`text-3xl sm:text-4xl lg:text-[44px] font-bold tracking-[-0.03em] leading-[1.15] mb-3 ${isRoster ? 'text-white' : 'text-black dark:text-white'}`}>
+            Your unlimited workforce.
+          </h2>
+          <p className={`text-[15px] sm:text-[17px] ${isRoster ? 'text-gray-400' : 'text-gray-500 dark:text-gray-400'}`}>
+            AI agents that work alongside your team — 24/7, at any scale, without limits
+          </p>
+        </motion.div>
 
         {/* Main card: Squad + Board */}
-        <div style={{ perspective: '1800px' }} className="mt-12 lg:mt-16">
+        <div style={{ perspective: '1800px' }} className="mt-0">
           <motion.div
             initial={{ opacity: 0, y: 30, rotateX: 4 }}
             whileInView={{ opacity: 1, y: 0, rotateX: 1.5 }}
@@ -2464,8 +2629,10 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                       key={d.id}
                       whileTap={{ scale: 0.93 }}
                       onClick={() => handleDeptChange(i)}
+                      animate={{ opacity: isSelected ? 1 : (anyActive ? 0.18 : 0.35) }}
+                      transition={{ duration: 0.5, ease: 'easeInOut' }}
                       className={`flex flex-col items-center gap-0 py-px rounded-lg transition-all duration-200 group ${
-                        isSelected ? '' : 'opacity-35 hover:opacity-60'
+                        isSelected ? '' : 'hover:opacity-60'
                       }`}
                     >
                       <div
@@ -2482,7 +2649,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                         }}
                       >
                         {leaderImg ? (
-                          <img src={leaderImg} alt={d.name} className="w-full h-full object-cover" />
+                          <img src={leaderImg} alt={d.name} className="w-full h-full object-cover" loading="lazy" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
                             <DepIcon className="w-5 h-5 text-white" strokeWidth={2} />
@@ -2575,7 +2742,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                           }}
                         >
                           {centerAvatarImage ? (
-                            <img src={centerAvatarImage} alt={`${dept.name} Lead`} className="w-full h-full object-cover" />
+                            <img src={centerAvatarImage} alt={`${dept.name} Lead`} className="w-full h-full object-cover" loading="lazy" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
                               <span className="text-white font-bold text-lg">{dept.name.charAt(0)}</span>
@@ -2607,7 +2774,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                     </div>
 
                     {/* Agents */}
-                    <div className="space-y-2 flex-1">
+                    <div className="space-y-4 flex-1">
                       {dept.agents.map((agent, i) => (
                         <SquadMember
                           key={agent.label}
@@ -2616,6 +2783,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                           deptColor={dept.color}
                           delay={0.15 + i * 0.08}
                           status={agent.status}
+                          anyActive={anyActive}
                         />
                       ))}
                     </div>
@@ -2672,7 +2840,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                         }}
                       >
                         {centerAvatarImage
-                          ? <img src={centerAvatarImage} alt={`${dept.name} Lead`} className="w-full h-full object-cover" />
+                          ? <img src={centerAvatarImage} alt={`${dept.name} Lead`} className="w-full h-full object-cover" loading="lazy" />
                           : <div className="w-full h-full flex items-center justify-center"><span className="text-white font-bold text-xs">{dept.name.charAt(0)}</span></div>
                         }
                       </div>
@@ -2693,12 +2861,13 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                     {/* Agents — avatar + name stacked */}
                     {dept.agents.map((agent, i) => {
                       const isActive = litAgentIndices.has(i);
+                      const compactDimmed = anyActive && !isActive;
                       return (
                       <motion.div
                         key={agent.label}
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: isActive ? 1 : 0.7 }}
-                        transition={{ delay: 0.1 + i * 0.07, duration: 0.3 }}
+                        animate={{ opacity: isActive ? 1 : (compactDimmed ? 0.28 : 0.7), filter: compactDimmed ? 'saturate(0.3)' : 'saturate(1)' }}
+                        transition={{ delay: 0.1 + i * 0.07, duration: 0.3, opacity: { duration: 0.5 }, filter: { duration: 0.5 } }}
                         className={`flex flex-col items-center gap-1 py-2 rounded-lg transition-all duration-300 ${
                           isActive ? 'bg-white/[0.07]' : ''
                         }`}
@@ -2720,6 +2889,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                             src={agent.img}
                             alt={agent.label}
                             className="w-full h-full object-contain object-bottom"
+                            loading="lazy"
                             onError={(e) => { (e.target as HTMLImageElement).src = agent.fallback; }}
                           />
                         </div>
@@ -2765,7 +2935,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                           style={{ backgroundColor: centerBgColor }}
                         >
                           {centerAvatarImage
-                            ? <img src={centerAvatarImage} alt={`${dept.name} Lead`} className="w-full h-full object-cover" />
+                            ? <img src={centerAvatarImage} alt={`${dept.name} Lead`} className="w-full h-full object-cover" loading="lazy" />
                             : <div className="w-full h-full flex items-center justify-center"><span className="text-white font-bold text-xs">{dept.name.charAt(0)}</span></div>
                           }
                         </div>
@@ -2791,6 +2961,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                               src={agent.img}
                               alt={agent.label}
                               className="w-full h-full object-contain object-bottom"
+                              loading="lazy"
                               onError={(e) => { (e.target as HTMLImageElement).src = agent.fallback; }}
                             />
                           </motion.div>
@@ -2846,6 +3017,8 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                     avatarPool={avatarPool}
                     dragEvent={dragEvent}
                     columnOverrides={columnOverrides}
+                    highlightedTaskIds={highlightedTaskIds}
+                    anyActive={anyActive}
                   />
                 ) : boardStyle === 'workflow' ? (
                   <WorkflowBoard
@@ -2902,6 +3075,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
                           isHighlighted={highlightedTaskIds.has(item.id)}
                           delay={idx * 0.05}
                           avatarPool={avatarPool}
+                          anyActive={anyActive}
                         />
                       ))}
                     </motion.div>
@@ -2997,6 +3171,7 @@ export function WorkManagementFirstFold({ settings: externalSettings }: { settin
             </div>
           </motion.div>
         </div>
+        </div>)}
       </div>
     </section>
   );
