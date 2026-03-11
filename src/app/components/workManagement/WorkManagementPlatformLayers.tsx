@@ -1908,11 +1908,19 @@ function MasonryExpandVariant({ people, bentoStyle, pageDark }: { people: DeptAv
 
 /* ─── Main Section ─── */
 
-export function WorkManagementPlatformLayers() {
+export function WorkManagementPlatformLayers({
+  variant: variantProp,
+  bentoStyle: bentoStyleProp,
+  isDark: isDarkProp,
+}: {
+  variant?: 'grid' | 'masonry_expand';
+  bentoStyle?: BentoStyle;
+  isDark?: boolean;
+} = {}) {
   const { departments: supabaseDepts } = useDepartments();
   const { settings: siteSettings } = useSiteSettings();
-  const wm_platform_layers_variant = siteSettings?.wm_platform_layers_variant ?? 'grid';
-  const wm_bento_style = (siteSettings?.wm_bento_style ?? 'dark_gradient') as BentoStyle;
+  const wm_platform_layers_variant = variantProp ?? siteSettings?.wm_platform_layers_variant ?? 'grid';
+  const wm_bento_style = (bentoStyleProp ?? siteSettings?.wm_bento_style ?? 'dark_gradient') as BentoStyle;
 
   const people = useMemo<DeptAvatar[]>(() => {
     return DEPARTMENTS.slice(0, 3).map((dept) => {
@@ -1927,12 +1935,12 @@ export function WorkManagementPlatformLayers() {
     });
   }, [supabaseDepts]);
 
-  const pageDark = siteSettings?.wm_dark_mode ?? false;
+  const pageDark = isDarkProp ?? siteSettings?.wm_dark_mode ?? false;
   const dark = pageDark || isDark(wm_bento_style);
 
   return (
     <section
-      className="py-20 sm:py-28 px-4 sm:px-6 relative"
+      className="py-12 sm:py-16 px-4 sm:px-6 relative"
       style={{
         background: dark ? '#0a0a0a' : 'white',
       }}

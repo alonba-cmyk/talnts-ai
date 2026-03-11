@@ -4,7 +4,7 @@ import { WORK_MANAGEMENT_CONTACT_SALES_URL } from '@/lib/workManagementUrls';
 
 export function WorkManagementEnterpriseSection() {
   return (
-    <section className="py-20 sm:py-28 px-4 sm:px-6 bg-white dark:bg-[#0a0a0a]">
+    <section className="py-12 sm:py-16 px-4 sm:px-6 bg-white dark:bg-[#0a0a0a]">
       <div className="max-w-[1280px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -59,15 +59,22 @@ export function WorkManagementEnterpriseSection() {
                 <ArrowRight className="w-4 h-4" strokeWidth={2} />
               </a>
             </div>
-            <div className="flex gap-6 flex-wrap">
-              {['GDPR', 'SOC 2', 'ISO 27001', 'HIPAA'].map((badge) => (
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { name: 'GDPR', src: '/logos/gdpr.svg' },
+                { name: 'SOC 2', src: '/logos/soc2.svg' },
+                { name: 'ISO 27001', src: '/logos/iso27001.svg' },
+                { name: 'HIPAA', src: '/logos/hipaa.svg' },
+              ].map((badge) => (
                 <div
-                  key={badge}
-                  className="w-[116px] h-[80px] rounded-lg bg-gray-100 dark:bg-white/[0.03] flex items-center justify-center"
+                  key={badge.name}
+                  className="h-[88px] rounded-lg bg-gray-100 dark:bg-white/[0.03] border border-gray-200 dark:border-white/[0.06] flex items-center justify-center p-4 opacity-70 hover:opacity-100 transition-opacity duration-200"
                 >
-                  <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                    {badge}
-                  </span>
+                  <img
+                    src={badge.src}
+                    alt={badge.name}
+                    className="w-full h-full object-contain dark:invert-0 invert"
+                  />
                 </div>
               ))}
             </div>

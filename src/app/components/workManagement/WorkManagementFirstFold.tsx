@@ -2147,7 +2147,7 @@ export function WorkManagementFirstFold({ settings: externalSettings, hideHero, 
   return (
     <section
       ref={sectionRef}
-      className={`relative ${hideHero ? 'pt-2 pb-16 sm:pb-20' : hideDemo ? 'pt-24 sm:pt-28 lg:pt-32 pb-4 min-h-[85vh] flex flex-col justify-center' : 'pt-24 sm:pt-28 lg:pt-32 pb-32 sm:pb-40 lg:pb-48 min-h-[85vh] flex flex-col justify-center'} px-4 sm:px-6 lg:px-8 ${
+      className={`relative ${hideHero ? 'pt-2 pb-12 sm:pb-16' : hideDemo ? 'pt-24 sm:pt-28 lg:pt-32 pb-4 min-h-[85vh] flex flex-col justify-center' : 'pt-24 sm:pt-28 lg:pt-32 pb-16 sm:pb-20 min-h-[85vh] flex flex-col justify-center'} px-4 sm:px-6 lg:px-8 ${
         isRoster
           ? 'bg-[#0a0a0a] text-white'
           : 'bg-white dark:bg-[#0a0a0a]'

@@ -32,6 +32,9 @@ export const AI_COMPANIES: AICompany[] = [
   { id: 'mcp',         name: 'MCP',            logo: '/logos/mcp.svg',         category: 'platform',   color: '#00D2D2' },
   { id: 'openclaw',    name: 'OpenClaw',       logo: '/logos/openclaw.svg',    category: 'platform',   color: '#FF6B35' },
 
+  // Developer Tools — IDE-native agents
+  { id: 'cursor',      name: 'Cursor',         logo: '/logos/cursor.svg',      category: 'platform',   color: '#7C3AED' },
+
   // Agent Platforms & Tooling — where agents are orchestrated
   { id: 'huggingface', name: 'Hugging Face',   logo: '/logos/huggingface.svg', category: 'platform',   color: '#FFD21E' },
   { id: 'n8n',         name: 'n8n',            logo: '/logos/n8n.svg',         category: 'platform',   color: '#EA4B71' },

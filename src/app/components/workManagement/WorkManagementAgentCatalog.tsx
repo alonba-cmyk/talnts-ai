@@ -1476,7 +1476,7 @@ export function WorkManagementAgentCatalog({
   if (variant === 'none') return null;
 
   return (
-    <section ref={sectionRef} className="relative py-20 px-6 lg:px-12" style={{ backgroundColor: '#0a0a0a' }}>
+    <section ref={sectionRef} className="relative py-12 sm:py-16 px-6 lg:px-12" style={{ backgroundColor: '#0a0a0a' }}>
       <div className="max-w-[1240px] mx-auto">
         {/* Header */}
         <motion.div

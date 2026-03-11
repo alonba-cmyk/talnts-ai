@@ -94,14 +94,15 @@ export function AgentCoverflowCarousel({
                 if (offset < 0) go(-1);
                 else if (offset > 0) go(1);
               }}
-              className="absolute top-0 left-1/2 overflow-hidden rounded-3xl"
-              style={{
-                width: CARD_W,
-                height: CARD_H,
-                marginLeft: -CARD_W / 2,
-                transformOrigin: 'center bottom',
-                cursor: isCenter ? 'default' : 'pointer',
-              }}
+            className="absolute top-0 left-1/2 overflow-hidden rounded-3xl"
+            style={{
+              width: CARD_W,
+              height: CARD_H,
+              marginLeft: -CARD_W / 2,
+              transformOrigin: 'center bottom',
+              cursor: isCenter ? 'default' : 'pointer',
+              background: gradient,
+            }}
               animate={{
                 x: style.x,
                 scale: style.scale,
@@ -127,7 +128,7 @@ export function AgentCoverflowCarousel({
                 src={imageOverrides[agent.id] || agent.image}
                 alt={agent.name}
                 className="absolute bottom-0 left-1/2 -translate-x-1/2 object-contain object-bottom"
-                loading="lazy"
+                loading="eager"
                 style={{
                   width: '90%',
                   height: '90%',

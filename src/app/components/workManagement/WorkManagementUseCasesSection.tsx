@@ -3914,7 +3914,7 @@ export function WorkManagementUseCasesSection({
   jtbdExpandedOverlayOpacity = 45,
 }: WorkManagementUseCasesSectionProps) {
   return (
-    <section className={`py-20 sm:py-28 px-4 sm:px-6 ${isDark ? 'bg-[#0a0a0a]' : 'bg-gray-50/60'}`}>
+    <section className={`py-12 sm:py-16 px-4 sm:px-6 ${isDark ? 'bg-[#0a0a0a]' : 'bg-gray-50/60'}`}>
       <div className="max-w-[1200px] mx-auto">
         {/* Header */}
         <motion.div

@@ -485,7 +485,7 @@ export function WorkManagementVibeSection({ collageImageOverrides }: { collageIm
   const activeColor = selectedDept !== null ? VIBE_SCENARIOS[selectedDept].color : '#A25DDC';
 
   return (
-    <section className="py-20 sm:py-28 px-4 sm:px-6 bg-[#0a0a0a] relative overflow-hidden">
+    <section className="py-12 sm:py-16 px-4 sm:px-6 bg-[#0a0a0a] relative overflow-hidden">
       {/* Ambient glow */}
       <div className="absolute inset-0 pointer-events-none">
         <motion.div

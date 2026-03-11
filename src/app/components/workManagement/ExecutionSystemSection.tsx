@@ -464,7 +464,7 @@ export function ExecutionSystemSection() {
   const avatarColor = avatar?.color || dept.color;
 
   return (
-    <section className="relative pt-12 sm:pt-16 pb-20 sm:pb-24 lg:pb-28 px-4 sm:px-6 bg-white">
+    <section className="relative pt-10 sm:pt-12 pb-12 sm:pb-16 px-4 sm:px-6 bg-white">
       <div className="max-w-[1200px] mx-auto">
         {/* ── Hero copy ── */}
         <motion.div
