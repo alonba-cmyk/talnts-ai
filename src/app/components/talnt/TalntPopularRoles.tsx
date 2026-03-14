@@ -52,7 +52,7 @@ export default function TalntPopularRoles() {
 
 
   return (
-    <section ref={ref} className="py-16 sm:py-24">
+    <section ref={ref} className="py-10 sm:py-16">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -73,7 +73,7 @@ export default function TalntPopularRoles() {
               Explore Talents
             </span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-3" style={{ color: tokens.textPrimary }}>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-3" style={{ color: tokens.textPrimary }}>
             Find your AI talent
           </h2>
           <p className="text-sm max-w-lg mx-auto" style={{ color: tokens.textSecondary }}>

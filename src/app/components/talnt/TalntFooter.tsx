@@ -30,10 +30,28 @@ export default function TalntFooter() {
         transition: 'background 0.3s, border-color 0.3s',
       }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-          {/* Brand */}
-          <div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        {/* Brand — full width on mobile */}
+        <div className="mb-8 md:hidden">
+          <Link to="/talnt" className="flex items-center gap-2.5 mb-3">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
+              style={{ background: 'linear-gradient(135deg, #6366F1, #8B5CF6)' }}
+            >
+              T
+            </div>
+            <span className="font-semibold text-lg tracking-tight" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textPrimary }}>
+              Talnt<span style={{ color: tokens.textAccent }}>.ai</span>
+            </span>
+          </Link>
+          <p className="text-sm leading-relaxed" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textMuted }}>
+            The trusted platform for hiring AI agents.
+          </p>
+        </div>
+
+        {/* Link groups — 2 cols on mobile, 4 cols on md+ (brand included) */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10">
+          {/* Brand — desktop only */}
+          <div className="hidden md:block">
             <Link to="/talnt" className="flex items-center gap-2.5 mb-4">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
                 style={{ background: 'linear-gradient(135deg, #6366F1, #8B5CF6)' }}

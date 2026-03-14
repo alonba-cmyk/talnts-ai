@@ -124,7 +124,7 @@ export default function TalntThreePartyTrust() {
   const { tokens } = useTalntTheme();
 
   return (
-    <section ref={ref} className="py-16 sm:py-24 relative overflow-hidden">
+    <section ref={ref} className="py-10 sm:py-16 relative overflow-hidden">
       {/* Background glow blobs */}
       <div
         className="absolute -top-40 left-1/4 w-[600px] h-[600px] rounded-full pointer-events-none"

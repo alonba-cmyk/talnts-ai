@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useInView } from 'motion/react';
 import {
   Search, Briefcase, X, MessageCircle, Star,
-  CheckCircle2, Bot, ArrowRight,
+  CheckCircle2, Bot, ArrowRight, SlidersHorizontal, ChevronDown,
 } from 'lucide-react';
 import { useAgents } from '../../talnt/useTalnt';
 import { useAgentChat } from '../../talnt/AgentChatContext';
@@ -458,6 +458,8 @@ export default function TalntBrowseAgentsSection() {
     }).sort((a, b) => b.budgetMax - a.budgetMax);
   }, [category, search]);
 
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
   const { openChat } = useAgentChat();
   const handleAgentClick = useCallback((agentId: string) => { navigate(`/talnt/agents/${agentId}`); }, [navigate]);
   const handleJobClick = useCallback(() => { navigate('/talnt/jobs'); }, [navigate]);
@@ -473,7 +475,7 @@ export default function TalntBrowseAgentsSection() {
   const resultCount = mode === 'agents' ? filteredAgents.length : filteredJobs.length;
 
   return (
-    <section ref={ref} className="py-16 sm:py-24 relative">
+    <section ref={ref} className="py-10 sm:py-16 relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* ── Section header ── */}
@@ -496,7 +498,7 @@ export default function TalntBrowseAgentsSection() {
             </span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-black mb-3" style={{ color: tokens.textPrimary }}>
-            Discover agents and<br />open AI roles
+            Discover agents and open AI roles
           </h2>
           <p className="text-base max-w-lg mx-auto leading-relaxed" style={{ color: tokens.textSecondary }}>
             Filter by category, framework, and more to find the exact agent or role you need.
@@ -546,6 +548,39 @@ export default function TalntBrowseAgentsSection() {
           {/* ── Left sidebar ── */}
           <aside className="w-full md:w-64 flex-shrink-0 md:sticky md:top-24 md:max-h-[calc(100vh-7rem)] md:overflow-y-auto flex flex-col gap-4" style={{ scrollbarWidth: 'thin' }}>
 
+            {/* Mobile filters toggle */}
+            <button
+              onClick={() => setMobileFiltersOpen(v => !v)}
+              className="md:hidden flex items-center justify-between w-full px-4 py-3 rounded-xl font-semibold text-sm transition-all"
+              style={{
+                background: tokens.bgCard,
+                border: `1px solid ${hasFilters ? tokens.textAccent : tokens.borderDefault}`,
+                color: tokens.textPrimary,
+              }}
+            >
+              <span className="flex items-center gap-2">
+                <SlidersHorizontal size={15} style={{ color: hasFilters ? tokens.textAccent : tokens.textMuted }} />
+                Filters
+                {hasFilters && (
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+                    style={{ background: tokens.textAccent, color: '#fff' }}>
+                    ON
+                  </span>
+                )}
+              </span>
+              <ChevronDown
+                size={15}
+                style={{
+                  color: tokens.textMuted,
+                  transform: mobileFiltersOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.2s',
+                }}
+              />
+            </button>
+
+            {/* Filter panels — always visible on md+, collapsible on mobile */}
+            <div className={`flex-col gap-4 ${mobileFiltersOpen ? 'flex' : 'hidden'} md:flex`}>
+
             {/* Search */}
             <div
               className="relative flex items-center rounded-xl overflow-hidden"
@@ -580,7 +615,7 @@ export default function TalntBrowseAgentsSection() {
               <div className="p-2 flex flex-col gap-0.5">
                 <button
                   onClick={() => setCategory('')}
-                  className="flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 text-left w-full"
+                  className="flex items-center justify-between px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-150 text-left w-full"
                   style={{
                     background: !category ? tokens.bgPillActive : 'transparent',
                     color: !category ? tokens.textPrimary : tokens.textSecondary,
@@ -595,7 +630,7 @@ export default function TalntBrowseAgentsSection() {
                     <button
                       key={cat}
                       onClick={() => toggleCategory(cat)}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 text-left w-full"
+                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-150 text-left w-full"
                       style={{
                         background: isActive ? `rgba(${cv.accentColorRgb}, 0.1)` : 'transparent',
                         color: isActive ? cv.accentColor : tokens.textSecondary,
@@ -635,7 +670,7 @@ export default function TalntBrowseAgentsSection() {
                         <button
                           key={fw.name}
                           onClick={() => toggleFramework(fw.name)}
-                          className="flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 text-left w-full"
+                          className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-150 text-left w-full"
                           style={{
                             background: isActive ? tokens.bgPillActive : 'transparent',
                             color: isActive ? tokens.textPrimary : tokens.textSecondary,
@@ -866,6 +901,7 @@ export default function TalntBrowseAgentsSection() {
                 </motion.button>
               )}
             </AnimatePresence>
+            </div>{/* end collapsible filter panels */}
           </aside>
 
           {/* ── Right: results ── */}

@@ -10,13 +10,13 @@ export default function TalntCTA() {
   const { tokens } = useTalntTheme();
 
   return (
-    <section ref={ref} className="py-16 sm:py-24">
+    <section ref={ref} className="py-10 sm:py-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="relative rounded-3xl overflow-hidden p-12 sm:p-16 text-center"
+          className="relative rounded-3xl overflow-hidden p-8 sm:p-12 lg:p-16 text-center"
         >
           {/* Background gradient — rich indigo for both themes */}
           <div

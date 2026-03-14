@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTalntAuth } from '../TalntAuthContext';
+import { useTalntTheme } from '../TalntThemeContext';
 import { useJobs, useApplications, useAgents } from '../useTalnt';
 import type { JobStatus, ApplicationStatus } from '../types';
 
@@ -33,6 +34,7 @@ const STATUS_ACTIONS: { label: string; status: ApplicationStatus }[] = [
 export default function CompanyDashboardPage() {
   const navigate = useNavigate();
   const { user, isAuthenticated, isCompany } = useTalntAuth();
+  const { tokens } = useTalntTheme();
   const { filterJobs, getJob } = useJobs();
   const { getApplicationsForJob, updateStatus } = useApplications();
   const { getAgent } = useAgents();
@@ -72,7 +74,7 @@ export default function CompanyDashboardPage() {
   ];
 
   return (
-    <div className="min-h-[calc(100vh-4rem)]" style={{ fontFamily: 'Figtree, sans-serif' }}>
+    <div className="min-h-[calc(100vh-4rem)]" style={{ fontFamily: 'Figtree, sans-serif', background: tokens.bgPage }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -80,7 +82,7 @@ export default function CompanyDashboardPage() {
           transition={{ duration: 0.4 }}
         >
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-            <h1 className="text-2xl font-bold text-white">
+            <h1 className="text-2xl font-bold" style={{ color: tokens.textPrimary }}>
               Welcome back, {user?.name ?? 'Company'}
             </h1>
             <Link
@@ -103,12 +105,12 @@ export default function CompanyDashboardPage() {
                 transition={{ duration: 0.4, delay: i * 0.05 }}
                 className="rounded-xl p-5 border"
                 style={{
-                  background: '#111827',
-                  borderColor: 'rgba(255,255,255,0.06)',
+                  background: tokens.bgCard,
+                  borderColor: tokens.borderDefault,
                 }}
               >
-                <p className="text-slate-400 text-sm mb-1">{stat.label}</p>
-                <p className="text-2xl font-bold text-white">{stat.value}</p>
+                <p className="text-sm mb-1" style={{ color: tokens.textSecondary }}>{stat.label}</p>
+                <p className="text-2xl font-bold" style={{ color: tokens.textPrimary }}>{stat.value}</p>
               </motion.div>
             ))}
           </div>
@@ -116,18 +118,18 @@ export default function CompanyDashboardPage() {
           <div
             className="rounded-xl border overflow-hidden"
             style={{
-              background: '#111827',
-              borderColor: 'rgba(255,255,255,0.06)',
+              background: tokens.bgCard,
+              borderColor: tokens.borderDefault,
             }}
           >
-            <div className="px-6 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-              <h2 className="text-lg font-semibold text-white">Your Jobs</h2>
+            <div className="px-6 py-4 border-b" style={{ borderColor: tokens.borderDefault }}>
+              <h2 className="text-lg font-semibold" style={{ color: tokens.textPrimary }}>Your Jobs</h2>
             </div>
-            <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+            <div className="divide-y" style={{ borderColor: tokens.borderDefault }}>
               {companyJobs.length === 0 ? (
-                <div className="px-6 py-12 text-center text-slate-400">
+                <div className="px-6 py-12 text-center" style={{ color: tokens.textSecondary }}>
                   No jobs yet.{' '}
-                  <Link to="/talnt/company/post-job" className="text-indigo-400 hover:text-indigo-300">
+                  <Link to="/talnt/company/post-job" style={{ color: tokens.textAccent }} className="hover:opacity-80">
                     Post your first job
                   </Link>
                 </div>
@@ -137,11 +139,11 @@ export default function CompanyDashboardPage() {
                     <button
                       type="button"
                       onClick={() => setExpandedJobId((e) => (e === job.id ? null : job.id))}
-                      className="w-full px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-left hover:bg-white/5 transition-colors"
+                      className="w-full px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-left hover:bg-[var(--talnt-bg-card-hover)] transition-colors"
                     >
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-white truncate">{job.title}</p>
-                        <p className="text-sm text-slate-400 mt-0.5">{job.category}</p>
+                        <p className="font-medium truncate" style={{ color: tokens.textPrimary }}>{job.title}</p>
+                        <p className="text-sm mt-0.5" style={{ color: tokens.textSecondary }}>{job.category}</p>
                       </div>
                       <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                         <span
@@ -153,11 +155,11 @@ export default function CompanyDashboardPage() {
                         >
                           {job.status.replace('_', ' ')}
                         </span>
-                        <span className="text-slate-400 text-sm">
+                        <span className="text-sm" style={{ color: tokens.textSecondary }}>
                           {getApplicationsForJob(job.id).length} applications
                         </span>
-                        <span className="text-slate-500 text-sm">{job.createdAt}</span>
-                        <span className="text-indigo-400 text-sm font-medium">
+                        <span className="text-sm" style={{ color: tokens.textMuted }}>{job.createdAt}</span>
+                        <span className="text-sm font-medium" style={{ color: tokens.textAccent }}>
                           {expandedJobId === job.id ? 'Hide' : 'View'}
                         </span>
                       </div>
@@ -174,14 +176,14 @@ export default function CompanyDashboardPage() {
                         >
                           <div
                             className="px-6 py-4"
-                            style={{ background: 'rgba(0,0,0,0.2)' }}
+                            style={{ background: tokens.bgSurface2 }}
                           >
-                            <h3 className="text-sm font-medium text-slate-300 mb-3">
+                            <h3 className="text-sm font-medium mb-3" style={{ color: tokens.textSecondary }}>
                               Applicants
                             </h3>
                             <div className="space-y-3">
                               {getApplicationsForJob(job.id).length === 0 ? (
-                                <p className="text-slate-500 text-sm">No applicants yet.</p>
+                                <p className="text-sm" style={{ color: tokens.textMuted }}>No applicants yet.</p>
                               ) : (
                                 getApplicationsForJob(job.id).map((app) => {
                                   const agent = getAgent(app.agentId);
@@ -190,12 +192,12 @@ export default function CompanyDashboardPage() {
                                       key={app.id}
                                       className="rounded-lg p-4 border flex flex-col sm:flex-row sm:items-start gap-4"
                                       style={{
-                                        background: 'rgba(255,255,255,0.03)',
-                                        borderColor: 'rgba(255,255,255,0.06)',
+                                        background: tokens.bgSurface,
+                                        borderColor: tokens.borderDefault,
                                       }}
                                     >
                                       <div className="flex-1 min-w-0">
-                                        <p className="font-medium text-white">
+                                        <p className="font-medium" style={{ color: tokens.textPrimary }}>
                                           {agent?.name ?? 'Unknown Agent'}
                                         </p>
                                         <div className="flex flex-wrap items-center gap-2 mt-2">
@@ -214,7 +216,7 @@ export default function CompanyDashboardPage() {
                                             {app.status}
                                           </span>
                                         </div>
-                                        <p className="text-slate-400 text-sm mt-2 line-clamp-2">
+                                        <p className="text-sm mt-2 line-clamp-2" style={{ color: tokens.textSecondary }}>
                                           {app.coverLetter}
                                         </p>
                                       </div>

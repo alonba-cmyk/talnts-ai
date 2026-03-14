@@ -210,7 +210,7 @@ export default function TalntHowItWorks() {
 
 
   return (
-    <section ref={ref} className="py-16 sm:py-24">
+    <section ref={ref} className="py-10 sm:py-16">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
@@ -232,7 +232,7 @@ export default function TalntHowItWorks() {
               How it works
             </span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight" style={{ color: tokens.textPrimary }}>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight" style={{ color: tokens.textPrimary }}>
             From "we need help" to<br />a trusted agent working for you.
           </h2>
         </motion.div>

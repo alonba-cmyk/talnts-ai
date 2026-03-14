@@ -65,9 +65,9 @@ export default function JobDetailPage() {
 
   if (!job) {
     return (
-      <div className="min-h-screen py-16 px-4 flex flex-col items-center justify-center" style={{ fontFamily: 'Figtree, sans-serif' }}>
-        <h2 className="text-xl font-semibold text-white mb-2">Job not found</h2>
-        <Link to="/talnt/jobs" className="text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
+      <div className="min-h-screen py-16 px-4 flex flex-col items-center justify-center" style={{ fontFamily: 'Figtree, sans-serif', background: tokens.bgPage }}>
+        <h2 className="text-xl font-semibold mb-2" style={{ color: tokens.textPrimary }}>Job not found</h2>
+        <Link to="/talnt/jobs" className="flex items-center gap-2 transition-colors" style={{ color: tokens.textAccent }}>
           <ArrowLeft size={16} />
           Back to jobs
         </Link>
@@ -81,13 +81,13 @@ export default function JobDetailPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       className="min-h-screen py-8 px-4 sm:px-6 lg:px-8"
-      style={{ fontFamily: 'Figtree, sans-serif' }}
+      style={{ fontFamily: 'Figtree, sans-serif', background: tokens.bgPage }}
     >
       <div className="max-w-4xl mx-auto">
         <Link
           to="/talnt/jobs"
-          className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition-colors"
-          style={{ fontFamily: 'Figtree, sans-serif' }}
+          className="inline-flex items-center gap-2 mb-8 transition-colors"
+          style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textSecondary }}
         >
           <ArrowLeft size={18} />
           Back to jobs
@@ -96,13 +96,13 @@ export default function JobDetailPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-start gap-4 mb-8">
           <div className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(99, 102, 241, 0.15)' }}>
-            <Building2 className="w-7 h-7 text-indigo-400" />
+            <Building2 className="w-7 h-7" style={{ color: tokens.textAccent }} />
           </div>
           <div className="flex-1">
-            <p className="text-slate-400 text-sm mb-1" style={{ fontFamily: 'Figtree, sans-serif' }}>
+            <p className="text-sm mb-1" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textSecondary }}>
               {company?.name ?? 'Unknown Company'}
             </p>
-            <h1 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: 'Figtree, sans-serif' }}>
+            <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textPrimary }}>
               {job.title}
             </h1>
             <div className="flex flex-wrap items-center gap-2">
@@ -128,24 +128,24 @@ export default function JobDetailPage() {
 
         {/* Budget */}
         <div className="p-5 rounded-xl mb-6" style={{ background: 'rgba(99, 102, 241, 0.08)', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
-          <p className="text-sm text-indigo-300 mb-1" style={{ fontFamily: 'Figtree, sans-serif' }}>Budget</p>
-          <p className="text-2xl font-bold text-white" style={{ fontFamily: 'Figtree, sans-serif' }}>
+          <p className="text-sm mb-1" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textAccent }}>Budget</p>
+          <p className="text-2xl font-bold" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textPrimary }}>
             {formatBudget(job.budgetMin, job.budgetMax, job.budgetType)}
           </p>
         </div>
 
         {/* Description */}
-        <div className="mb-6 p-6 rounded-xl" style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <h3 className="text-lg font-semibold text-white mb-3" style={{ fontFamily: 'Figtree, sans-serif' }}>Description</h3>
-          <p className="text-slate-300 leading-relaxed whitespace-pre-wrap" style={{ fontFamily: 'Figtree, sans-serif' }}>{job.description}</p>
+        <div className="mb-6 p-6 rounded-xl" style={{ background: tokens.bgCard, border: `1px solid ${tokens.borderDefault}` }}>
+          <h3 className="text-lg font-semibold mb-3" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textPrimary }}>Description</h3>
+          <p className="leading-relaxed whitespace-pre-wrap" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textSecondary }}>{job.description}</p>
         </div>
 
         {/* Requirements */}
-        <div className="mb-6 p-6 rounded-xl" style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <h3 className="text-lg font-semibold text-white mb-3" style={{ fontFamily: 'Figtree, sans-serif' }}>Requirements</h3>
+        <div className="mb-6 p-6 rounded-xl" style={{ background: tokens.bgCard, border: `1px solid ${tokens.borderDefault}` }}>
+          <h3 className="text-lg font-semibold mb-3" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textPrimary }}>Requirements</h3>
           <ul className="space-y-2">
             {job.requirements.map((req, i) => (
-              <li key={i} className="flex items-start gap-2 text-slate-300" style={{ fontFamily: 'Figtree, sans-serif' }}>
+              <li key={i} className="flex items-start gap-2" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textSecondary }}>
                 <Check className="w-5 h-5 shrink-0 mt-0.5 text-[#10B981]" />
                 <span>{req}</span>
               </li>
@@ -155,19 +155,19 @@ export default function JobDetailPage() {
 
         {/* Success criteria */}
         <div className="mb-8 p-6 rounded-xl" style={{ background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-          <h3 className="text-lg font-semibold text-white mb-2 flex items-center gap-2" style={{ fontFamily: 'Figtree, sans-serif' }}>
+          <h3 className="text-lg font-semibold mb-2 flex items-center gap-2" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textPrimary }}>
             <Shield size={20} className="text-[#10B981]" />
             Success Criteria
           </h3>
-          <p className="text-slate-300" style={{ fontFamily: 'Figtree, sans-serif' }}>{job.successCriteria}</p>
+          <p style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textSecondary }}>{job.successCriteria}</p>
         </div>
 
         {/* Agent: Apply section */}
         {isAgent && user && (
-          <div className="mb-8 p-6 rounded-xl" style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="mb-8 p-6 rounded-xl" style={{ background: tokens.bgCard, border: `1px solid ${tokens.borderDefault}` }}>
             {userHasApplied || applySubmitted ? (
               <div>
-                <h3 className="text-lg font-semibold text-white mb-2" style={{ fontFamily: 'Figtree, sans-serif' }}>
+                <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textPrimary }}>
                   You&apos;ve already applied
                 </h3>
                 <p className="text-slate-400" style={{ fontFamily: 'Figtree, sans-serif' }}>
@@ -187,7 +187,7 @@ export default function JobDetailPage() {
               </div>
             ) : job.status === 'open' ? (
               <div>
-                <h3 className="text-lg font-semibold text-white mb-3" style={{ fontFamily: 'Figtree, sans-serif' }}>
+                <h3 className="text-lg font-semibold mb-3" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textPrimary }}>
                   Apply Now
                 </h3>
                 <textarea
@@ -195,7 +195,7 @@ export default function JobDetailPage() {
                   value={coverLetter}
                   onChange={(e) => setCoverLetter(e.target.value)}
                   rows={4}
-                  className="w-full px-4 py-3 rounded-lg text-white placeholder-slate-500 resize-none mb-4"
+                  className="w-full px-4 py-3 rounded-lg resize-none mb-4"
                   style={{
                     background: tokens.bgInput,
                     border: `1px solid ${tokens.borderDefault}`,
@@ -221,8 +221,8 @@ export default function JobDetailPage() {
 
         {/* Company: Applicants list */}
         {isCompany && user && (
-          <div className="p-6 rounded-xl" style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <h3 className="text-lg font-semibold text-white mb-4" style={{ fontFamily: 'Figtree, sans-serif' }}>
+          <div className="p-6 rounded-xl" style={{ background: tokens.bgCard, border: `1px solid ${tokens.borderDefault}` }}>
+            <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textPrimary }}>
               Applicants ({applications.length})
             </h3>
             {applications.length > 0 ? (
@@ -243,8 +243,8 @@ export default function JobDetailPage() {
                         <div className="flex items-center gap-2 flex-wrap">
                           <Link
                             to={`/talnt/agents/${agent.id}`}
-                            className="font-semibold text-white hover:text-indigo-400 transition-colors"
-                            style={{ fontFamily: 'Figtree, sans-serif' }}
+                            className="font-semibold transition-colors"
+                            style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textPrimary }}
                           >
                             {agent.name}
                           </Link>
@@ -263,7 +263,7 @@ export default function JobDetailPage() {
                       </div>
                       <div className="shrink-0 flex flex-col items-end gap-1">
                         {app.assessmentScore != null && (
-                          <span className="text-sm font-medium text-white" style={{ fontFamily: 'Figtree, sans-serif' }}>
+                          <span className="text-sm font-medium" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textPrimary }}>
                             Score: {app.assessmentScore}
                           </span>
                         )}
@@ -283,7 +283,7 @@ export default function JobDetailPage() {
                 })}
               </div>
             ) : (
-              <p className="text-slate-500" style={{ fontFamily: 'Figtree, sans-serif' }}>No applications yet.</p>
+              <p style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textMuted }}>No applications yet.</p>
             )}
           </div>
         )}

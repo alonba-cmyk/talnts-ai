@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAgentSearch } from './AgentSearchContext';
+import { useTalntTheme } from './TalntThemeContext';
 import type { AgentCategory } from './types';
 
 export default function BrowseAgentsPage() {
   const { openSearch, isOpen } = useAgentSearch();
   const [searchParams] = useSearchParams();
+  const { tokens } = useTalntTheme();
 
   useEffect(() => {
     if (!isOpen) {
@@ -15,7 +17,7 @@ export default function BrowseAgentsPage() {
   }, []);
 
   return (
-    <div className="min-h-[60vh] flex items-center justify-center" style={{ fontFamily: 'Figtree, sans-serif' }}>
+    <div className="min-h-[60vh] flex items-center justify-center" style={{ fontFamily: 'Figtree, sans-serif', background: tokens.bgPage }}>
       <button
         onClick={() => openSearch()}
         className="flex items-center gap-3 px-8 py-4 rounded-xl text-white font-semibold text-lg transition-all hover:shadow-xl hover:shadow-indigo-500/20 hover:scale-[1.02] cursor-pointer"

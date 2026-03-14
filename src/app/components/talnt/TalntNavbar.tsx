@@ -65,7 +65,7 @@ export default function TalntNavbar() {
                   <button
                     key={link.to}
                     onClick={() => openSearch()}
-                    className="relative px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 cursor-pointer hover:text-[#111827]"
+                    className="relative px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 cursor-pointer"
                     style={{
                       color: isActive ? tokens.textPrimary : tokens.textSecondary,
                       fontFamily: 'Figtree, sans-serif',
@@ -80,7 +80,7 @@ export default function TalntNavbar() {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="relative px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:text-[#111827]"
+                  className="relative px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                   style={{
                     color: isActive ? tokens.textPrimary : tokens.textSecondary,
                     fontFamily: 'Figtree, sans-serif',
@@ -161,14 +161,14 @@ export default function TalntNavbar() {
               <>
                 <Link
                   to="/talnt/company/login"
-                  className="px-4 py-2 text-sm font-medium transition-colors hover:text-[#111827]"
+                  className="px-4 py-2 text-sm font-medium transition-colors"
                   style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textSecondary }}
                 >
                   Log in
                 </Link>
                 <Link
                   to="/talnt/company/register"
-                  className="px-4 py-2 text-sm font-medium transition-colors hover:text-[#111827]"
+                  className="px-4 py-2 text-sm font-medium transition-colors"
                   style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textSecondary }}
                 >
                   Post a Role

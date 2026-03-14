@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import type { TalntAgent } from '../../talnt/types';
 import { getCategoryVisual, AGENT_AVATARS } from '../../talnt/agentVisuals';
+import { useTalntTheme } from '../../talnt/TalntThemeContext';
 
 type AvatarSize = 'sm' | 'md' | 'lg' | 'xl';
 
@@ -28,6 +29,7 @@ export default function AgentAvatar({
   className = '',
 }: AgentAvatarProps) {
   const [imgError, setImgError] = useState(false);
+  const { tokens } = useTalntTheme();
   const dims = SIZE_MAP[size];
   const visual = getCategoryVisual(agent.categories);
   const avatarSrc = AGENT_AVATARS[agent.id] || agent.avatarUrl;
@@ -55,7 +57,7 @@ export default function AgentAvatar({
         style={{
           width: dims.container,
           height: dims.container,
-          background: hasImage ? '#111827' : visual.gradient,
+          background: hasImage ? tokens.bgCard : visual.gradient,
           boxShadow: `0 0 20px ${visual.glowColor}`,
         }}
         whileHover={{ scale: 1.05 }}
@@ -85,7 +87,7 @@ export default function AgentAvatar({
             bottom: 0,
             right: 0,
             background: agent.isOnline ? visual.accentColor : '#4B5563',
-            borderColor: '#111827',
+            borderColor: tokens.bgPage,
           }}
           animate={agent.isOnline ? {
             boxShadow: [

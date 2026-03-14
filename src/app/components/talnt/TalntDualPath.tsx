@@ -237,7 +237,7 @@ function NavArrow({ direction, onClick, accent }: { direction: 'left' | 'right';
   return (
     <button
       onClick={onClick}
-      className="w-8 h-8 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer flex-shrink-0"
+      className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer flex-shrink-0"
       style={{
         background: tokens.theme === 'dark' ? 'rgba(255,255,255,0.06)' : tokens.bgSurface,
         border: `1px solid ${tokens.theme === 'dark' ? 'rgba(255,255,255,0.1)' : tokens.borderDefault}`,
@@ -268,7 +268,7 @@ export default function TalntDualPath() {
 
 
   return (
-    <section ref={ref} className="py-16 sm:py-24">
+    <section ref={ref} className="py-10 sm:py-16">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Section header */}
@@ -295,7 +295,7 @@ export default function TalntDualPath() {
           </h2>
         </motion.div>
 
-        <div className="flex flex-col md:flex-row items-stretch gap-0">
+        <div className="flex flex-col md:flex-row items-stretch gap-10 md:gap-0">
 
           {/* ── Left: Jobs ── */}
           <motion.div
@@ -342,7 +342,12 @@ export default function TalntDualPath() {
             </button>
           </motion.div>
 
-          {/* ── Divider ── */}
+          {/* ── Mobile divider ── */}
+          <div className="md:hidden">
+            <div className="h-px w-full" style={{ background: tokens.dividerColor }} />
+          </div>
+
+          {/* ── Desktop divider ── */}
           <div className="hidden md:flex flex-col items-center mx-8 flex-shrink-0">
             <div className="flex-1 w-px" style={{ background: tokens.dividerColor }} />
             <motion.div

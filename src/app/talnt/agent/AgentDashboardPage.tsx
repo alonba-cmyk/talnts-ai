@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useTalntAuth } from '../TalntAuthContext';
+import { useTalntTheme } from '../TalntThemeContext';
 import { useApplications, useJobs, useCompanies, useAgents } from '../useTalnt';
 import type { ApplicationStatus } from '../types';
 
@@ -30,6 +31,7 @@ function getPipelineIndex(status: ApplicationStatus): number {
 export default function AgentDashboardPage() {
   const navigate = useNavigate();
   const { user, isAuthenticated, isAgent } = useTalntAuth();
+  const { tokens } = useTalntTheme();
   const { getApplicationsForAgent } = useApplications();
   const { getJob } = useJobs();
   const { getCompany } = useCompanies();
@@ -97,19 +99,19 @@ export default function AgentDashboardPage() {
                   {agent?.name?.charAt(0) ?? 'A'}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-white">{agent?.name ?? 'Agent'}</p>
-                  <p className="text-slate-400 text-sm mt-1">
+                  <p className="font-semibold" style={{ color: tokens.textPrimary }}>{agent?.name ?? 'Agent'}</p>
+                  <p className="text-sm mt-1" style={{ color: tokens.textSecondary }}>
                     {agent?.framework} · {agent?.model}
                   </p>
-                  <div className="flex flex-wrap gap-4 mt-3 text-sm">
-                    <span className="text-slate-400">
+                  <div className="flex flex-wrap gap-4 mt-3 text-sm" style={{ color: tokens.textSecondary }}>
+                    <span>
                       Success rate: <span className="text-emerald-400 font-medium">{agent?.successRate ?? 0}%</span>
                     </span>
-                    <span className="text-slate-400">
-                      Response: <span className="text-slate-300">{agent?.avgResponseTime ?? '—'}</span>
+                    <span>
+                      Response: <span style={{ color: tokens.textSecondary }}>{agent?.avgResponseTime ?? '—'}</span>
                     </span>
-                    <span className="text-slate-400">
-                      Jobs completed: <span className="text-slate-300">{agent?.jobsCompleted ?? 0}</span>
+                    <span>
+                      Jobs completed: <span style={{ color: tokens.textSecondary }}>{agent?.jobsCompleted ?? 0}</span>
                     </span>
                   </div>
                 </div>
@@ -125,12 +127,12 @@ export default function AgentDashboardPage() {
                   transition={{ duration: 0.4, delay: (i + 1) * 0.05 }}
                   className="rounded-xl p-5 border"
                   style={{
-                    background: '#111827',
-                    borderColor: 'rgba(255,255,255,0.06)',
+                    background: tokens.bgCard,
+                    borderColor: tokens.borderDefault,
                   }}
                 >
-                  <p className="text-slate-400 text-sm mb-1">{stat.label}</p>
-                  <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  <p className="text-sm mb-1" style={{ color: tokens.textSecondary }}>{stat.label}</p>
+                  <p className="text-2xl font-bold" style={{ color: tokens.textPrimary }}>{stat.value}</p>
                 </motion.div>
               ))}
             </div>
@@ -139,18 +141,18 @@ export default function AgentDashboardPage() {
           <div
             className="rounded-xl border overflow-hidden"
             style={{
-              background: '#111827',
-              borderColor: 'rgba(255,255,255,0.06)',
+              background: tokens.bgCard,
+              borderColor: tokens.borderDefault,
             }}
           >
-            <div className="px-6 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-              <h2 className="text-lg font-semibold text-white">Your Applications</h2>
+            <div className="px-6 py-4 border-b" style={{ borderColor: tokens.borderDefault }}>
+              <h2 className="text-lg font-semibold" style={{ color: tokens.textPrimary }}>Your Applications</h2>
             </div>
-            <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+            <div className="divide-y" style={{ borderColor: tokens.borderDefault }}>
               {applications.length === 0 ? (
-                <div className="px-6 py-12 text-center text-slate-400">
+                <div className="px-6 py-12 text-center" style={{ color: tokens.textSecondary }}>
                   No applications yet.{' '}
-                  <Link to="/talnt/jobs" className="text-indigo-400 hover:text-indigo-300">
+                  <Link to="/talnt/jobs" style={{ color: tokens.textAccent }} className="hover:opacity-80">
                     Browse jobs
                   </Link>
                 </div>
@@ -165,14 +167,14 @@ export default function AgentDashboardPage() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: i * 0.03 }}
-                      className="px-6 py-4 hover:bg-white/5 transition-colors"
+                      className="px-6 py-4 hover:bg-[var(--talnt-bg-card-hover)] transition-colors"
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-white">
+                          <p className="font-medium" style={{ color: tokens.textPrimary }}>
                             {job?.title ?? 'Unknown Job'}
                           </p>
-                          <p className="text-sm text-slate-400 mt-0.5">
+                          <p className="text-sm mt-0.5" style={{ color: tokens.textSecondary }}>
                             {company?.name ?? 'Unknown Company'}
                           </p>
                           <div className="flex flex-wrap items-center gap-3 mt-2">
@@ -185,11 +187,11 @@ export default function AgentDashboardPage() {
                             >
                               {app.status}
                             </span>
-                            <span className="text-slate-500 text-sm">
+                            <span className="text-sm" style={{ color: tokens.textMuted }}>
                               Applied {app.createdAt}
                             </span>
                             {app.assessmentScore != null && (
-                              <span className="text-slate-400 text-sm">
+                              <span className="text-sm" style={{ color: tokens.textSecondary }}>
                                 Score: {app.assessmentScore}
                               </span>
                             )}
@@ -209,9 +211,9 @@ export default function AgentDashboardPage() {
                                       ? APP_STATUS_COLORS[app.status]
                                       : stepIndex > idx
                                         ? '#10B981'
-                                        : 'rgba(255,255,255,0.1)',
+                                        : tokens.bgSurface,
                                   color:
-                                    stepIndex >= idx ? '#fff' : 'rgba(255,255,255,0.4)',
+                                    stepIndex >= idx ? '#fff' : tokens.textMuted,
                                 }}
                               >
                                 {idx + 1}
@@ -221,7 +223,7 @@ export default function AgentDashboardPage() {
                                   className="w-4 sm:w-6 h-0.5"
                                   style={{
                                     background:
-                                      stepIndex > idx ? '#10B981' : 'rgba(255,255,255,0.1)',
+                                      stepIndex > idx ? '#10B981' : tokens.borderDefault,
                                   }}
                                 />
                               )}
@@ -242,7 +244,7 @@ export default function AgentDashboardPage() {
               className="inline-flex items-center justify-center rounded-xl py-3 px-6 font-semibold text-white transition-all hover:shadow-lg hover:shadow-indigo-500/25 border"
               style={{
                 background: 'linear-gradient(135deg, #6366F1, #7C3AED)',
-                borderColor: 'rgba(255,255,255,0.06)',
+                borderColor: tokens.borderDefault,
               }}
             >
               Browse Jobs

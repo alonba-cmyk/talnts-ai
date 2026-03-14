@@ -1,6 +1,7 @@
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useJobs, useCompanies } from './useTalnt';
+import { useTalntTheme } from './TalntThemeContext';
 import { CATEGORY_ICONS } from './mockData';
 import type { AgentCategory, JobStatus } from './types';
 import { Search, ChevronDown, Briefcase } from 'lucide-react';
@@ -27,23 +28,26 @@ function FilterDropdown<T extends string>({
   options,
   onChange,
   renderOption = (o) => o,
+  tokens,
 }: {
   label: string;
   value: T | '';
   options: T[];
   onChange: (v: T | '') => void;
   renderOption?: (o: T) => React.ReactNode;
+  tokens: { textMuted: string; bgInput: string; borderDefault: string; textPrimary: string };
 }) {
   return (
     <div className="relative">
-      <label className="block text-xs text-slate-500 mb-1" style={{ fontFamily: 'Figtree, sans-serif' }}>{label}</label>
+      <label className="block text-xs mb-1" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textMuted }}>{label}</label>
       <select
         value={value}
         onChange={(e) => onChange((e.target.value || '') as T | '')}
-        className="w-full min-w-[140px] px-3 py-2 rounded-lg text-sm text-white appearance-none cursor-pointer"
+        className="w-full min-w-[140px] px-3 py-2 rounded-lg text-sm appearance-none cursor-pointer"
         style={{
-          background: '#111827',
-          border: '1px solid rgba(255,255,255,0.06)',
+          background: tokens.bgInput,
+          border: `1px solid ${tokens.borderDefault}`,
+          color: tokens.textPrimary,
           fontFamily: 'Figtree, sans-serif',
         }}
       >
@@ -52,7 +56,7 @@ function FilterDropdown<T extends string>({
           <option key={o} value={o}>{renderOption(o)}</option>
         ))}
       </select>
-      <ChevronDown className="absolute right-2 top-8 w-4 h-4 text-slate-500 pointer-events-none" />
+      <ChevronDown className="absolute right-2 top-8 w-4 h-4 pointer-events-none" style={{ color: tokens.textMuted }} />
     </div>
   );
 }
@@ -81,6 +85,7 @@ export default function BrowseJobsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { filterJobs } = useJobs();
   const { getCompany } = useCompanies();
+  const { tokens } = useTalntTheme();
 
   const category = (searchParams.get('category') || '') as AgentCategory | '';
   const status = (searchParams.get('status') || '') as JobStatus | '';
@@ -118,26 +123,27 @@ export default function BrowseJobsPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       className="min-h-screen py-8 px-4 sm:px-6 lg:px-8"
-      style={{ fontFamily: 'Figtree, sans-serif' }}
+      style={{ fontFamily: 'Figtree, sans-serif', background: tokens.bgPage }}
     >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2" style={{ fontFamily: 'Figtree, sans-serif' }}>
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textPrimary }}>
             Browse Agent Jobs
           </h1>
-          <p className="text-slate-400 text-lg" style={{ fontFamily: 'Figtree, sans-serif' }}>
+          <p className="text-lg" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textSecondary }}>
             Find the perfect role for your AI agent.
           </p>
         </div>
 
         {/* Filter bar */}
-        <div className="flex flex-wrap gap-4 mb-8 p-4 rounded-xl" style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="flex flex-wrap gap-4 mb-8 p-4 rounded-xl" style={{ background: tokens.bgCard, border: `1px solid ${tokens.borderDefault}` }}>
           <FilterDropdown
             label="Category"
             value={category}
             options={AGENT_CATEGORIES}
             onChange={(v) => updateParam('category', v)}
+            tokens={tokens}
           />
           <FilterDropdown
             label="Status"
@@ -145,16 +151,18 @@ export default function BrowseJobsPage() {
             options={JOB_STATUSES}
             onChange={(v) => updateParam('status', v)}
             renderOption={(o) => o.replace('_', ' ')}
+            tokens={tokens}
           />
           <div className="relative">
-            <label className="block text-xs text-slate-500 mb-1" style={{ fontFamily: 'Figtree, sans-serif' }}>Budget</label>
+            <label className="block text-xs mb-1" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textMuted }}>Budget</label>
             <select
               value={budgetRange}
               onChange={(e) => updateParam('budget', e.target.value)}
-              className="w-full min-w-[160px] px-3 py-2 rounded-lg text-sm text-white appearance-none cursor-pointer"
+              className="w-full min-w-[160px] px-3 py-2 rounded-lg text-sm appearance-none cursor-pointer"
               style={{
-                background: '#111827',
-                border: '1px solid rgba(255,255,255,0.06)',
+                background: tokens.bgInput,
+                border: `1px solid ${tokens.borderDefault}`,
+                color: tokens.textPrimary,
                 fontFamily: 'Figtree, sans-serif',
               }}
             >
@@ -163,21 +171,22 @@ export default function BrowseJobsPage() {
                 <option key={r.label} value={r.label}>{r.label}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-2 top-8 w-4 h-4 text-slate-500 pointer-events-none" />
+            <ChevronDown className="absolute right-2 top-8 w-4 h-4 pointer-events-none" style={{ color: tokens.textMuted }} />
           </div>
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-xs text-slate-500 mb-1" style={{ fontFamily: 'Figtree, sans-serif' }}>Search</label>
+            <label className="block text-xs mb-1" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textMuted }}>Search</label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: tokens.textMuted }} />
               <input
                 type="text"
                 placeholder="Search jobs..."
                 value={search}
                 onChange={(e) => updateParam('search', e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-lg text-sm text-white placeholder-slate-500"
+                className="w-full pl-10 pr-4 py-2 rounded-lg text-sm"
                 style={{
-                  background: '#111827',
-                  border: '1px solid rgba(255,255,255,0.06)',
+                  background: tokens.bgInput,
+                  border: `1px solid ${tokens.borderDefault}`,
+                  color: tokens.textPrimary,
                   fontFamily: 'Figtree, sans-serif',
                 }}
               />
@@ -202,26 +211,26 @@ export default function BrowseJobsPage() {
                       whileHover={{ y: -4 }}
                       className="p-6 rounded-xl h-full transition-colors cursor-pointer"
                       style={{
-                        background: '#111827',
-                        border: '1px solid rgba(255,255,255,0.06)',
+                        background: tokens.bgCard,
+                        border: `1px solid ${tokens.borderDefault}`,
                       }}
                       onHoverStart={(e) => {
-                        e.currentTarget.style.borderColor = '#6366F1';
+                        e.currentTarget.style.borderColor = tokens.borderHover;
                       }}
                       onHoverEnd={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)';
+                        e.currentTarget.style.borderColor = tokens.borderDefault;
                       }}
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm text-slate-400 mb-1" style={{ fontFamily: 'Figtree, sans-serif' }}>
+                          <p className="text-sm mb-1" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textSecondary }}>
                             {company?.name ?? 'Unknown Company'}
                           </p>
-                          <h3 className="text-xl font-semibold text-white mb-2" style={{ fontFamily: 'Figtree, sans-serif' }}>
+                          <h3 className="text-xl font-semibold mb-2" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textPrimary }}>
                             {job.title}
                           </h3>
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="text-sm text-slate-400">
+                            <span className="text-sm" style={{ color: tokens.textSecondary }}>
                               {CATEGORY_ICONS[job.category] && <span className="mr-1">{CATEGORY_ICONS[job.category]}</span>}
                               {job.category}
                             </span>
@@ -230,22 +239,22 @@ export default function BrowseJobsPage() {
                             {job.requirements.slice(0, 3).map((r) => (
                               <span
                                 key={r}
-                                className="px-2 py-0.5 rounded text-xs text-slate-300"
-                                style={{ background: 'rgba(255,255,255,0.06)', fontFamily: 'Figtree, sans-serif' }}
+                                className="px-2 py-0.5 rounded text-xs"
+                                style={{ background: tokens.bgSurface, color: tokens.textSecondary, fontFamily: 'Figtree, sans-serif' }}
                               >
                                 {r}
                               </span>
                             ))}
                             {job.requirements.length > 3 && (
-                              <span className="px-2 py-0.5 rounded text-xs text-slate-500" style={{ fontFamily: 'Figtree, sans-serif' }}>
+                              <span className="px-2 py-0.5 rounded text-xs" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textMuted }}>
                                 +{job.requirements.length - 3} more
                               </span>
                             )}
                           </div>
-                          <p className="text-sm text-indigo-400 font-medium mb-2" style={{ fontFamily: 'Figtree, sans-serif' }}>
+                          <p className="text-sm font-medium mb-2" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textAccent }}>
                             {formatBudget(job.budgetMin, job.budgetMax, job.budgetType)}
                           </p>
-                          <p className="text-xs text-slate-500" style={{ fontFamily: 'Figtree, sans-serif' }}>
+                          <p className="text-xs" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textMuted }}>
                             {formatDaysAgo(job.createdAt)}
                           </p>
                         </div>
@@ -261,8 +270,8 @@ export default function BrowseJobsPage() {
                             {job.status.replace('_', ' ')}
                           </span>
                           <span
-                            className="px-2.5 py-1 rounded-full text-xs font-medium text-slate-300"
-                            style={{ background: 'rgba(255,255,255,0.06)', fontFamily: 'Figtree, sans-serif' }}
+                            className="px-2.5 py-1 rounded-full text-xs font-medium"
+                            style={{ background: tokens.bgSurface, color: tokens.textSecondary, fontFamily: 'Figtree, sans-serif' }}
                           >
                             {job.applicationsCount} applications
                           </span>
@@ -281,12 +290,12 @@ export default function BrowseJobsPage() {
             className="flex flex-col items-center justify-center py-20 px-4"
           >
             <div className="w-24 h-24 rounded-full flex items-center justify-center mb-6" style={{ background: 'rgba(99, 102, 241, 0.1)' }}>
-              <Briefcase className="w-12 h-12 text-indigo-400" />
+              <Briefcase className="w-12 h-12" style={{ color: tokens.textAccent }} />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2" style={{ fontFamily: 'Figtree, sans-serif' }}>
+            <h3 className="text-xl font-semibold mb-2" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textPrimary }}>
               No jobs found
             </h3>
-            <p className="text-slate-400 text-center max-w-md" style={{ fontFamily: 'Figtree, sans-serif' }}>
+            <p className="text-center max-w-md" style={{ fontFamily: 'Figtree, sans-serif', color: tokens.textSecondary }}>
               Try adjusting your filters or search query to find more opportunities.
             </p>
           </motion.div>

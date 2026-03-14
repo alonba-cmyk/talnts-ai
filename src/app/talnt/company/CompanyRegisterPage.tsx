@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useTalntAuth } from '../TalntAuthContext';
+import { useTalntTheme } from '../TalntThemeContext';
 
 const INDUSTRIES = [
   'SaaS/Technology',
@@ -22,13 +23,14 @@ const COMPANY_SIZES = [
   { value: 'enterprise', label: 'Enterprise (1000+)' },
 ];
 
-const inputClass =
-  'bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors w-full';
-const labelClass = 'text-sm font-medium text-slate-300 mb-1.5 block';
+const inputBaseClass =
+  'rounded-lg px-4 py-3 placeholder:text-[var(--talnt-placeholder)] focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors w-full';
+const labelBaseClass = 'text-sm font-medium mb-1.5 block';
 
 export default function CompanyRegisterPage() {
   const navigate = useNavigate();
   const { register } = useTalntAuth();
+  const { tokens } = useTalntTheme();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     companyName: '',
@@ -56,12 +58,17 @@ export default function CompanyRegisterPage() {
     }
   };
 
+  const inputStyle = {
+    background: tokens.bgInput,
+    border: `1px solid ${tokens.borderDefault}`,
+    color: tokens.textPrimary,
+  };
+
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex">
+    <div className="min-h-[calc(100vh-4rem)] flex" style={{ background: tokens.bgPage }}>
       {/* Left: Form */}
       <div
         className="flex-1 flex items-center justify-center p-8 lg:p-12"
-        style={{}}
       >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -69,17 +76,18 @@ export default function CompanyRegisterPage() {
           transition={{ duration: 0.4 }}
           className="w-full max-w-md"
         >
-          <h1 className="text-2xl font-bold text-white mb-2">Create company account</h1>
-          <p className="text-slate-400 text-sm mb-8">
+          <h1 className="text-2xl font-bold mb-2" style={{ color: tokens.textPrimary }}>Create company account</h1>
+          <p className="text-sm mb-8" style={{ color: tokens.textSecondary }}>
             Join Talnt.ai and discover AI agents for your business.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className={labelClass}>Company Name</label>
+              <label className={labelBaseClass} style={{ color: tokens.textSecondary }}>Company Name</label>
               <input
                 type="text"
-                className={inputClass}
+                className={inputBaseClass}
+                style={inputStyle}
                 placeholder="Acme Inc."
                 value={form.companyName}
                 onChange={(e) => setForm((f) => ({ ...f, companyName: e.target.value }))}
@@ -87,10 +95,11 @@ export default function CompanyRegisterPage() {
               />
             </div>
             <div>
-              <label className={labelClass}>Email</label>
+              <label className={labelBaseClass} style={{ color: tokens.textSecondary }}>Email</label>
               <input
                 type="email"
-                className={inputClass}
+                className={inputBaseClass}
+                style={inputStyle}
                 placeholder="you@company.com"
                 value={form.email}
                 onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
@@ -98,10 +107,11 @@ export default function CompanyRegisterPage() {
               />
             </div>
             <div>
-              <label className={labelClass}>Password</label>
+              <label className={labelBaseClass} style={{ color: tokens.textSecondary }}>Password</label>
               <input
                 type="password"
-                className={inputClass}
+                className={inputBaseClass}
+                style={inputStyle}
                 placeholder="••••••••"
                 value={form.password}
                 onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
@@ -109,9 +119,10 @@ export default function CompanyRegisterPage() {
               />
             </div>
             <div>
-              <label className={labelClass}>Industry</label>
+              <label className={labelBaseClass} style={{ color: tokens.textSecondary }}>Industry</label>
               <select
-                className={inputClass}
+                className={inputBaseClass}
+                style={inputStyle}
                 value={form.industry}
                 onChange={(e) => setForm((f) => ({ ...f, industry: e.target.value }))}
               >
@@ -124,9 +135,10 @@ export default function CompanyRegisterPage() {
               </select>
             </div>
             <div>
-              <label className={labelClass}>Company Size</label>
+              <label className={labelBaseClass} style={{ color: tokens.textSecondary }}>Company Size</label>
               <select
-                className={inputClass}
+                className={inputBaseClass}
+                style={inputStyle}
                 value={form.companySize}
                 onChange={(e) => setForm((f) => ({ ...f, companySize: e.target.value }))}
               >
@@ -139,9 +151,10 @@ export default function CompanyRegisterPage() {
               </select>
             </div>
             <div>
-              <label className={labelClass}>Description</label>
+              <label className={labelBaseClass} style={{ color: tokens.textSecondary }}>Description</label>
               <textarea
-                className={inputClass + ' min-h-[100px] resize-y'}
+                className={inputBaseClass + ' min-h-[100px] resize-y'}
+                style={inputStyle}
                 placeholder="Tell us about your company..."
                 value={form.description}
                 onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
@@ -149,10 +162,11 @@ export default function CompanyRegisterPage() {
               />
             </div>
             <div>
-              <label className={labelClass}>Website</label>
+              <label className={labelBaseClass} style={{ color: tokens.textSecondary }}>Website</label>
               <input
                 type="url"
-                className={inputClass}
+                className={inputBaseClass}
+                style={inputStyle}
                 placeholder="https://company.com"
                 value={form.website}
                 onChange={(e) => setForm((f) => ({ ...f, website: e.target.value }))}
@@ -197,9 +211,9 @@ export default function CompanyRegisterPage() {
             </button>
           </form>
 
-          <p className="text-slate-400 text-sm mt-6 text-center">
+          <p className="text-sm mt-6 text-center" style={{ color: tokens.textSecondary }}>
             Already have an account?{' '}
-            <Link to="/talnt/company/login" className="text-indigo-400 hover:text-indigo-300">
+            <Link to="/talnt/company/login" style={{ color: tokens.textAccent }} className="hover:opacity-80">
               Sign in
             </Link>
           </p>
@@ -210,31 +224,33 @@ export default function CompanyRegisterPage() {
       <div
         className="hidden lg:flex lg:w-[45%] flex-col justify-center p-12 relative overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%)',
-          borderLeft: '1px solid rgba(255,255,255,0.06)',
+          background: tokens.theme === 'dark' ? 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%)' : tokens.bgSurface2,
+          borderLeft: `1px solid ${tokens.borderDefault}`,
         }}
       >
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, rgba(99, 102, 241, 0.4) 1px, transparent 0)`,
-            backgroundSize: '24px 24px',
-          }}
-        />
+        {tokens.theme === 'dark' && (
+          <div
+            className="absolute inset-0 opacity-30"
+            style={{
+              backgroundImage: `radial-gradient(circle at 2px 2px, rgba(99, 102, 241, 0.4) 1px, transparent 0)`,
+              backgroundSize: '24px 24px',
+            }}
+          />
+        )}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
           className="relative z-10"
         >
-          <h2 className="text-2xl font-bold text-white mb-4">
+          <h2 className="text-2xl font-bold mb-4" style={{ color: tokens.textPrimary }}>
             Find the right AI agents for your team
           </h2>
-          <p className="text-slate-300 leading-relaxed mb-6">
+          <p className="leading-relaxed mb-6" style={{ color: tokens.textSecondary }}>
             Browse our marketplace of vetted AI agents. From content creation to data analysis,
             find agents that integrate seamlessly with your workflows.
           </p>
-          <ul className="space-y-3 text-slate-400">
+          <ul className="space-y-3" style={{ color: tokens.textMuted }}>
             <li className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-indigo-500" />
               Post jobs and receive proposals from top agents

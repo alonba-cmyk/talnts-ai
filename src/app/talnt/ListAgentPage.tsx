@@ -104,9 +104,8 @@ export default function ListAgentPage() {
   };
 
   // Shared input style
-  const isDark = tokens.theme === 'dark';
   const inputStyle = {
-    background: isDark ? 'rgba(255,255,255,0.05)' : tokens.bgInput,
+    background: tokens.bgInput,
     border: `1px solid ${tokens.borderDefault}`,
     color: tokens.textPrimary,
     borderRadius: '0.625rem',
@@ -245,9 +244,9 @@ export default function ListAgentPage() {
                               onClick={() => toggleCategory(cat)}
                               className="px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-150 cursor-pointer"
                               style={{
-                                background: active ? 'rgba(99,102,241,0.15)' : tokens.bgSurface,
-                                color: active ? '#818CF8' : tokens.textSecondary,
-                                border: `1px solid ${active ? 'rgba(99,102,241,0.35)' : tokens.borderDefault}`,
+                                background: active ? tokens.bgPillActive : tokens.bgSurface,
+                                color: active ? tokens.textAccent : tokens.textSecondary,
+                                border: `1px solid ${active ? tokens.borderHover : tokens.borderDefault}`,
                               }}
                             >
                               {cat}
@@ -301,9 +300,9 @@ export default function ListAgentPage() {
                             onClick={() => set('securityClearance', c)}
                             className="py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer capitalize"
                             style={{
-                              background: form.securityClearance === c ? 'rgba(99,102,241,0.12)' : tokens.bgSurface,
-                              color: form.securityClearance === c ? '#818CF8' : tokens.textSecondary,
-                              border: `1px solid ${form.securityClearance === c ? 'rgba(99,102,241,0.35)' : tokens.borderDefault}`,
+                              background: form.securityClearance === c ? tokens.bgPillActive : tokens.bgSurface,
+                              color: form.securityClearance === c ? tokens.textAccent : tokens.textSecondary,
+                              border: `1px solid ${form.securityClearance === c ? tokens.borderHover : tokens.borderDefault}`,
                             }}
                           >
                             {c}
@@ -320,11 +319,11 @@ export default function ListAgentPage() {
                           onClick={() => set('exclusivity', 'exclusive')}
                           className="flex flex-col items-start gap-1 p-4 rounded-xl text-left transition-all duration-150 cursor-pointer"
                           style={{
-                            background: form.exclusivity === 'exclusive' ? 'rgba(251,191,36,0.08)' : tokens.bgSurface,
-                            border: `1px solid ${form.exclusivity === 'exclusive' ? 'rgba(251,191,36,0.35)' : tokens.borderDefault}`,
+                            background: form.exclusivity === 'exclusive' ? tokens.bgPillActive : tokens.bgSurface,
+                            border: `1px solid ${form.exclusivity === 'exclusive' ? tokens.borderHover : tokens.borderDefault}`,
                           }}
                         >
-                          <span className="flex items-center gap-1.5 text-sm font-bold" style={{ color: form.exclusivity === 'exclusive' ? '#FBBF24' : tokens.textPrimary }}>
+                          <span className="flex items-center gap-1.5 text-sm font-bold" style={{ color: form.exclusivity === 'exclusive' ? tokens.textAccent : tokens.textPrimary }}>
                             <Star size={13} /> Exclusive
                           </span>
                           <span className="text-[11px]" style={{ color: tokens.textMuted }}>Works with one company at a time</span>
@@ -334,11 +333,11 @@ export default function ListAgentPage() {
                           onClick={() => set('exclusivity', 'multi_client')}
                           className="flex flex-col items-start gap-1 p-4 rounded-xl text-left transition-all duration-150 cursor-pointer"
                           style={{
-                            background: form.exclusivity === 'multi_client' ? 'rgba(96,165,250,0.08)' : tokens.bgSurface,
-                            border: `1px solid ${form.exclusivity === 'multi_client' ? 'rgba(96,165,250,0.35)' : tokens.borderDefault}`,
+                            background: form.exclusivity === 'multi_client' ? tokens.bgPillActive : tokens.bgSurface,
+                            border: `1px solid ${form.exclusivity === 'multi_client' ? tokens.borderHover : tokens.borderDefault}`,
                           }}
                         >
-                          <span className="flex items-center gap-1.5 text-sm font-bold" style={{ color: form.exclusivity === 'multi_client' ? '#60A5FA' : tokens.textPrimary }}>
+                          <span className="flex items-center gap-1.5 text-sm font-bold" style={{ color: form.exclusivity === 'multi_client' ? tokens.textAccent : tokens.textPrimary }}>
                             <Users size={13} /> Multi-client
                           </span>
                           <span className="text-[11px]" style={{ color: tokens.textMuted }}>Available to multiple companies</span>
@@ -413,7 +412,7 @@ export default function ListAgentPage() {
                         </div>
                         <div className="flex justify-between">
                           <span style={{ color: tokens.textMuted }}>Exclusivity</span>
-                          <span style={{ color: form.exclusivity === 'exclusive' ? '#FBBF24' : '#60A5FA' }}>
+                          <span style={{ color: form.exclusivity ? tokens.textAccent : tokens.textSecondary }}>
                             {form.exclusivity === 'exclusive' ? '⭐ Exclusive' : form.exclusivity === 'multi_client' ? '⇄ Multi-client' : '—'}
                           </span>
                         </div>

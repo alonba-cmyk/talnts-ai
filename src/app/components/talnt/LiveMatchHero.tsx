@@ -413,7 +413,7 @@ function MatchView({ role, agent }: { role: Role; agent: Agent }) {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="w-[280px] rounded-2xl p-5 flex flex-col"
+          className="w-[280px] max-w-full rounded-2xl p-5 flex flex-col"
           style={{
             background: tokens.bgCard,
             border: `1px solid ${tokens.borderDefault}`,
@@ -513,7 +513,7 @@ function MatchView({ role, agent }: { role: Role; agent: Agent }) {
                     : '0 0 0 transparent',
                 }}
                 transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                className="w-[260px] rounded-2xl p-5 flex flex-col"
+                className="w-[260px] max-w-full rounded-2xl p-5 flex flex-col"
                 style={{
                   background: matched ? `rgba(${agent.accentRgb}, 0.04)` : tokens.bgCard,
                   border: `1px solid ${matched ? `rgba(${agent.accentRgb}, 0.2)` : tokens.borderDefault}`,
@@ -991,7 +991,7 @@ function PartnerView({ role, agent }: { role: Role; agent: Agent }) {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-        className="w-[240px] flex-shrink-0 rounded-2xl p-5 flex flex-col"
+        className="w-[240px] max-w-full flex-shrink-0 rounded-2xl p-5 flex flex-col"
         style={{
           background: `rgba(${agent.accentRgb}, 0.05)`,
           border: `1px solid rgba(${agent.accentRgb}, 0.18)`,
@@ -1084,7 +1084,7 @@ export default function LiveMatchHero() {
       style={{ transition: 'background 0.3s' }}
     >
 
-      <div className="relative z-10 w-full max-w-[1440px] mx-auto px-6 lg:px-12 xl:px-20 py-12">
+      <div className="relative z-10 w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-20 py-12">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-12 xl:gap-16 mb-8">
 
           {/* ── Left: Text + CTAs ── */}

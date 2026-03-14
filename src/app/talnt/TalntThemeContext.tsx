@@ -177,8 +177,17 @@ export function TalntThemeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-talnt-theme', theme);
-  }, [theme]);
+    const root = document.documentElement;
+    root.setAttribute('data-talnt-theme', theme);
+    root.style.setProperty('--talnt-placeholder', tokens.textPlaceholder);
+    root.style.setProperty('--talnt-input-bg', tokens.bgInput);
+    root.style.setProperty('--talnt-input-border', tokens.borderDefault);
+    root.style.setProperty('--talnt-text-primary', tokens.textPrimary);
+    root.style.setProperty('--talnt-text-secondary', tokens.textSecondary);
+    root.style.setProperty('--talnt-text-muted', tokens.textMuted);
+    root.style.setProperty('--talnt-text-accent', tokens.textAccent);
+    root.style.setProperty('--talnt-bg-card-hover', tokens.bgCardHover);
+  }, [theme, tokens]);
 
   const tokens = theme === 'dark' ? DARK_TOKENS : LIGHT_TOKENS;
 

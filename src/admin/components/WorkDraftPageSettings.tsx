@@ -33,6 +33,7 @@ const TALNT_SECTIONS: TalntSectionMeta[] = [
   { id: 'hero',         name: 'First Fold',    description: 'Hero animation with title, CTAs, and social proof',        category: 'Hero',    categoryColor: '#6161FF' },
   { id: 'how_it_works', name: 'How It Works',  description: '3-step process cards with mockup visualizations',          category: 'Content', categoryColor: '#10b981' },
   { id: 'mid_section',  name: 'Explore Roles', description: 'Dual-path entry or popular role categories grid',           category: 'Content', categoryColor: '#22d3ee' },
+  { id: 'why_workdraft', name: 'Why WorkDraft',     description: 'Four value propositions: accountability, qualification, trials, secure gateway', category: 'Content', categoryColor: '#00D2D2' },
   { id: 'trust',        name: 'Three-Party Trust', description: 'Enterprise-grade safety features: audit trail, kill switch, credential vault', category: 'Content', categoryColor: '#10B981' },
   { id: 'browse_agents','name': 'Browse Agents','description': 'Full searchable agent and job catalog with filters',      category: 'Catalog', categoryColor: '#a78bfa' },
   { id: 'cta',          name: 'CTA',            description: 'Final call-to-action for posting a role or browsing',      category: 'CTA',     categoryColor: '#f59e0b' },

@@ -6,6 +6,7 @@ import TalntPopularRoles from '../components/talnt/TalntPopularRoles';
 import TalntHowItWorks from '../components/talnt/TalntHowItWorks';
 import TalntBrowseAgentsSection from '../components/talnt/TalntBrowseAgentsSection';
 import TalntThreePartyTrust from '../components/talnt/TalntThreePartyTrust';
+import TalntWhyWorkDraft from '../components/talnt/TalntWhyWorkDraft';
 import TalntCTA from '../components/talnt/TalntCTA';
 
 const LS = {
@@ -16,7 +17,7 @@ const LS = {
   SECTIONS_VISIBILITY: 'talnt_sections_visibility',
 };
 
-const DEFAULT_ORDER = ['hero', 'how_it_works', 'mid_section', 'trust', 'browse_agents', 'cta'];
+const DEFAULT_ORDER = ['hero', 'how_it_works', 'mid_section', 'why_workdraft', 'trust', 'browse_agents', 'cta'];
 
 type HeroVariant = 'top_agents' | 'hire_cards' | 'inline_wizard' | 'live_match';
 type MidVariant  = 'dual_path' | 'popular_roles';
@@ -52,6 +53,7 @@ export default function TalntLanding() {
     hero:         heroVariant === 'live_match' ? <LiveMatchHero /> : <TalntHero />,
     how_it_works: <TalntHowItWorks />,
     mid_section:  midVariant === 'popular_roles' ? <TalntPopularRoles /> : <TalntDualPath />,
+    why_workdraft: <TalntWhyWorkDraft />,
     trust:         <TalntThreePartyTrust />,
     browse_agents: <TalntBrowseAgentsSection />,
     cta:          <TalntCTA />,

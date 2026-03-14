@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAgentSearch } from '../../talnt/AgentSearchContext';
 import { useAgents } from '../../talnt/useTalnt';
+import { useTalntTheme } from '../../talnt/TalntThemeContext';
 import { CATEGORY_ICONS } from '../../talnt/mockData';
 import { getCategoryVisual, CATEGORY_VISUALS } from '../../talnt/agentVisuals';
 import AgentAvatar from './AgentAvatar';
@@ -40,6 +41,7 @@ function getTrustColor(rate: number) {
 
 /* ─── Trust Score Ring ─── */
 function TrustRing({ score, size = 48, color: overrideColor }: { score: number; size?: number; color?: string }) {
+  const { tokens } = useTalntTheme();
   const strokeWidth = 3;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -49,7 +51,7 @@ function TrustRing({ score, size = 48, color: overrideColor }: { score: number; 
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="rotate-[-90deg]">
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth={strokeWidth} />
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={tokens.bgSurface2} strokeWidth={strokeWidth} />
         <motion.circle
           cx={size / 2} cy={size / 2} r={radius} fill="none"
           stroke={color} strokeWidth={strokeWidth} strokeLinecap="round"
@@ -79,6 +81,7 @@ function useRotatingPlaceholder(texts: string[], interval = 3000) {
 
 /* ─── Agent Card ─── */
 function AgentCard({ agent, index, onClick, onChat }: { agent: TalntAgent; index: number; onClick: () => void; onChat: () => void }) {
+  const { tokens } = useTalntTheme();
   const visual = getCategoryVisual(agent.categories);
 
   return (
@@ -90,10 +93,10 @@ function AgentCard({ agent, index, onClick, onChat }: { agent: TalntAgent; index
       transition={{ duration: 0.35, delay: Math.min(index * 0.04, 0.4) }}
       onClick={onClick}
       className="group relative rounded-xl overflow-hidden cursor-pointer transition-all duration-300"
-      style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.06)' }}
+      style={{ background: tokens.bgCard, border: `1px solid ${tokens.borderDefault}` }}
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
       onHoverStart={(e: any) => { if (e.currentTarget) e.currentTarget.style.borderColor = visual.hoverBorder; }}
-      onHoverEnd={(e: any) => { if (e.currentTarget) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; }}
+      onHoverEnd={(e: any) => { if (e.currentTarget) e.currentTarget.style.borderColor = tokens.borderDefault; }}
     >
       <div
         className="absolute top-0 left-0 right-0 h-24 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
@@ -113,7 +116,7 @@ function AgentCard({ agent, index, onClick, onChat }: { agent: TalntAgent; index
 
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="text-white font-semibold text-sm truncate">{agent.name}</h3>
+                <h3 className="font-semibold text-sm truncate" style={{ color: tokens.textPrimary }}>{agent.name}</h3>
                 {agent.isVerified && (
                   <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full shrink-0"
                     style={{ background: 'rgba(16,185,129,0.15)' }}
@@ -132,9 +135,9 @@ function AgentCard({ agent, index, onClick, onChat }: { agent: TalntAgent; index
                     style={{ filter: 'brightness(0.9)' }}
                   />
                 )}
-                <span className="text-[11px] text-slate-400">{agent.framework}</span>
-                <span className="text-slate-600 text-[10px]">&middot;</span>
-                <span className="text-[11px] text-slate-500">{agent.model}</span>
+                <span className="text-[11px]" style={{ color: tokens.textSecondary }}>{agent.framework}</span>
+                <span className="text-[10px]" style={{ color: tokens.textMuted }}>&middot;</span>
+                <span className="text-[11px]" style={{ color: tokens.textMuted }}>{agent.model}</span>
               </div>
             </div>
           </div>
@@ -156,24 +159,24 @@ function AgentCard({ agent, index, onClick, onChat }: { agent: TalntAgent; index
           })}
         </div>
 
-        <div className="flex items-center gap-4 mb-3 py-2 px-3 rounded-lg" style={{ background: 'rgba(255,255,255,0.02)' }}>
+        <div className="flex items-center gap-4 mb-3 py-2 px-3 rounded-lg" style={{ background: tokens.bgSurface }}>
           <div className="flex items-center gap-1.5">
             <Zap size={11} style={{ color: visual.accentColor }} />
-            <span className="text-[11px] text-slate-400">{agent.avgResponseTime}</span>
+            <span className="text-[11px]" style={{ color: tokens.textSecondary }}>{agent.avgResponseTime}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Briefcase size={11} style={{ color: visual.accentColor, opacity: 0.7 }} />
-            <span className="text-[11px] text-slate-400">{agent.jobsCompleted} jobs</span>
+            <span className="text-[11px]" style={{ color: tokens.textSecondary }}>{agent.jobsCompleted} jobs</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <Shield size={11} className="text-purple-400" />
-            <span className="text-[11px] text-slate-400 capitalize">{agent.securityClearance}</span>
+            <Shield size={11} style={{ color: tokens.textAccent }} />
+            <span className="text-[11px] capitalize" style={{ color: tokens.textSecondary }}>{agent.securityClearance}</span>
           </div>
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-[10px] text-slate-600">
-            Operated by <span className="text-slate-400">{agent.operatorName}</span>
+          <span className="text-[10px]" style={{ color: tokens.textMuted }}>
+            Operated by <span style={{ color: tokens.textSecondary }}>{agent.operatorName}</span>
           </span>
           <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
@@ -202,6 +205,7 @@ function AgentCard({ agent, index, onClick, onChat }: { agent: TalntAgent; index
 
 /* ─── Main Overlay ─── */
 export default function AgentSearchOverlay() {
+  const { tokens } = useTalntTheme();
   const { isOpen, closeSearch, initialCategory, initialFramework } = useAgentSearch();
   const navigate = useNavigate();
   const { filterAgents } = useAgents();
@@ -291,7 +295,7 @@ export default function AgentSearchOverlay() {
             exit={{ opacity: 0, y: 30 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             className="fixed inset-x-0 top-0 bottom-0 z-[101] flex flex-col"
-            style={{ fontFamily: 'Figtree, sans-serif' }}
+            style={{ fontFamily: 'Figtree, sans-serif', background: tokens.bgPage }}
           >
             <div className="flex-1 overflow-y-auto" onClick={(e) => { if (e.target === e.currentTarget) closeSearch(); }}>
               <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-8 pb-20">
@@ -300,8 +304,8 @@ export default function AgentSearchOverlay() {
                 <div className="flex justify-end mb-4">
                   <button
                     onClick={closeSearch}
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-white transition-colors"
-                    style={{ background: 'rgba(255,255,255,0.06)' }}
+                    className="w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:text-[var(--talnt-text-primary)]"
+                    style={{ background: tokens.bgSurface, color: tokens.textSecondary }}
                   >
                     <X size={20} />
                   </button>
@@ -313,19 +317,20 @@ export default function AgentSearchOverlay() {
                     style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.3), rgba(139,92,246,0.2))' }}
                   />
                   <div className="relative flex items-center rounded-2xl overflow-hidden"
-                    style={{ background: 'rgba(17,24,39,0.95)', border: '1px solid rgba(99,102,241,0.3)' }}
+                    style={{ background: tokens.bgInput, border: `1px solid ${tokens.borderHover}` }}
                   >
-                    <Search size={20} className="text-indigo-400 ml-5 shrink-0" />
+                    <Search size={20} className="ml-5 shrink-0" style={{ color: tokens.textAccent }} />
                     <input
                       ref={inputRef}
                       type="text"
                       value={search}
                       onChange={e => setSearch(e.target.value)}
                       placeholder={placeholder}
-                      className="w-full bg-transparent text-white text-lg px-4 py-4 outline-none placeholder:text-slate-600"
+                      className="w-full bg-transparent text-lg px-4 py-4 outline-none placeholder:text-[var(--talnt-placeholder)]"
+                      style={{ color: tokens.textPrimary }}
                     />
                     {search && (
-                      <button onClick={() => setSearch('')} className="mr-4 text-slate-500 hover:text-white transition-colors shrink-0">
+                      <button onClick={() => setSearch('')} className="mr-4 transition-colors shrink-0 hover:text-[var(--talnt-text-primary)]" style={{ color: tokens.textMuted }}>
                         <X size={16} />
                       </button>
                     )}
@@ -340,8 +345,8 @@ export default function AgentSearchOverlay() {
                       className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200"
                       style={{
                         background: !category ? 'rgba(99,102,241,0.2)' : 'transparent',
-                        border: `1px solid ${!category ? 'rgba(99,102,241,0.4)' : 'rgba(255,255,255,0.08)'}`,
-                        color: !category ? '#818CF8' : '#94A3B8',
+                        border: `1px solid ${!category ? 'rgba(99,102,241,0.4)' : tokens.borderDefault}`,
+                        color: !category ? tokens.textAccent : tokens.textSecondary,
                         boxShadow: !category ? '0 0 12px rgba(99,102,241,0.15)' : 'none',
                       }}
                     >
@@ -357,8 +362,8 @@ export default function AgentSearchOverlay() {
                           className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200"
                           style={{
                             background: isActive ? catVisual.pillBg : 'transparent',
-                            border: `1px solid ${isActive ? catVisual.hoverBorder : 'rgba(255,255,255,0.08)'}`,
-                            color: isActive ? catVisual.pillText : '#94A3B8',
+                            border: `1px solid ${isActive ? catVisual.hoverBorder : tokens.borderDefault}`,
+                            color: isActive ? catVisual.pillText : tokens.textSecondary,
                             boxShadow: isActive ? `0 0 12px ${catVisual.glowColor}` : 'none',
                           }}
                         >
@@ -381,9 +386,9 @@ export default function AgentSearchOverlay() {
                           onClick={() => toggleFramework(fw.name)}
                           className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200"
                           style={{
-                            background: isActive ? 'rgba(139,92,246,0.15)' : 'rgba(255,255,255,0.03)',
-                            border: `1px solid ${isActive ? 'rgba(139,92,246,0.35)' : 'rgba(255,255,255,0.06)'}`,
-                            color: isActive ? '#A78BFA' : '#64748B',
+                            background: isActive ? 'rgba(139,92,246,0.15)' : tokens.bgSurface,
+                            border: `1px solid ${isActive ? 'rgba(139,92,246,0.35)' : tokens.borderDefault}`,
+                            color: isActive ? tokens.textAccent : tokens.textMuted,
                           }}
                         >
                           {fw.logo && (
@@ -400,15 +405,16 @@ export default function AgentSearchOverlay() {
 
                 {/* Results info */}
                 <div className="flex items-center justify-between mb-6">
-                  <span className="text-sm text-slate-500">
-                    <span className="text-white font-semibold">{filteredAgents.length}</span> agents found
+                  <span className="text-sm" style={{ color: tokens.textSecondary }}>
+                    <span className="font-semibold" style={{ color: tokens.textPrimary }}>{filteredAgents.length}</span> agents found
                     {(category || framework || search) && (
                       <button onClick={() => { setCategory(''); setFramework(''); setSearch(''); }}
-                        className="ml-3 text-indigo-400 text-xs hover:text-indigo-300 transition-colors"
+                        className="ml-3 text-xs transition-colors hover:opacity-80"
+                        style={{ color: tokens.textAccent }}
                       >Clear all filters</button>
                     )}
                   </span>
-                  <div className="flex items-center gap-1 text-[10px] text-slate-600 tracking-wider uppercase">
+                  <div className="flex items-center gap-1 text-[10px] tracking-wider uppercase" style={{ color: tokens.textMuted }}>
                     <Clock size={10} /> Sorted by trust score
                   </div>
                 </div>
@@ -440,16 +446,16 @@ export default function AgentSearchOverlay() {
                     <div className="w-20 h-20 rounded-full flex items-center justify-center mb-5"
                       style={{ background: 'rgba(99,102,241,0.1)' }}
                     >
-                      <Search size={32} className="text-indigo-400/50" />
+                      <Search size={32} style={{ color: tokens.textAccent, opacity: 0.5 }} />
                     </div>
-                    <h3 className="text-lg font-semibold text-white mb-2">No agents match your search</h3>
-                    <p className="text-slate-500 text-sm text-center max-w-sm">
+                    <h3 className="text-lg font-semibold mb-2" style={{ color: tokens.textPrimary }}>No agents match your search</h3>
+                    <p className="text-sm text-center max-w-sm" style={{ color: tokens.textSecondary }}>
                       Try adjusting your filters or search query to discover more AI agents.
                     </p>
                     <button
                       onClick={() => { setCategory(''); setFramework(''); setSearch(''); }}
-                      className="mt-4 px-5 py-2 rounded-lg text-sm font-medium text-indigo-400 transition-colors hover:text-white"
-                      style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)' }}
+                      className="mt-4 px-5 py-2 rounded-lg text-sm font-medium transition-colors"
+                      style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)', color: tokens.textAccent }}
                     >
                       Clear all filters
                     </button>
