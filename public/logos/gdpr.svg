@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="white">
+  <!-- 12 six-pointed stars in EU circle arrangement -->
+  <g transform="translate(100,88)">
+    <g>
+      <!-- star function: 6-pointed star -->
+      <polygon points="0,-18 5.2,-9 15.6,-9 7.8,0 10.4,9 0,4.5 -10.4,9 -7.8,0 -15.6,-9 -5.2,-9" transform="translate(0,-52)"/>
+      <polygon points="0,-18 5.2,-9 15.6,-9 7.8,0 10.4,9 0,4.5 -10.4,9 -7.8,0 -15.6,-9 -5.2,-9" transform="translate(26,-45) rotate(0)"/>
+      <polygon points="0,-18 5.2,-9 15.6,-9 7.8,0 10.4,9 0,4.5 -10.4,9 -7.8,0 -15.6,-9 -5.2,-9" transform="translate(45,-26)"/>
+      <polygon points="0,-18 5.2,-9 15.6,-9 7.8,0 10.4,9 0,4.5 -10.4,9 -7.8,0 -15.6,-9 -5.2,-9" transform="translate(52,0)"/>
+      <polygon points="0,-18 5.2,-9 15.6,-9 7.8,0 10.4,9 0,4.5 -10.4,9 -7.8,0 -15.6,-9 -5.2,-9" transform="translate(45,26)"/>
+      <polygon points="0,-18 5.2,-9 15.6,-9 7.8,0 10.4,9 0,4.5 -10.4,9 -7.8,0 -15.6,-9 -5.2,-9" transform="translate(26,45)"/>
+      <polygon points="0,-18 5.2,-9 15.6,-9 7.8,0 10.4,9 0,4.5 -10.4,9 -7.8,0 -15.6,-9 -5.2,-9" transform="translate(0,52)"/>
+      <polygon points="0,-18 5.2,-9 15.6,-9 7.8,0 10.4,9 0,4.5 -10.4,9 -7.8,0 -15.6,-9 -5.2,-9" transform="translate(-26,45)"/>
+      <polygon points="0,-18 5.2,-9 15.6,-9 7.8,0 10.4,9 0,4.5 -10.4,9 -7.8,0 -15.6,-9 -5.2,-9" transform="translate(-45,26)"/>
+      <polygon points="0,-18 5.2,-9 15.6,-9 7.8,0 10.4,9 0,4.5 -10.4,9 -7.8,0 -15.6,-9 -5.2,-9" transform="translate(-52,0)"/>
+      <polygon points="0,-18 5.2,-9 15.6,-9 7.8,0 10.4,9 0,4.5 -10.4,9 -7.8,0 -15.6,-9 -5.2,-9" transform="translate(-45,-26)"/>
+      <polygon points="0,-18 5.2,-9 15.6,-9 7.8,0 10.4,9 0,4.5 -10.4,9 -7.8,0 -15.6,-9 -5.2,-9" transform="translate(-26,-45)"/>
+    </g>
+  </g>
+  <text x="100" y="100" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="800" fill="white" text-anchor="middle">GDPR</text>
+</svg>

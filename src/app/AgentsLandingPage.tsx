@@ -176,25 +176,12 @@ export default function AgentsLandingPage() {
   const copy = getAgentsCopy(tone);
   const [viewerMode, setViewerMode] = useState<ViewerMode>('agent');
 
-  // #region agent log
   const setViewerModeLogged = useCallback((updater: ViewerMode | ((m: ViewerMode) => ViewerMode)) => {
     setViewerMode((prev) => {
       const next = typeof updater === 'function' ? updater(prev) : updater;
-      fetch('http://127.0.0.1:7242/ingest/bb0db356-d413-4fb9-a0cd-afac4bde56c0',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0ca9a5'},body:JSON.stringify({sessionId:'0ca9a5',location:'AgentsLandingPage.tsx:setViewerMode',message:'viewerMode changed',data:{from:prev,to:next},timestamp:Date.now(),hypothesisId:'H1'})}).catch(()=>{});
       return next;
     });
   }, []);
-  // #endregion
-
-  useEffect(() => {
-    if (!settingsLoading && settings) {
-      fetch('http://127.0.0.1:7242/ingest/bb0db356-d413-4fb9-a0cd-afac4bde56c0',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0ca9a5'},body:JSON.stringify({sessionId:'0ca9a5',location:'AgentsLandingPage.tsx:settings',message:'settings loaded',data:{loading:settingsLoading,heroVariant,contentStyle,pageLayout},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
-    }
-  }, [settingsLoading, settings, heroVariant, contentStyle, pageLayout]);
-  useEffect(() => {
-    const branch = viewerMode === 'human' ? 'human' : contentStyle === 'v2' ? 'v2' : pageLayout === 'plain_text' ? 'plain_text' : 'v1';
-    fetch('http://127.0.0.1:7242/ingest/bb0db356-d413-4fb9-a0cd-afac4bde56c0',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0ca9a5'},body:JSON.stringify({sessionId:'0ca9a5',location:'AgentsLandingPage.tsx:contentBranch',message:'content branch',data:{viewerMode,contentStyle,pageLayout,branch},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
-  }, [viewerMode, contentStyle, pageLayout]);
 
   useEffect(() => {
     document.title = 'monday.com — Agents Welcome';

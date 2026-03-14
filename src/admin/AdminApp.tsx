@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { AdminSidebar } from './components/AdminSidebar';
 import { SiteSettingsEditor } from './components/SiteSettingsEditor';
 import { SidekickSettingsEditor } from './components/SidekickSettingsEditor';
@@ -16,10 +16,11 @@ import { SiteBuilderView } from './components/SiteBuilderView';
 import { PageBuilderEditor } from './components/PageBuilderEditor';
 import { AgentsPageSettings } from './components/AgentsPageSettings';
 import { WorkManagementPageSettings } from './components/WorkManagementPageSettings';
+import { WorkDraftPageSettings } from './components/WorkDraftPageSettings';
 import { SidekickThemeProvider } from '@/contexts/SidekickThemeContext';
-import { Globe, Target, AlertCircle, Sparkles, Building2, Package, Rocket, ExternalLink, CheckCircle, X, Wand2, FileText, BookOpen, Palette, Cpu, Swords, Users, FolderOpen, LayoutDashboard, Bot } from 'lucide-react';
+import { Globe, Target, AlertCircle, Sparkles, Building2, Package, Rocket, ExternalLink, CheckCircle, X, Wand2, FileText, BookOpen, Palette, Cpu, Swords, Users, FolderOpen, LayoutDashboard, Bot, Save } from 'lucide-react';
 
-type NavigationSection = 'site_builder' | 'site_settings' | 'knowledge_base' | 'ai_products' | 'sidekick_settings' | 'outcomes' | 'pain_points' | 'ai_transformations' | 'departments' | 'business_values' | 'pages' | 'case_studies' | 'design_assets' | 'competitors' | 'battle_cards' | 'battle_knowledge' | 'agents_page' | 'wm_page' | null;
+type NavigationSection = 'site_builder' | 'site_settings' | 'knowledge_base' | 'ai_products' | 'sidekick_settings' | 'outcomes' | 'pain_points' | 'ai_transformations' | 'departments' | 'business_values' | 'pages' | 'case_studies' | 'design_assets' | 'competitors' | 'battle_cards' | 'battle_knowledge' | 'agents_page' | 'wm_page' | 'workdraft_page' | null;
 
 type KnowledgeTab = 'products' | 'agents' | 'vibeapps' | 'sidekick';
 
@@ -30,6 +31,26 @@ export default function AdminApp() {
   const [showPublishModal, setShowPublishModal] = useState(false);
   // Page builder sub-navigation
   const [editingPageId, setEditingPageId] = useState<'homepage' | 'platform' | null>(null);
+  // Header save button
+  const activeSaveRef = useRef<(() => Promise<void>) | null>(null);
+  const [headerSaving, setHeaderSaving] = useState(false);
+  const [headerSaved, setHeaderSaved] = useState(false);
+
+  const handleRegisterSave = (fn: (() => Promise<void>) | null) => {
+    activeSaveRef.current = fn;
+  };
+
+  const handleHeaderSave = async () => {
+    if (!activeSaveRef.current) return;
+    setHeaderSaving(true);
+    try {
+      await activeSaveRef.current();
+      setHeaderSaved(true);
+      setTimeout(() => setHeaderSaved(false), 2000);
+    } finally {
+      setHeaderSaving(false);
+    }
+  };
 
   // Get the base URL for the main site (same origin, just root path)
   const getSiteUrl = () => {
@@ -78,6 +99,8 @@ export default function AdminApp() {
       case 'sidekick_settings': return 'Sidekick Theme (Legacy)';
       case 'pages': return 'Landing Pages';
       case 'agents_page': return 'Agents Page';
+      case 'wm_page': return 'monday.com';
+      case 'workdraft_page': return 'WorkDraft';
       default: return 'Admin Dashboard';
     }
   };
@@ -105,6 +128,8 @@ export default function AdminApp() {
       case 'sidekick_settings': return 'Customize Sidekick appearance, colors, and themes';
       case 'pages': return 'Create and manage landing pages with custom section configurations';
       case 'agents_page': return 'Configure the agent-facing landing page at /agents — hero variants and settings';
+      case 'wm_page': return 'Configure the monday.com landing page — hero style, board layout, departments, and use cases';
+      case 'workdraft_page': return 'Configure the WorkDraft AI agent hiring marketplace at /workdraft';
       default: return 'Select a section from the sidebar to start editing';
     }
   };
@@ -132,6 +157,8 @@ export default function AdminApp() {
       case 'sidekick_settings': return <Wand2 className="w-6 h-6 text-pink-500" />;
       case 'pages': return <FileText className="w-6 h-6 text-blue-500" />;
       case 'agents_page': return <Bot className="w-6 h-6 text-green-400" />;
+      case 'wm_page': return <LayoutDashboard className="w-6 h-6 text-violet-400" />;
+      case 'workdraft_page': return <Bot className="w-6 h-6 text-violet-400" />;
       default: return null;
     }
   };
@@ -170,6 +197,29 @@ export default function AdminApp() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              {(activeNavSection === 'agents_page' || activeNavSection === 'wm_page' || activeNavSection === 'workdraft_page') && (
+                <button
+                  onClick={handleHeaderSave}
+                  disabled={headerSaving}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all disabled:opacity-50 ${
+                    headerSaved
+                      ? 'bg-green-600 text-white'
+                      : 'bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700'
+                  }`}
+                >
+                  {headerSaved ? (
+                    <>
+                      <CheckCircle className="w-4 h-4" />
+                      Saved!
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" />
+                      {headerSaving ? 'Saving...' : 'Save Changes'}
+                    </>
+                  )}
+                </button>
+              )}
               <button 
                 onClick={() => setShowPublishModal(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 rounded-xl text-white font-medium text-sm transition-all shadow-lg shadow-emerald-900/20"
@@ -190,6 +240,7 @@ export default function AdminApp() {
               onOpenDynamicPages={() => setActiveNavSection('pages')}
               onOpenAgentsPage={() => setActiveNavSection('agents_page')}
               onOpenWmPage={() => setActiveNavSection('wm_page')}
+              onOpenWorkDraftPage={() => setActiveNavSection('workdraft_page')}
             />
           )}
 
@@ -300,12 +351,17 @@ export default function AdminApp() {
 
           {/* Agents Page Settings */}
           {activeNavSection === 'agents_page' && (
-            <AgentsPageSettings onBack={() => setActiveNavSection(null)} />
+            <AgentsPageSettings onBack={() => setActiveNavSection(null)} onRegisterSave={handleRegisterSave} />
           )}
 
           {/* Work Management Page Settings */}
           {activeNavSection === 'wm_page' && (
-            <WorkManagementPageSettings onBack={() => setActiveNavSection(null)} />
+            <WorkManagementPageSettings onBack={() => setActiveNavSection(null)} onRegisterSave={handleRegisterSave} />
+          )}
+
+          {/* WorkDraft Page Settings */}
+          {activeNavSection === 'workdraft_page' && (
+            <WorkDraftPageSettings onBack={() => setActiveNavSection(null)} onRegisterSave={handleRegisterSave} />
           )}
 
           {/* Welcome Screen */}

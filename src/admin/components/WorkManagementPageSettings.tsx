@@ -988,7 +988,9 @@ export function WorkManagementPageSettings({ onBack, onRegisterSave }: WorkManag
   const [useCasesVariant, setUseCasesVariant] = useState<WmUseCasesVariant>('none');
   const [agentCatalogVariant, setAgentCatalogVariant] = useState<'compact_grid' | 'showcase_carousel' | 'masonry_cards' | 'none'>('compact_grid');
   const [aiTransformationVariant, setAiTransformationVariant] = useState<'proof_cards' | 'hero_journey'>('proof_cards');
+  const [consolidationVariant, setConsolidationVariant] = useState<'tab_based' | 'connector_grid'>('tab_based');
   const [showAgentCarousel, setShowAgentCarousel] = useState(false);
+  const [showSidekickBubble, setShowSidekickBubble] = useState(false);
   const [agentImageOverrides, setAgentImageOverrides] = useState<Record<string, string>>({});
   const [avatarOverrides, setAvatarOverrides] = useState<Record<string, string>>({});
   const [memberAvatarOverrides, setMemberAvatarOverrides] = useState<Record<string, string>>({});
@@ -1088,8 +1090,14 @@ export function WorkManagementPageSettings({ onBack, onRegisterSave }: WorkManag
         if (sv._wm_ai_transformation_variant) {
           setAiTransformationVariant(sv._wm_ai_transformation_variant as 'proof_cards' | 'hero_journey');
         }
+        if (sv._wm_consolidation_variant) {
+          setConsolidationVariant(sv._wm_consolidation_variant as 'tab_based' | 'connector_grid');
+        }
         if (sv._wm_show_agent_carousel !== undefined) {
           setShowAgentCarousel(!!sv._wm_show_agent_carousel);
+        }
+        if (sv._wm_show_sidekick_bubble !== undefined) {
+          setShowSidekickBubble(!!sv._wm_show_sidekick_bubble);
         }
         if (sv._wm_agent_image_overrides && typeof sv._wm_agent_image_overrides === 'object') {
           setAgentImageOverrides(sv._wm_agent_image_overrides as Record<string, string>);
@@ -1124,7 +1132,18 @@ export function WorkManagementPageSettings({ onBack, onRegisterSave }: WorkManag
         if (Array.isArray(sv._wm_sections_order) && (sv._wm_sections_order as string[]).length > 0) {
           const savedOrder = sv._wm_sections_order as string[];
           const missing = WM_DEFAULT_ORDER.filter(id => !savedOrder.includes(id));
-          setSectionsOrder([...savedOrder, ...missing]);
+          if (missing.length > 0) {
+            const merged = [...savedOrder];
+            missing.forEach(id => {
+              const defaultIdx = WM_DEFAULT_ORDER.indexOf(id);
+              const predecessor = WM_DEFAULT_ORDER.slice(0, defaultIdx).reverse().find(p => merged.includes(p));
+              const insertAt = predecessor ? merged.indexOf(predecessor) + 1 : merged.length;
+              merged.splice(insertAt, 0, id);
+            });
+            setSectionsOrder(merged);
+          } else {
+            setSectionsOrder(savedOrder);
+          }
         }
         if (sv._wm_sections_visibility && typeof sv._wm_sections_visibility === 'object') {
           setSectionsVisibility(sv._wm_sections_visibility as Record<string, boolean>);
@@ -1172,7 +1191,9 @@ export function WorkManagementPageSettings({ onBack, onRegisterSave }: WorkManag
             _wm_use_cases_variant: useCasesVariant,
             _wm_agent_catalog_variant: agentCatalogVariant,
             _wm_ai_transformation_variant: aiTransformationVariant,
+            _wm_consolidation_variant: consolidationVariant,
             _wm_show_agent_carousel: showAgentCarousel,
+            _wm_show_sidekick_bubble: showSidekickBubble,
             _wm_agent_image_overrides: agentImageOverrides,
             _wm_vibe_collage_images: vibeCollageImages,
             _wm_jtbd_bg_overrides: jtbdBgOverrides,
@@ -1913,6 +1934,28 @@ export function WorkManagementPageSettings({ onBack, onRegisterSave }: WorkManag
                     </>
                   );
 
+                  if (section.id === 'consolidation') return (
+                    <div>
+                      <h4 className="text-sm font-semibold text-white mb-1">Variant</h4>
+                      <p className="text-xs text-gray-500 mb-3">Choose the layout for the Consolidation section</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {([
+                          { value: 'tab_based' as const, label: 'Tab Based', desc: 'Category tabs with split preview panel', accent: '#a78bfa' },
+                          { value: 'connector_grid' as const, label: 'Connector Grid', desc: 'Drag-and-drop grid (Glean-style)', accent: '#00D2D2' },
+                        ] as const).map(opt => {
+                          const isSelected = consolidationVariant === opt.value;
+                          return (
+                            <button key={opt.value} onClick={() => setConsolidationVariant(opt.value)} className={`relative text-left p-3 rounded-xl border-2 transition-all duration-200 ${isSelected ? 'bg-white/[0.04]' : 'border-gray-700/50 bg-white/[0.02] hover:border-gray-600 hover:bg-white/[0.04]'}`} style={{ borderColor: isSelected ? `${opt.accent}60` : undefined }}>
+                              {isSelected && <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: opt.accent }} />}
+                              <p className={`text-xs font-semibold mb-0.5 ${isSelected ? 'text-white' : 'text-gray-300'}`}>{opt.label}</p>
+                              <p className="text-[10px] text-gray-500">{opt.desc}</p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+
                   if (section.id === 'ai_transformation') return (
                     <div>
                       <h4 className="text-sm font-semibold text-white mb-1">Variant</h4>
@@ -1988,6 +2031,27 @@ export function WorkManagementPageSettings({ onBack, onRegisterSave }: WorkManag
             <span className="text-[9px] text-gray-700">0 (default)</span>
             <span className="text-[9px] text-gray-700">+80px (looser)</span>
           </div>
+        </div>
+      </div>
+
+      {/* Sidekick Bubble Toggle */}
+      <div className="bg-[#12131a] rounded-2xl border border-gray-800/60 p-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${showSidekickBubble ? 'bg-purple-500/20' : 'bg-white/5'}`}>
+              <MessageSquare className={`w-5 h-5 ${showSidekickBubble ? 'text-purple-400' : 'text-gray-400'}`} />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-white">Sidekick Bubble</h3>
+              <p className="text-sm text-gray-500">Show the floating Sidekick chat widget on scroll</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowSidekickBubble(!showSidekickBubble)}
+            className={`relative w-14 h-7 rounded-full transition-colors duration-200 ${showSidekickBubble ? 'bg-purple-500' : 'bg-gray-700'}`}
+          >
+            <div className={`absolute top-0.5 w-6 h-6 rounded-full bg-white shadow-md transition-transform duration-200 ${showSidekickBubble ? 'translate-x-7' : 'translate-x-0.5'}`} />
+          </button>
         </div>
       </div>
 

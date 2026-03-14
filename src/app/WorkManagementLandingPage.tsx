@@ -27,7 +27,20 @@ export default function WorkManagementLandingPage() {
     document.title = 'monday.com';
   }, []);
 
-  const sectionsOrder = settings?.wm_sections_order?.length ? settings.wm_sections_order : DEFAULT_SECTIONS_ORDER;
+  const sectionsOrder = useMemo(() => {
+    const saved = settings?.wm_sections_order;
+    if (!saved?.length) return DEFAULT_SECTIONS_ORDER;
+    const missing = DEFAULT_SECTIONS_ORDER.filter(id => !saved.includes(id));
+    if (missing.length === 0) return saved;
+    const merged = [...saved];
+    missing.forEach(id => {
+      const defaultIdx = DEFAULT_SECTIONS_ORDER.indexOf(id);
+      const predecessor = DEFAULT_SECTIONS_ORDER.slice(0, defaultIdx).reverse().find(p => merged.includes(p));
+      const insertAt = predecessor ? merged.indexOf(predecessor) + 1 : merged.length;
+      merged.splice(insertAt, 0, id);
+    });
+    return merged;
+  }, [settings?.wm_sections_order]);
   const sectionsVis = settings?.wm_sections_visibility ?? {};
   const sectionsGap = settings?.wm_sections_gap ?? 0;
   const isSectionVisible = (id: string) => sectionsVis[id] !== false;
@@ -73,7 +86,7 @@ export default function WorkManagementLandingPage() {
           />
         ) : null,
       vibe: <WorkManagementVibeSection key="vibe" collageImageOverrides={s.wm_vibe_collage_images} />,
-      consolidation: <ConsolidationSection key="consolidation" />,
+      consolidation: <ConsolidationSection key="consolidation" variant={s.wm_consolidation_variant ?? 'tab_based'} />,
       ai_transformation: <WorkManagementAITransformationSection key="ai_transformation" variant={s.wm_ai_transformation_variant ?? 'proof_cards'} />,
       enterprise: <WorkManagementEnterpriseSection key="enterprise" />,
       what_sets_us_apart: <WorkManagementWhatSetsUsApart key="what_sets_us_apart" />,
@@ -93,7 +106,7 @@ export default function WorkManagementLandingPage() {
   return (
     <div className={`min-h-screen scroll-smooth overflow-x-hidden ${isDark ? 'dark bg-[#0a0a0a] text-white' : 'bg-white text-gray-900'}`}>
       <WorkManagementNav isDark={isDark} />
-      <SidekickFloatingWidget />
+      {settings?.wm_show_sidekick_bubble && <SidekickFloatingWidget />}
       <Suspense fallback={null}>
         {sectionsGap !== 0
           ? (sectionElements as React.ReactNode[])?.map((el, i) => (

@@ -49,6 +49,7 @@ export interface SiteBuilderViewProps {
   onOpenDynamicPages: () => void;
   onOpenAgentsPage?: () => void;
   onOpenWmPage?: () => void;
+  onOpenWorkDraftPage?: () => void;
 }
 
 type TabId = 'pages' | 'component_bank';
@@ -61,7 +62,7 @@ export function SiteBuilderView(props: SiteBuilderViewProps) {
   );
 }
 
-function SiteBuilderInner({ onEditPage, onOpenDynamicPages, onOpenAgentsPage, onOpenWmPage }: SiteBuilderViewProps) {
+function SiteBuilderInner({ onEditPage, onOpenDynamicPages, onOpenAgentsPage, onOpenWmPage, onOpenWorkDraftPage }: SiteBuilderViewProps) {
   const [activeTab, setActiveTab] = useState<TabId>('pages');
 
   const { components: homepageComponents, error: hpError } = usePageComponents('homepage');
@@ -193,7 +194,7 @@ function SiteBuilderInner({ onEditPage, onOpenDynamicPages, onOpenAgentsPage, on
             </button>
           </div>
 
-          {/* Work Management Page Card */}
+          {/* monday.com Page Card */}
           <div
             className="group relative flex flex-col p-5 rounded-xl border border-gray-800/60 bg-gray-900/40 hover:border-emerald-500/40 hover:bg-gray-900/60 transition-all cursor-pointer"
             onClick={() => onOpenWmPage?.()}
@@ -209,7 +210,7 @@ function SiteBuilderInner({ onEditPage, onOpenDynamicPages, onOpenAgentsPage, on
                 2 variants
               </span>
             </div>
-            <h3 className="text-white font-semibold mb-1">Work Management Page</h3>
+            <h3 className="text-white font-semibold mb-1">monday.com</h3>
             <p className="text-gray-500 text-sm mb-4 flex-1">
               AI Work Platform page at /work-management
             </p>
@@ -219,6 +220,38 @@ function SiteBuilderInner({ onEditPage, onOpenDynamicPages, onOpenAgentsPage, on
                 onOpenWmPage?.();
               }}
               className="flex items-center gap-2 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-colors w-fit"
+            >
+              <Pencil className="w-3.5 h-3.5" />
+              Edit
+            </button>
+          </div>
+
+          {/* WorkDraft Page Card */}
+          <div
+            className="group relative flex flex-col p-5 rounded-xl border border-gray-800/60 bg-gray-900/40 hover:border-violet-500/40 hover:bg-gray-900/60 transition-all cursor-pointer"
+            onClick={() => onOpenWorkDraftPage?.()}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && onOpenWorkDraftPage?.()}
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div className="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center flex-shrink-0">
+                <Bot className="w-5 h-5 text-violet-400" />
+              </div>
+              <span className="px-2 py-0.5 rounded-md bg-violet-500/20 text-violet-400 text-xs font-medium">
+                2 variants
+              </span>
+            </div>
+            <h3 className="text-white font-semibold mb-1">WorkDraft</h3>
+            <p className="text-gray-500 text-sm mb-4 flex-1">
+              AI agent hiring marketplace at /workdraft
+            </p>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenWorkDraftPage?.();
+              }}
+              className="flex items-center gap-2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition-colors w-fit"
             >
               <Pencil className="w-3.5 h-3.5" />
               Edit

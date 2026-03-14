@@ -2,9 +2,16 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowRight, Sparkles, BarChart3, Users, FolderKanban,
-  Workflow, Bot, Send,
+  Workflow, Bot, Send, Replace, CheckCircle2,
 } from 'lucide-react';
 import vibeLogo from '@/assets/069a22575b2de9057cfc00d9b4538d072f7fe115.png';
+import {
+  TOOL_CATEGORIES,
+  PREVIEW_COMPONENTS,
+  ReplacedToolsPanel,
+  ConnectorGridView,
+} from './ConsolidationSection';
+import { useSiteSettings } from '@/hooks/useSupabase';
 
 import imgCompetitorTracker from '@/assets/vibe-apps/competitor-tracker.png';
 import imgEcommerceStore from '@/assets/vibe-apps/ecommerce-store.png';
@@ -477,6 +484,170 @@ function DepartmentView({
 }
 
 /* ═══════════════════════════════════════════════════════════
+   CONSOLIDATION BRIDGE (inline continuation)
+   ═══════════════════════════════════════════════════════════ */
+
+function VibeConsolidationBridge() {
+  const { settings } = useSiteSettings();
+  const variant = settings?.wm_consolidation_variant ?? 'tab_based';
+
+  const [activeIdx, setActiveIdx] = useState(0);
+  const hoverRef = useRef(false);
+  const autoRef = useRef<ReturnType<typeof setTimeout>>();
+
+  const active = TOOL_CATEGORIES[activeIdx];
+  const ActivePreview = PREVIEW_COMPONENTS[active.id];
+
+  useEffect(() => {
+    if (variant !== 'tab_based') return;
+    clearTimeout(autoRef.current);
+    if (!hoverRef.current) {
+      autoRef.current = setTimeout(() => {
+        setActiveIdx(prev => (prev + 1) % TOOL_CATEGORIES.length);
+      }, 6000);
+    }
+    return () => clearTimeout(autoRef.current);
+  }, [activeIdx, variant]);
+
+  return (
+    <div
+      className="mt-16 sm:mt-20"
+      onMouseEnter={() => { hoverRef.current = true; clearTimeout(autoRef.current); }}
+      onMouseLeave={() => { hoverRef.current = false; }}
+    >
+      {/* Transition bridge */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-10"
+      >
+        <div className="inline-flex items-center gap-3 mb-4">
+          <div className="h-px w-10 bg-gradient-to-r from-transparent to-white/20" />
+          <Replace className="w-4 h-4 text-white/30" />
+          <div className="h-px w-10 bg-gradient-to-l from-transparent to-white/20" />
+        </div>
+        <h3 className="text-2xl sm:text-3xl font-bold text-white tracking-[-0.02em] mb-3">
+          And replace the tools you no longer need.
+        </h3>
+        <p className="text-[15px] text-white/40 max-w-[520px] mx-auto leading-relaxed">
+          Every app you build with Vibe is one less subscription, one less tab, one less tool to maintain.
+        </p>
+      </motion.div>
+
+      {/* Variant-based content */}
+      {variant === 'connector_grid' ? (
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+        >
+          <ConnectorGridView />
+        </motion.div>
+      ) : (
+        <>
+          {/* Category tabs */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="flex flex-wrap justify-center gap-2 mb-8"
+          >
+            {TOOL_CATEGORIES.map((cat, i) => {
+              const isActive = activeIdx === i;
+              const CatIcon = cat.icon;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveIdx(i)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold transition-all duration-300 cursor-pointer"
+                  style={{
+                    backgroundColor: isActive ? `${cat.color}18` : 'rgba(255,255,255,0.04)',
+                    color: isActive ? cat.color : 'rgba(255,255,255,0.45)',
+                    border: `1px solid ${isActive ? `${cat.color}40` : 'rgba(255,255,255,0.06)'}`,
+                    boxShadow: isActive ? `0 0 20px ${cat.color}15` : 'none',
+                  }}
+                >
+                  <CatIcon className="w-4 h-4" />
+                  {cat.label}
+                </button>
+              );
+            })}
+          </motion.div>
+
+          {/* Interactive area */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="rounded-2xl overflow-hidden"
+            style={{
+              backgroundColor: '#111',
+              border: `1px solid ${active.color}20`,
+              boxShadow: `0 20px 60px rgba(0,0,0,0.5), 0 0 40px ${active.color}08`,
+              transition: 'border-color 0.5s, box-shadow 0.5s',
+            }}
+          >
+            <div className="h-[3px] w-full transition-all duration-500" style={{ background: `linear-gradient(90deg, ${active.color}, ${active.color}50)` }} />
+
+            <div className="px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={active.id}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.25 }}
+                  className="text-[15px] font-medium text-gray-300"
+                >
+                  {active.tagline}
+                </motion.p>
+              </AnimatePresence>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_0.6fr] min-h-[420px]">
+              <div className="px-6 py-5" style={{ borderRight: '1px solid rgba(255,255,255,0.06)' }}>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={active.id}
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 16 }}
+                    transition={{ duration: 0.35 }}
+                    className="h-full"
+                  >
+                    <ActivePreview />
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              <div className="px-4 py-5">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={active.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="h-full"
+                  >
+                    <ReplacedToolsPanel tools={active.replacedTools} color={active.color} />
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
    MAIN SECTION
    ═══════════════════════════════════════════════════════════ */
 
@@ -593,6 +764,9 @@ export function WorkManagementVibeSection({ collageImageOverrides }: { collageIm
             />
           )}
         </AnimatePresence>
+
+        {/* Consolidation continuation */}
+        <VibeConsolidationBridge />
 
         {/* CTA */}
         <motion.div

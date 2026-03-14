@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Save, ExternalLink, Terminal, Code2, Radar, CheckCircle, FileText, Bot, Cpu, ScanLine, Eye, FileCode, Sparkles, Layers, Plug, Zap, Crown, Type, Activity, LayoutGrid, Radio, Ban } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
@@ -108,9 +108,10 @@ const TONE_OPTIONS: ToneOption[] = [
 
 interface AgentsPageSettingsProps {
   onBack: () => void;
+  onRegisterSave?: (fn: (() => Promise<void>) | null) => void;
 }
 
-export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
+export function AgentsPageSettings({ onBack, onRegisterSave }: AgentsPageSettingsProps) {
   const [selectedContentStyle, setSelectedContentStyle] = useState<AgentsContentStyle>('v1');
   const [selectedLayout, setSelectedLayout] = useState<AgentsPageLayout>('visual');
   const [selectedVariant, setSelectedVariant] = useState<AgentHeroVariant>('matrix');
@@ -126,6 +127,13 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
   useEffect(() => {
     loadSettings();
   }, []);
+
+  const handleSaveRef = useRef<() => Promise<void>>(async () => {});
+  useEffect(() => {
+    if (!onRegisterSave) return;
+    onRegisterSave(() => handleSaveRef.current());
+    return () => onRegisterSave(null);
+  }, [onRegisterSave]);
 
   const loadSettings = async () => {
     try {
@@ -210,6 +218,7 @@ export function AgentsPageSettings({ onBack }: AgentsPageSettingsProps) {
       setSaving(false);
     }
   };
+  handleSaveRef.current = handleSave;
 
   if (loading) {
     return (
