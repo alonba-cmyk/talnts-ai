@@ -279,7 +279,7 @@ export default function TalntHowItWorks() {
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-[20px] font-bold mb-3 leading-snug" style={{ color: tokens.textPrimary }}>
+                  <h3 className="text-base sm:text-lg lg:text-[20px] font-bold mb-3 leading-snug" style={{ color: tokens.textPrimary }}>
                     {step.title}
                   </h3>
 
@@ -318,7 +318,7 @@ export default function TalntHowItWorks() {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-[22px] font-bold mb-2" style={{ color: tokens.textPrimary }}>
+                <h3 className="text-lg sm:text-xl lg:text-[22px] font-bold mb-2" style={{ color: tokens.textPrimary }}>
                   {step.title}
                 </h3>
 

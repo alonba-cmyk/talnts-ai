@@ -134,7 +134,7 @@ export default function TalntWhyWorkDraft() {
 
                 {/* Title */}
                 <h3
-                  className="text-[22px] font-bold mb-2"
+                  className="text-lg sm:text-xl lg:text-[22px] font-bold mb-2"
                   style={{ color: tokens.textPrimary }}
                 >
                   {feature.title}
