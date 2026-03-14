@@ -2,6 +2,7 @@ import { motion, useInView } from 'motion/react';
 import { useRef } from 'react';
 import { PenSquare, Radar, Eye, Handshake, Check, CheckCircle2 } from 'lucide-react';
 import { useTalntTheme } from '../../talnt/TalntThemeContext';
+import { useSiteSettings } from '@/hooks/useSupabase';
 
 const MOCKUP_H = 142;
 
@@ -196,17 +197,14 @@ const STEPS = [
 
 type HowItWorksStyle = 'with_mockups' | 'text_only' | 'minimal_mockups' | 'icon_emphasis';
 
-function getHowItWorksStyle(): HowItWorksStyle {
-  return (localStorage.getItem('talnt_how_it_works_style') as HowItWorksStyle) ?? 'with_mockups';
-}
-
 /* ??? Main ??? */
 
 export default function TalntHowItWorks() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
   const { tokens } = useTalntTheme();
-  const style = getHowItWorksStyle();
+  const { settings } = useSiteSettings();
+  const style: HowItWorksStyle = settings.talnt_how_it_works_style;
 
 
   return (

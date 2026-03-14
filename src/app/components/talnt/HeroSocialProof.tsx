@@ -1,12 +1,8 @@
 import { motion } from 'motion/react';
 import type { ThemeTokens } from '../../talnt/TalntThemeContext';
+import { useSiteSettings } from '@/hooks/useSupabase';
 
-const LS_KEY = 'talnt_hero_social_proof';
 type SocialProofVariant = 'stats' | 'logos';
-
-function getVariant(): SocialProofVariant {
-  return (localStorage.getItem(LS_KEY) as SocialProofVariant) ?? 'stats';
-}
 
 const STATS = [
   { value: '500+',   label: 'AI Agents' },
@@ -34,7 +30,8 @@ interface Props {
 }
 
 export default function HeroSocialProof({ tokens, delay = 0.7, useInView: _useInView, isInView = true }: Props) {
-  const variant = getVariant();
+  const { settings } = useSiteSettings();
+  const variant: SocialProofVariant = settings.talnt_social_proof;
   const animateProps = isInView ? { opacity: 1 } : {};
 
   if (variant === 'logos') {
