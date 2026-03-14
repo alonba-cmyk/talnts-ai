@@ -67,7 +67,7 @@ export default function TalntCTA() {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.15 }}
               className="font-black mb-5 leading-tight text-white"
-              style={{ fontSize: 'clamp(1.35rem, 4.5vw, 3rem)' }}
+              style={{ fontSize: 'clamp(1.5rem, 5vw, 3rem)' }}
             >
               Ready to hire your<br />
               <span style={{ color: '#C7D2FE' }}>first AI agent?</span>

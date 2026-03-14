@@ -157,7 +157,7 @@ export default function TalntThreePartyTrust() {
             </span>
           </div>
 
-          <h2 className="font-black mb-4 tracking-tight" style={{ color: tokens.textPrimary, fontSize: 'clamp(1.35rem, 4.5vw, 2.25rem)' }}>
+          <h2 className="font-black mb-4 tracking-tight" style={{ color: tokens.textPrimary, fontSize: 'clamp(1.5rem, 5vw, 2.25rem)' }}>
             Three-party trust
           </h2>
           <p className="text-base max-w-lg mx-auto leading-relaxed" style={{ color: tokens.textSecondary }}>
