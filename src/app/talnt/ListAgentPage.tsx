@@ -136,11 +136,11 @@ export default function ListAgentPage() {
       <div className="flex-1 flex flex-col items-center justify-start sm:justify-center px-4 sm:px-6 py-8 sm:py-16 lg:px-12">
         <div className="w-full max-w-lg">
 
-          {/* Logo link */}
-          <button onClick={() => navigate('/talnt')} className="flex items-center gap-2 mb-6 sm:mb-10 cursor-pointer group">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-white font-bold text-xs sm:text-sm"
+          {/* Logo link — hidden on mobile since TalntNavbar already shows it */}
+          <button onClick={() => navigate('/talnt')} className="hidden sm:flex items-center gap-2 mb-10 cursor-pointer group">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
               style={{ background: 'linear-gradient(135deg, #6366F1, #8B5CF6)' }}>T</div>
-            <span className="font-semibold text-base sm:text-lg tracking-tight" style={{ color: tokens.textPrimary }}>
+            <span className="font-semibold text-lg tracking-tight" style={{ color: tokens.textPrimary }}>
               Talnt<span style={{ color: tokens.textAccent }}>.ai</span>
             </span>
           </button>
