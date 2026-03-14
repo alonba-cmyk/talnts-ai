@@ -162,9 +162,9 @@ const TalntThemeContext = createContext<TalntThemeContextValue | null>(null);
 export function TalntThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<TalntTheme>(() => {
     try {
-      return (localStorage.getItem('talnt_theme') as TalntTheme) ?? 'light';
+      return (localStorage.getItem('talnt_theme') as TalntTheme) ?? 'dark';
     } catch {
-      return 'light';
+      return 'dark';
     }
   });
 
