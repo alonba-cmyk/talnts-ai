@@ -408,36 +408,83 @@ function StepResults({
                 style={{ background: `linear-gradient(180deg, rgba(${visual.accentColorRgb}, 0.06) 0%, transparent 100%)` }}
               />
 
-              <div className="relative z-10 p-3.5 sm:p-5 pl-9 sm:pl-10 flex items-center gap-3 sm:gap-4">
-                <div className="hidden sm:block"><AgentAvatar agent={agent} size="lg" showStatus showRing={false} /></div>
-                <div className="sm:hidden"><AgentAvatar agent={agent} size="md" showStatus showRing={false} /></div>
+              <div className="relative z-10 p-3.5 sm:p-5 pl-9 sm:pl-10">
+                {/* Desktop: single row */}
+                <div className="hidden sm:flex items-center gap-4">
+                  <AgentAvatar agent={agent} size="lg" showStatus showRing={false} />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-semibold truncate" style={{ color: tokens.textPrimary }}>{agent.name}</h3>
+                      {agent.isVerified && (
+                        <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full shrink-0"
+                          style={{ background: 'rgba(16,185,129,0.15)' }}
+                        >
+                          <CheckCircle2 size={10} className="text-emerald-400" />
+                          <span className="text-[9px] font-semibold text-emerald-400">Verified</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-xs" style={{ color: tokens.textSecondary }}>
+                      <span>{agent.framework}</span>
+                      <span style={{ color: tokens.textMuted }}>&middot;</span>
+                      <span>{agent.model}</span>
+                      <span style={{ color: tokens.textMuted }}>&middot;</span>
+                      <span>{agent.successRate}% success</span>
+                      <span style={{ color: tokens.textMuted }}>&middot;</span>
+                      <span>{agent.jobsCompleted} jobs</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {agent.categories.map(cat => {
+                        const catV = CATEGORY_VISUALS[cat];
+                        return (
+                          <span key={cat} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium"
+                            style={{ background: catV.pillBg, border: `1px solid ${catV.pillBorder}`, color: catV.pillText }}
+                          >
+                            {CATEGORY_ICONS[cat]} {cat}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <MatchScoreRing score={score} color={visual.accentColor} size={56} />
+                    <div className="text-[10px] mt-1" style={{ color: tokens.textMuted }}>match</div>
+                  </div>
+                  <ChevronRight size={18} className="shrink-0 transition-colors text-[var(--talnt-text-muted)] group-hover:text-[var(--talnt-text-primary)]" />
+                </div>
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold truncate text-sm sm:text-base" style={{ color: tokens.textPrimary }}>{agent.name}</h3>
-                    {agent.isVerified && (
-                      <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full shrink-0"
-                        style={{ background: 'rgba(16,185,129,0.15)' }}
-                      >
-                        <CheckCircle2 size={10} className="text-emerald-400" />
-                        <span className="text-[9px] font-semibold text-emerald-400">Verified</span>
+                {/* Mobile: stacked layout */}
+                <div className="sm:hidden">
+                  <div className="flex items-center gap-3 mb-2.5">
+                    <AgentAvatar agent={agent} size="md" showStatus showRing={false} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <h3 className="font-semibold text-sm" style={{ color: tokens.textPrimary }}>{agent.name}</h3>
+                        {agent.isVerified && (
+                          <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full shrink-0"
+                            style={{ background: 'rgba(16,185,129,0.15)' }}
+                          >
+                            <CheckCircle2 size={9} className="text-emerald-400" />
+                            <span className="text-[8px] font-semibold text-emerald-400">Verified</span>
+                          </div>
+                        )}
                       </div>
-                    )}
+                      <div className="flex items-center gap-1.5 text-[10px]" style={{ color: tokens.textSecondary }}>
+                        <span>{agent.framework}</span>
+                        <span style={{ color: tokens.textMuted }}>&middot;</span>
+                        <span>{agent.successRate}% success</span>
+                      </div>
+                    </div>
+                    <div className="shrink-0 text-center">
+                      <MatchScoreRing score={score} color={visual.accentColor} size={44} />
+                      <div className="text-[9px] mt-0.5" style={{ color: tokens.textMuted }}>match</div>
+                    </div>
                   </div>
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] sm:text-xs" style={{ color: tokens.textSecondary }}>
-                    <span>{agent.framework}</span>
-                    <span style={{ color: tokens.textMuted }}>&middot;</span>
-                    <span>{agent.successRate}% success</span>
-                    <span className="hidden sm:inline" style={{ color: tokens.textMuted }}>&middot;</span>
-                    <span className="hidden sm:inline">{agent.model}</span>
-                    <span className="hidden sm:inline" style={{ color: tokens.textMuted }}>&middot;</span>
-                    <span className="hidden sm:inline">{agent.jobsCompleted} jobs</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5 mt-2">
+                  <div className="flex flex-wrap gap-1 pl-0.5">
                     {agent.categories.map(cat => {
                       const catV = CATEGORY_VISUALS[cat];
                       return (
-                        <span key={cat} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium"
+                        <span key={cat} className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[9px] font-medium"
                           style={{ background: catV.pillBg, border: `1px solid ${catV.pillBorder}`, color: catV.pillText }}
                         >
                           {CATEGORY_ICONS[cat]} {cat}
@@ -446,14 +493,6 @@ function StepResults({
                     })}
                   </div>
                 </div>
-
-                {/* Match score */}
-                <div className="shrink-0 text-right">
-                  <MatchScoreRing score={score} color={visual.accentColor} size={56} />
-                  <div className="text-[10px] mt-1" style={{ color: tokens.textMuted }}>match</div>
-                </div>
-
-                <ChevronRight size={18} className="shrink-0 transition-colors text-[var(--talnt-text-muted)] group-hover:text-[var(--talnt-text-primary)]" />
               </div>
             </motion.div>
           );
