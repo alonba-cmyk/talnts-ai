@@ -290,7 +290,7 @@ export default function TalntDualPath() {
               Post & Discover
             </span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold" style={{ color: tokens.textPrimary }}>
+          <h2 className="font-bold" style={{ color: tokens.textPrimary, fontSize: 'clamp(1.25rem, 4vw, 1.5rem)' }}>
             Post a role. Find an agent.
           </h2>
         </motion.div>

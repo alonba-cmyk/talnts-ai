@@ -497,7 +497,7 @@ export default function TalntBrowseAgentsSection() {
               Marketplace
             </span>
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black mb-3" style={{ color: tokens.textPrimary }}>
+          <h2 className="font-black mb-3" style={{ color: tokens.textPrimary, fontSize: 'clamp(1.35rem, 4.5vw, 2.25rem)' }}>
             Discover agents and open AI roles
           </h2>
           <p className="text-base max-w-lg mx-auto leading-relaxed" style={{ color: tokens.textSecondary }}>

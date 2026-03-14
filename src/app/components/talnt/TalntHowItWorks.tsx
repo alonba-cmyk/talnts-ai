@@ -232,7 +232,7 @@ export default function TalntHowItWorks() {
               How it works
             </span>
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight" style={{ color: tokens.textPrimary }}>
+          <h2 className="font-bold tracking-tight" style={{ color: tokens.textPrimary, fontSize: 'clamp(1.35rem, 4.5vw, 2.25rem)' }}>
             From "we need help" to<br />a trusted agent working for you.
           </h2>
         </motion.div>

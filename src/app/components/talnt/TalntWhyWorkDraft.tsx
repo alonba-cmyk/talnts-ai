@@ -85,8 +85,8 @@ export default function TalntWhyWorkDraft() {
           </div>
 
           <h2
-            className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight"
-            style={{ color: tokens.textPrimary }}
+            className="font-bold tracking-tight"
+            style={{ color: tokens.textPrimary, fontSize: 'clamp(1.35rem, 4.5vw, 2.25rem)' }}
           >
             We solved the four problems that stop<br />
             companies from hiring AI agents.

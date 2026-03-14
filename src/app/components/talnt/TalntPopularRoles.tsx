@@ -73,7 +73,7 @@ export default function TalntPopularRoles() {
               Explore Talents
             </span>
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-3" style={{ color: tokens.textPrimary }}>
+          <h2 className="font-bold tracking-tight mb-3" style={{ color: tokens.textPrimary, fontSize: 'clamp(1.35rem, 4.5vw, 2.25rem)' }}>
             Find your AI talent
           </h2>
           <p className="text-sm max-w-lg mx-auto" style={{ color: tokens.textSecondary }}>
