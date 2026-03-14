@@ -162,7 +162,8 @@ const TalntThemeContext = createContext<TalntThemeContextValue | null>(null);
 export function TalntThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<TalntTheme>(() => {
     try {
-      return (localStorage.getItem('talnt_theme') as TalntTheme) ?? 'dark';
+      const stored = localStorage.getItem('talnt_theme_v2') as TalntTheme | null;
+      return stored ?? 'dark';
     } catch {
       return 'dark';
     }
@@ -171,7 +172,7 @@ export function TalntThemeProvider({ children }: { children: ReactNode }) {
   const toggleTheme = useCallback(() => {
     setTheme(prev => {
       const next = prev === 'dark' ? 'light' : 'dark';
-      try { localStorage.setItem('talnt_theme', next); } catch {}
+      try { localStorage.setItem('talnt_theme_v2', next); } catch {}
       return next;
     });
   }, []);
