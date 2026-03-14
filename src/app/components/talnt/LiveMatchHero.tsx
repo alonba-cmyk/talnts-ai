@@ -1138,7 +1138,7 @@ export default function LiveMatchHero() {
 
   return (
     <section
-      className="relative min-h-[auto] lg:min-h-screen flex items-center overflow-hidden"
+      className="relative min-h-screen flex items-center overflow-hidden"
       style={{ transition: 'background 0.3s' }}
     >
 
@@ -1216,8 +1216,8 @@ export default function LiveMatchHero() {
 
           </div>
 
-          {/* ── Right / Below: Animation stage ── */}
-          <div className="flex flex-col items-center justify-center flex-1 min-w-0 w-full">
+          {/* ── Right: Animation stage ── */}
+          <div className="hidden lg:flex flex-col items-center justify-center flex-1 min-w-0">
             <div className="w-full flex items-center justify-center min-h-[300px] lg:min-h-[460px]">
               <AnimatePresence mode="wait">
                 {phase === 'match' && <MatchView key={`m-${rIdx}`} role={role} agent={agent} />}
