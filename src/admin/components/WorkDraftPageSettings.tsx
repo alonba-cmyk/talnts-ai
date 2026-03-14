@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   ExternalLink, GripVertical, Eye, EyeOff, ChevronDown,
   Users, Sparkles, LayoutGrid, Briefcase, BarChart2, List, Search, Megaphone,
 } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 import {
   DndContext,
   closestCenter,
@@ -240,24 +241,50 @@ interface WorkDraftPageSettingsProps {
 
 export function WorkDraftPageSettings({ onBack, onRegisterSave }: WorkDraftPageSettingsProps) {
   /* State */
-  const [heroVariant, setHeroVariant]       = useState<HeroVariant>(() => (localStorage.getItem(LS.HERO_VARIANT) as HeroVariant) ?? 'top_agents');
-  const [socialProof, setSocialProof]       = useState<SocialProofVariant>(() => (localStorage.getItem(LS.SOCIAL_PROOF) as SocialProofVariant) ?? 'stats');
-  const [midVariant, setMidVariant]         = useState<MidVariant>(() => (localStorage.getItem(LS.MID_VARIANT) as MidVariant) ?? 'dual_path');
-  const [howItWorksStyle, setHowItWorksStyle] = useState<HowItWorksStyle>(() => (localStorage.getItem('talnt_how_it_works_style') as HowItWorksStyle) ?? 'with_mockups');
-  const [sectionsOrder, setSectionsOrder]   = useState<string[]>(() => {
-    let stored: string[];
-    try { stored = JSON.parse(localStorage.getItem(LS.SECTIONS_ORDER) ?? '') as string[]; } catch { stored = TALNT_DEFAULT_ORDER; }
-    // Merge any new sections that are in TALNT_DEFAULT_ORDER but not in stored order
-    const missing = TALNT_DEFAULT_ORDER.filter(id => !stored.includes(id));
-    if (missing.length === 0) return stored;
-    const ctaIdx = stored.indexOf('cta');
-    const insertAt = ctaIdx >= 0 ? ctaIdx : stored.length;
-    return [...stored.slice(0, insertAt), ...missing, ...stored.slice(insertAt)];
-  });
-  const [sectionsVisibility, setSectionsVisibility] = useState<Record<string, boolean>>(() => {
-    try { return JSON.parse(localStorage.getItem(LS.SECTIONS_VISIBILITY) ?? '') as Record<string, boolean>; } catch { return {}; }
-  });
+  const [heroVariant, setHeroVariant]       = useState<HeroVariant>('top_agents');
+  const [socialProof, setSocialProof]       = useState<SocialProofVariant>('stats');
+  const [midVariant, setMidVariant]         = useState<MidVariant>('dual_path');
+  const [howItWorksStyle, setHowItWorksStyle] = useState<HowItWorksStyle>('with_mockups');
+  const [sectionsOrder, setSectionsOrder]   = useState<string[]>(TALNT_DEFAULT_ORDER);
+  const [sectionsVisibility, setSectionsVisibility] = useState<Record<string, boolean>>({});
   const [expandedSectionId, setExpandedSectionId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const { data } = await supabase
+          .from('site_settings')
+          .select('sections_visibility')
+          .eq('id', 'main')
+          .single();
+        const sv = (data?.sections_visibility || {}) as Record<string, any>;
+        if (sv._talnt_hero_variant) setHeroVariant(sv._talnt_hero_variant);
+        if (sv._talnt_social_proof) setSocialProof(sv._talnt_social_proof);
+        if (sv._talnt_mid_variant) setMidVariant(sv._talnt_mid_variant);
+        if (sv._talnt_how_it_works_style) setHowItWorksStyle(sv._talnt_how_it_works_style);
+        if (Array.isArray(sv._talnt_sections_order) && sv._talnt_sections_order.length > 0) {
+          const stored = sv._talnt_sections_order as string[];
+          const missing = TALNT_DEFAULT_ORDER.filter((id: string) => !stored.includes(id));
+          if (missing.length === 0) {
+            setSectionsOrder(stored);
+          } else {
+            const ctaIdx = stored.indexOf('cta');
+            const insertAt = ctaIdx >= 0 ? ctaIdx : stored.length;
+            setSectionsOrder([...stored.slice(0, insertAt), ...missing, ...stored.slice(insertAt)]);
+          }
+        }
+        if (sv._talnt_sections_visibility && typeof sv._talnt_sections_visibility === 'object') {
+          setSectionsVisibility(sv._talnt_sections_visibility);
+        }
+      } catch (err) {
+        console.log('No talnt settings found, using defaults');
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
 
   /* Sensors */
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
@@ -284,12 +311,26 @@ export function WorkDraftPageSettings({ onBack, onRegisterSave }: WorkDraftPageS
 
   /* Save */
   const save = useCallback(async () => {
-    localStorage.setItem(LS.HERO_VARIANT, heroVariant);
-    localStorage.setItem(LS.SOCIAL_PROOF, socialProof);
-    localStorage.setItem(LS.MID_VARIANT, midVariant);
-    localStorage.setItem('talnt_how_it_works_style', howItWorksStyle);
-    localStorage.setItem(LS.SECTIONS_ORDER, JSON.stringify(sectionsOrder));
-    localStorage.setItem(LS.SECTIONS_VISIBILITY, JSON.stringify(sectionsVisibility));
+    const { data } = await supabase
+      .from('site_settings')
+      .select('sections_visibility')
+      .eq('id', 'main')
+      .single();
+    const currentSV = (data?.sections_visibility || {}) as Record<string, unknown>;
+    await supabase
+      .from('site_settings')
+      .upsert({
+        id: 'main',
+        sections_visibility: {
+          ...currentSV,
+          _talnt_hero_variant: heroVariant,
+          _talnt_social_proof: socialProof,
+          _talnt_mid_variant: midVariant,
+          _talnt_how_it_works_style: howItWorksStyle,
+          _talnt_sections_order: sectionsOrder,
+          _talnt_sections_visibility: sectionsVisibility,
+        },
+      });
   }, [heroVariant, socialProof, midVariant, howItWorksStyle, sectionsOrder, sectionsVisibility]);
 
   useEffect(() => {

@@ -376,6 +376,12 @@ export interface SiteSettings {
   wm_sections_visibility: Record<string, boolean>;
   wm_sections_gap: number;
   wm_show_sidekick_bubble: boolean;
+  talnt_hero_variant: 'top_agents' | 'hire_cards' | 'inline_wizard' | 'live_match';
+  talnt_social_proof: 'stats' | 'logos';
+  talnt_mid_variant: 'dual_path' | 'popular_roles';
+  talnt_how_it_works_style: 'with_mockups' | 'text_only' | 'minimal_mockups' | 'icon_emphasis';
+  talnt_sections_order: string[];
+  talnt_sections_visibility: Record<string, boolean>;
 }
 
 const defaultSectionsVisibility: SectionsVisibility = {
@@ -507,6 +513,12 @@ export function useSiteSettings() {
     wm_sections_visibility: {},
     wm_sections_gap: 0,
     wm_show_sidekick_bubble: false,
+    talnt_hero_variant: 'top_agents',
+    talnt_social_proof: 'stats',
+    talnt_mid_variant: 'dual_path',
+    talnt_how_it_works_style: 'with_mockups',
+    talnt_sections_order: ['hero', 'how_it_works', 'mid_section', 'why_workdraft', 'trust', 'browse_agents', 'cta'],
+    talnt_sections_visibility: {},
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -529,7 +541,7 @@ export function useSiteSettings() {
       if (data) {
         // Extract _order and _teams_agents_v2_layout from sections_visibility if they exist
         const sectionsVisibilityData = data.sections_visibility || {};
-        const { _order, _teams_agents_v2_layout, _team_flanked_featured_agents, _ai_platform_arch_layout, _platform_architecture_variant, _platform_page_version, _platform_context_toggle, _platform_sidekick_panel_style, _platform_v3_team_avatars, _platform_v3_minimal_chat, _platform_sidebar_left, _platform_v4_left_panel, _platform_showcase_section, _platform_show_jtbd_sidebar, _platform_show_inline_sidekick, _platform_show_department_bar, _platform_showcase_show_jtbd_sidebar, _platform_showcase_show_inline_sidekick, _platform_showcase_show_department_bar, _platform_showcase_variant, _platform_show_intro, _platform_intro_style, _platform_hero_variant, _platform_use_cases_variant, _agents_hero_variant, _agents_messaging_tone, _agents_page_layout, _agents_content_style, _agents_show_frameworks, _agents_branded_title_style, _agents_branded_glow_style, _agents_hero_demo, _wm_platform_layers_variant, _wm_bento_style, _wm_dark_mode, _wm_dept_avatar_overrides, _wm_dept_color_overrides, _wm_dept_order, _wm_first_fold_variant, _wm_squad_split_chat, _wm_roster_layout, _wm_member_avatar_overrides, _wm_board_style, _wm_card_layout, _wm_use_cases_variant, _wm_jtbd_bg_overrides, _wm_jtbd_position_overrides, _wm_jtbd_zoom_overrides, _wm_jtbd_global_poster_pos, _wm_jtbd_global_poster_zoom, _wm_jtbd_global_expanded_pos, _wm_jtbd_global_expanded_zoom, _wm_jtbd_expanded_overlay_opacity, _wm_agent_catalog_variant, _wm_agent_image_overrides, _wm_show_agent_carousel, _wm_vibe_collage_images, _wm_ai_transformation_variant, _wm_consolidation_variant, _wm_sections_order, _wm_sections_visibility, _wm_sections_gap, _wm_show_sidekick_bubble, ...sectionsVisibilityWithoutOrder } = sectionsVisibilityData;
+        const { _order, _teams_agents_v2_layout, _team_flanked_featured_agents, _ai_platform_arch_layout, _platform_architecture_variant, _platform_page_version, _platform_context_toggle, _platform_sidekick_panel_style, _platform_v3_team_avatars, _platform_v3_minimal_chat, _platform_sidebar_left, _platform_v4_left_panel, _platform_showcase_section, _platform_show_jtbd_sidebar, _platform_show_inline_sidekick, _platform_show_department_bar, _platform_showcase_show_jtbd_sidebar, _platform_showcase_show_inline_sidekick, _platform_showcase_show_department_bar, _platform_showcase_variant, _platform_show_intro, _platform_intro_style, _platform_hero_variant, _platform_use_cases_variant, _agents_hero_variant, _agents_messaging_tone, _agents_page_layout, _agents_content_style, _agents_show_frameworks, _agents_branded_title_style, _agents_branded_glow_style, _agents_hero_demo, _talnt_hero_variant, _talnt_social_proof, _talnt_mid_variant, _talnt_how_it_works_style, _talnt_sections_order, _talnt_sections_visibility, _wm_platform_layers_variant, _wm_bento_style, _wm_dark_mode, _wm_dept_avatar_overrides, _wm_dept_color_overrides, _wm_dept_order, _wm_first_fold_variant, _wm_squad_split_chat, _wm_roster_layout, _wm_member_avatar_overrides, _wm_board_style, _wm_card_layout, _wm_use_cases_variant, _wm_jtbd_bg_overrides, _wm_jtbd_position_overrides, _wm_jtbd_zoom_overrides, _wm_jtbd_global_poster_pos, _wm_jtbd_global_poster_zoom, _wm_jtbd_global_expanded_pos, _wm_jtbd_global_expanded_zoom, _wm_jtbd_expanded_overlay_opacity, _wm_agent_catalog_variant, _wm_agent_image_overrides, _wm_show_agent_carousel, _wm_vibe_collage_images, _wm_ai_transformation_variant, _wm_consolidation_variant, _wm_sections_order, _wm_sections_visibility, _wm_sections_gap, _wm_show_sidekick_bubble, ...sectionsVisibilityWithoutOrder } = sectionsVisibilityData;
         
         // #region agent log
         fetch('http://127.0.0.1:7242/ingest/bb0db356-d413-4fb9-a0cd-afac4bde56c0',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0ca9a5'},body:JSON.stringify({sessionId:'0ca9a5',location:'useSupabase.ts:fetchSettings',message:'settings fetched',data:{hasData:!!data,_agents_hero_variant:(data?.sections_visibility as any)?._agents_hero_variant,_agents_content_style:(data?.sections_visibility as any)?._agents_content_style,_agents_page_layout:(data?.sections_visibility as any)?._agents_page_layout},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
@@ -588,6 +600,12 @@ export function useSiteSettings() {
             const d = _agents_hero_demo || 'none';
             return d === 'scroll_reveal' ? 'none' : d;
           })(),
+          talnt_hero_variant: _talnt_hero_variant || 'top_agents',
+          talnt_social_proof: _talnt_social_proof || 'stats',
+          talnt_mid_variant: _talnt_mid_variant || 'dual_path',
+          talnt_how_it_works_style: _talnt_how_it_works_style || 'with_mockups',
+          talnt_sections_order: Array.isArray(_talnt_sections_order) && _talnt_sections_order.length > 0 ? _talnt_sections_order : ['hero', 'how_it_works', 'mid_section', 'why_workdraft', 'trust', 'browse_agents', 'cta'],
+          talnt_sections_visibility: _talnt_sections_visibility || {},
           wm_platform_layers_variant: _wm_platform_layers_variant || 'grid',
           wm_bento_style: _wm_bento_style || 'dark_gradient',
           wm_dark_mode: _wm_dark_mode ?? false,
