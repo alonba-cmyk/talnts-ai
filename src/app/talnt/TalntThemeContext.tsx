@@ -176,6 +176,8 @@ export function TalntThemeProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const tokens = theme === 'dark' ? DARK_TOKENS : LIGHT_TOKENS;
+
   useEffect(() => {
     const root = document.documentElement;
     root.setAttribute('data-talnt-theme', theme);
@@ -188,8 +190,6 @@ export function TalntThemeProvider({ children }: { children: ReactNode }) {
     root.style.setProperty('--talnt-text-accent', tokens.textAccent);
     root.style.setProperty('--talnt-bg-card-hover', tokens.bgCardHover);
   }, [theme, tokens]);
-
-  const tokens = theme === 'dark' ? DARK_TOKENS : LIGHT_TOKENS;
 
   return (
     <TalntThemeContext.Provider value={{ tokens, toggleTheme }}>
