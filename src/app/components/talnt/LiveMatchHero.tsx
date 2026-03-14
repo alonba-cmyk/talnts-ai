@@ -277,7 +277,7 @@ function GalleryView({ targetRole }: { targetRole: Role }) {
         Browsing open roles...
       </motion.p>
 
-      <div className="flex flex-col gap-2.5 w-full max-w-[440px]">
+      <div className="flex flex-col gap-2 sm:gap-2.5 w-full max-w-[440px]">
         {GALLERY_ROLES.map((r, i) => {
           const cc = CATEGORY_COLORS[r.category] ?? { color: '#818CF8', rgb: '129,140,248' };
           const isActive = i === activeIdx;
@@ -289,7 +289,7 @@ function GalleryView({ targetRole }: { targetRole: Role }) {
               initial={{ opacity: 0, x: 24 }}
               animate={{ opacity: isActive || isTarget ? 1 : 0.35, x: 0 }}
               transition={{ delay: i * 0.06, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl"
+              className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl"
               style={{
                 background: isActive
                   ? `rgba(${cc.rgb}, 0.07)`
@@ -311,16 +311,16 @@ function GalleryView({ targetRole }: { targetRole: Role }) {
                 <img src={r.companyLogo} alt={r.company} className="w-5 h-5 object-contain" style={{ filter: logoFilter(tokens) }} />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-[13px] font-semibold truncate" style={{ color: tokens.textPrimary }}>{r.title}</div>
-                <div className="text-[11px]" style={{ color: tokens.textMuted }}>{r.company} · {r.jobType}</div>
+                <div className="text-[12px] sm:text-[13px] font-semibold truncate" style={{ color: tokens.textPrimary }}>{r.title}</div>
+                <div className="text-[10px] sm:text-[11px]" style={{ color: tokens.textMuted }}>{r.company} · {r.jobType}</div>
               </div>
               <span
-                className="text-[10px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
+                className="text-[9px] sm:text-[10px] font-semibold px-1.5 sm:px-2 py-0.5 rounded-full flex-shrink-0 hidden sm:inline"
                 style={{ background: `rgba(${cc.rgb}, 0.1)`, color: cc.color, border: `1px solid rgba(${cc.rgb}, 0.18)` }}
               >
                 {r.category}
               </span>
-              <span className="text-[12px] font-bold flex-shrink-0" style={{ color: tokens.textAccent }}>{r.budget}</span>
+              <span className="text-[11px] sm:text-[12px] font-bold flex-shrink-0" style={{ color: tokens.textAccent }}>{r.budget}</span>
             </motion.div>
           );
         })}
@@ -346,6 +346,214 @@ function useTypingReveal(text: string, speed = 35, startDelay = 300) {
     return () => clearTimeout(delayTimer);
   }, [text, speed, startDelay]);
   return text.slice(0, revealed);
+}
+
+/* ─── Match Sub-components ─── */
+
+function MatchedBadge({ tokens }: { tokens: ThemeTokens }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.6 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.8 }}
+      transition={{ type: 'spring', damping: 12, stiffness: 200 }}
+      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap"
+      style={{
+        background: tokens.bgNavbarSolid,
+        border: '1px solid rgba(99,102,241,0.4)',
+        boxShadow: '0 0 20px rgba(99,102,241,0.2)',
+      }}
+    >
+      <motion.div animate={{ scale: [1, 1.4, 1] }} transition={{ duration: 0.5, delay: 0.1 }}>
+        <Check size={14} style={{ color: '#818CF8' }} />
+      </motion.div>
+      <span className="text-[13px] font-bold" style={{ color: tokens.textAccent }}>Matched</span>
+    </motion.div>
+  );
+}
+
+function RoleCard({ role, agent, typedTitle, titleDone, tokens, compact }: {
+  role: Role; agent: Agent; typedTitle: string; titleDone: boolean; tokens: ThemeTokens; compact?: boolean;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      className={compact ? 'w-full rounded-2xl p-4 flex flex-col' : 'w-[280px] max-w-full rounded-2xl p-5 flex flex-col'}
+      style={{
+        background: tokens.bgCard,
+        border: `1px solid ${tokens.borderDefault}`,
+        boxShadow: tokens.shadowCard,
+      }}
+    >
+      <div className={`flex items-center ${compact ? 'gap-3 mb-3' : 'gap-3.5 mb-4'}`}>
+        <div className={`${compact ? 'w-10 h-10' : 'w-12 h-12'} rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0`}
+          style={{ background: tokens.bgSurface2, border: `1px solid ${tokens.borderDefault}` }}>
+          <img src={role.companyLogo} alt={role.company} className={compact ? 'w-5 h-5 object-contain' : 'w-7 h-7 object-contain'} style={{ filter: logoFilter(tokens) }} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className={`${compact ? 'text-[13px]' : 'text-[15px]'} font-bold`} style={{ color: tokens.textPrimary }}>{role.company}</div>
+          <div className={`${compact ? 'text-[11px]' : 'text-[12px]'}`} style={{ color: tokens.textMuted }}>Hiring</div>
+        </div>
+      </div>
+      <div className={`${compact ? 'text-base' : 'text-xl'} font-bold mb-2 leading-snug min-h-[24px]`} style={{ color: tokens.textPrimary }}>
+        {typedTitle}
+        {!titleDone && (
+          <motion.span
+            animate={{ opacity: [1, 0] }}
+            transition={{ duration: 0.6, repeat: Infinity }}
+            className="inline-block w-[2px] h-[18px] ml-0.5 align-middle"
+            style={{ background: '#818CF8' }}
+          />
+        )}
+      </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: titleDone ? 1 : 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className={`${compact ? 'text-[12px] mb-3' : 'text-[13px] mb-4'} leading-relaxed line-clamp-2`} style={{ color: tokens.textSecondary }}>{role.description}</div>
+        <div className={`flex items-center gap-2 flex-wrap ${compact ? 'mb-3' : 'mb-4'}`}>
+          <span className={`${compact ? 'text-[11px] px-2.5 py-0.5' : 'text-[12px] px-3 py-1'} font-semibold rounded-full`}
+            style={{ background: `rgba(${agent.accentRgb}, 0.1)`, color: agent.accentColor, border: `1px solid rgba(${agent.accentRgb}, 0.2)` }}>
+            {role.category}
+          </span>
+          <div className={`flex items-center gap-1 ${compact ? 'text-[11px]' : 'text-[12px]'}`} style={{ color: tokens.textMuted }}>
+            <MapPin size={10} />{role.location}
+          </div>
+          <div className={`flex items-center gap-1 ${compact ? 'text-[11px]' : 'text-[12px]'}`} style={{ color: tokens.textMuted }}>
+            <Clock size={10} />{role.jobType}
+          </div>
+        </div>
+        <div>
+          <span className={`${compact ? 'text-base' : 'text-lg'} font-bold`} style={{ color: tokens.textAccent }}>{role.budget}</span>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function AgentMatchCard({ agent, matched, tokens, compact }: {
+  agent: Agent; matched: boolean; tokens: ThemeTokens; compact?: boolean;
+}) {
+  return (
+    <motion.div
+      initial={compact ? { opacity: 0, y: 30, scale: 0.95 } : { opacity: 0, x: 50, scale: 0.9 }}
+      animate={{
+        opacity: matched ? 1 : 0.5,
+        x: 0, y: 0,
+        scale: 1,
+        boxShadow: matched
+          ? `0 0 50px rgba(${agent.accentRgb}, 0.15), 0 0 100px rgba(${agent.accentRgb}, 0.06)`
+          : '0 0 0 transparent',
+      }}
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      className={compact ? 'w-full rounded-2xl p-4 flex flex-col' : 'w-[260px] max-w-full rounded-2xl p-5 flex flex-col'}
+      style={{
+        background: matched ? `rgba(${agent.accentRgb}, 0.04)` : tokens.bgCard,
+        border: `1px solid ${matched ? `rgba(${agent.accentRgb}, 0.2)` : tokens.borderDefault}`,
+        transition: 'background 0.9s, border-color 0.9s',
+      }}
+    >
+      <div className={`flex items-start ${compact ? 'gap-3 mb-2.5' : 'gap-3.5 mb-3'}`}>
+        <div className="relative flex-shrink-0">
+          {matched && (
+            <div className="absolute -inset-2 rounded-2xl opacity-50 blur-lg pointer-events-none"
+              style={{ background: `linear-gradient(135deg, ${agent.accentColor}, rgba(${agent.accentRgb}, 0.3))` }} />
+          )}
+          <div className={`relative ${compact ? 'w-11 h-11' : 'w-14 h-14'} rounded-2xl overflow-hidden`}
+            style={{
+              border: `2px solid ${matched ? `rgba(${agent.accentRgb}, 0.4)` : tokens.borderDefault}`,
+              transition: 'border-color 0.9s',
+            }}>
+            <img src={agent.avatar} alt={agent.name} className="w-full h-full object-cover object-top" />
+          </div>
+          <div className={`absolute -bottom-1.5 -right-1.5 ${compact ? 'w-5 h-5' : 'w-6 h-6'} rounded-full flex items-center justify-center`}
+            style={{
+              background: `linear-gradient(135deg, ${agent.accentColor}, rgba(${agent.accentRgb}, 0.7))`,
+              border: `2.5px solid ${tokens.bgPage}`,
+              boxShadow: matched ? `0 0 12px rgba(${agent.accentRgb}, 0.5)` : 'none',
+              transition: 'box-shadow 0.9s',
+            }}>
+            <Bot size={compact ? 10 : 12} className="text-white" />
+          </div>
+        </div>
+        <div className="flex-1 min-w-0 pt-0.5">
+          <div className="flex items-center gap-2 mb-0.5">
+            <span className={`${compact ? 'text-[14px]' : 'text-[16px]'} font-bold`} style={{ color: tokens.textPrimary }}>{agent.name}</span>
+            <CheckCircle2 size={compact ? 13 : 15} style={{ color: agent.accentColor }} className="flex-shrink-0" />
+            {matched && (
+              <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[11px] font-bold ml-auto" style={{ color: agent.accentColor }}>
+                ★ {agent.rating}
+              </motion.span>
+            )}
+          </div>
+          <p className={`${compact ? 'text-[11px] line-clamp-1' : 'text-[12px] line-clamp-2'} leading-snug`} style={{ color: tokens.textSecondary }}>{agent.tagline}</p>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 mb-2.5">
+        <span className="text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-0.5 rounded-full"
+          style={{ background: `rgba(${agent.accentRgb}, 0.1)`, color: agent.accentColor, border: `1px solid rgba(${agent.accentRgb}, 0.2)` }}>
+          {agent.category}
+        </span>
+        <span className="text-[10px] sm:text-[11px] font-medium px-2 sm:px-2.5 py-0.5 rounded-full flex items-center gap-1.5"
+          style={{ background: 'rgba(16,185,129,0.08)', color: '#34D399', border: '1px solid rgba(16,185,129,0.15)' }}>
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />Available
+        </span>
+      </div>
+
+      {!compact && (
+        <div className="flex items-center gap-1.5 flex-wrap mb-3">
+          {agent.skills.slice(0, 4).map(skill => (
+            <span key={skill} className="text-[10px] font-medium px-2 py-0.5 rounded"
+              style={{ background: tokens.bgSurface, color: tokens.textMuted, border: `1px solid ${tokens.borderDefault}` }}>
+              {skill}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <AnimatePresence>
+        {matched && (
+          <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}>
+            <div className="flex items-center gap-3 mb-2.5">
+              <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: tokens.bgSurface }}>
+                <motion.div
+                  className="h-full rounded-full"
+                  style={{ background: `linear-gradient(90deg, ${agent.accentColor}, rgba(${agent.accentRgb}, 0.5))` }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${agent.matchScore}%` }}
+                  transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                />
+              </div>
+              <span className={`${compact ? 'text-[11px]' : 'text-[12px]'} font-extrabold flex-shrink-0`} style={{ color: agent.accentColor }}>{agent.matchScore}% match</span>
+            </div>
+
+            <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-2.5">
+              {[
+                { label: 'Success', value: `${agent.successRate}%`, hl: true },
+                { label: 'Response', value: agent.responseTime, hl: false },
+                { label: 'Done', value: `${agent.jobsCompleted}`, hl: false },
+              ].map(s => (
+                <div key={s.label} className={`text-center rounded-lg ${compact ? 'py-1.5 px-1' : 'py-2 px-1'}`}
+                  style={{ background: s.hl ? `rgba(${agent.accentRgb}, 0.08)` : tokens.bgSurface,
+                    border: `1px solid ${s.hl ? `rgba(${agent.accentRgb}, 0.12)` : tokens.borderDefault}` }}>
+                  <div className={`${compact ? 'text-[12px]' : 'text-[14px]'} font-bold`} style={{ color: s.hl ? agent.accentColor : tokens.textPrimary }}>{s.value}</div>
+                  <div className="text-[9px] font-medium mt-0.5 uppercase tracking-wider" style={{ color: tokens.textMuted }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="mt-auto">
+        <span className={`${compact ? 'text-base' : 'text-lg'} font-bold`} style={{ color: tokens.textPrimary }}>{agent.monthlyRate}</span>
+      </div>
+    </motion.div>
+  );
 }
 
 /* ─── Phase 1: Match ─── */
@@ -407,69 +615,12 @@ function MatchView({ role, agent }: { role: Role; agent: Agent }) {
         </AnimatePresence>
       </div>
 
-      <div className="flex items-stretch justify-center gap-0 w-full">
-        {/* ── Role Card ── */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="w-[280px] max-w-full rounded-2xl p-5 flex flex-col"
-          style={{
-            background: tokens.bgCard,
-            border: `1px solid ${tokens.borderDefault}`,
-            boxShadow: tokens.shadowCard,
-          }}
-        >
-          <div className="flex items-center gap-3.5 mb-4">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0"
-              style={{ background: tokens.bgSurface2, border: `1px solid ${tokens.borderDefault}` }}>
-              <img src={role.companyLogo} alt={role.company} className="w-7 h-7 object-contain" style={{ filter: logoFilter(tokens) }} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-[15px] font-bold" style={{ color: tokens.textPrimary }}>{role.company}</div>
-              <div className="text-[12px]" style={{ color: tokens.textMuted }}>Hiring</div>
-            </div>
-          </div>
-          <div className="text-xl font-bold mb-2 leading-snug min-h-[28px]" style={{ color: tokens.textPrimary }}>
-            {typedTitle}
-            {!titleDone && (
-              <motion.span
-                animate={{ opacity: [1, 0] }}
-                transition={{ duration: 0.6, repeat: Infinity }}
-                className="inline-block w-[2px] h-[20px] ml-0.5 align-middle"
-                style={{ background: '#818CF8' }}
-              />
-            )}
-          </div>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: titleDone ? 1 : 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="text-[13px] leading-relaxed mb-4 line-clamp-2" style={{ color: tokens.textSecondary }}>{role.description}</div>
-            <div className="flex items-center gap-2 flex-wrap mb-4">
-              <span className="text-[12px] font-semibold px-3 py-1 rounded-full"
-                style={{ background: `rgba(${agent.accentRgb}, 0.1)`, color: agent.accentColor, border: `1px solid rgba(${agent.accentRgb}, 0.2)` }}>
-                {role.category}
-              </span>
-              <div className="flex items-center gap-1 text-[12px]" style={{ color: tokens.textMuted }}>
-                <MapPin size={10} />{role.location}
-              </div>
-              <div className="flex items-center gap-1 text-[12px]" style={{ color: tokens.textMuted }}>
-                <Clock size={10} />{role.jobType}
-              </div>
-            </div>
-            <div>
-              <span className="text-lg font-bold" style={{ color: tokens.textAccent }}>{role.budget}</span>
-            </div>
-          </motion.div>
-        </motion.div>
-
-        {/* ── Particles + Badge + Agent ── */}
+      {/* Desktop: horizontal layout */}
+      <div className="hidden lg:flex items-stretch justify-center gap-0 w-full">
+        <RoleCard role={role} agent={agent} typedTitle={typedTitle} titleDone={titleDone} tokens={tokens} />
         <AnimatePresence>
           {showAgent && (
             <>
-              {/* Beam + badge overlay */}
               <motion.div
                 initial={{ opacity: 0, width: 0 }}
                 animate={{ opacity: 1, width: 80 }}
@@ -477,7 +628,37 @@ function MatchView({ role, agent }: { role: Role; agent: Agent }) {
                 className="relative flex items-center flex-shrink-0"
               >
                 <StreamParticles accentColor={agent.accentColor} accentRgb={agent.accentRgb} />
-                {/* Badge on the beam */}
+                <AnimatePresence>
+                  {matched && <MatchedBadge tokens={tokens} />}
+                </AnimatePresence>
+              </motion.div>
+              <AgentMatchCard agent={agent} matched={matched} tokens={tokens} />
+            </>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Mobile: vertical stacked layout */}
+      <div className="flex lg:hidden flex-col items-center gap-0 w-full max-w-[340px] mx-auto">
+        <RoleCard role={role} agent={agent} typedTitle={typedTitle} titleDone={titleDone} tokens={tokens} compact />
+        <AnimatePresence>
+          {showAgent && (
+            <>
+              {/* Vertical connector line + badge */}
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 48 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="relative flex items-center justify-center flex-shrink-0"
+                style={{ width: 2 }}
+              >
+                <motion.div
+                  className="absolute inset-0"
+                  style={{ background: `linear-gradient(180deg, rgba(${agent.accentRgb},0.1), rgba(${agent.accentRgb},0.4), rgba(${agent.accentRgb},0.1))`, borderRadius: 1 }}
+                  initial={{ scaleY: 0 }}
+                  animate={{ scaleY: 1 }}
+                  transition={{ duration: 0.4, delay: 0.1 }}
+                />
                 <AnimatePresence>
                   {matched && (
                     <motion.div
@@ -485,145 +666,22 @@ function MatchView({ role, agent }: { role: Role; agent: Agent }) {
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
                       transition={{ type: 'spring', damping: 12, stiffness: 200 }}
-                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap"
+                      className="absolute z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-full whitespace-nowrap"
                       style={{
                         background: tokens.bgNavbarSolid,
                         border: '1px solid rgba(99,102,241,0.4)',
-                        boxShadow: '0 0 20px rgba(99,102,241,0.2)',
+                        boxShadow: '0 0 16px rgba(99,102,241,0.2)',
                       }}
                     >
                       <motion.div animate={{ scale: [1, 1.4, 1] }} transition={{ duration: 0.5, delay: 0.1 }}>
-                        <Check size={14} style={{ color: '#818CF8' }} />
+                        <Check size={12} style={{ color: '#818CF8' }} />
                       </motion.div>
-                      <span className="text-[13px] font-bold" style={{ color: tokens.textAccent }}>Matched</span>
+                      <span className="text-[11px] font-bold" style={{ color: tokens.textAccent }}>Matched</span>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </motion.div>
-
-              {/* Agent card */}
-              <motion.div
-                initial={{ opacity: 0, x: 50, scale: 0.9 }}
-                animate={{
-                  opacity: matched ? 1 : 0.5,
-                  x: 0,
-                  scale: 1,
-                  boxShadow: matched
-                    ? `0 0 50px rgba(${agent.accentRgb}, 0.15), 0 0 100px rgba(${agent.accentRgb}, 0.06)`
-                    : '0 0 0 transparent',
-                }}
-                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                className="w-[260px] max-w-full rounded-2xl p-5 flex flex-col"
-                style={{
-                  background: matched ? `rgba(${agent.accentRgb}, 0.04)` : tokens.bgCard,
-                  border: `1px solid ${matched ? `rgba(${agent.accentRgb}, 0.2)` : tokens.borderDefault}`,
-                  transition: 'background 0.9s, border-color 0.9s',
-                }}
-              >
-                {/* Header: avatar + name + rating */}
-                <div className="flex items-start gap-3.5 mb-3">
-                  <div className="relative flex-shrink-0">
-                    {matched && (
-                      <div className="absolute -inset-2 rounded-2xl opacity-50 blur-lg pointer-events-none"
-                        style={{ background: `linear-gradient(135deg, ${agent.accentColor}, rgba(${agent.accentRgb}, 0.3))` }} />
-                    )}
-                    <div className="relative w-14 h-14 rounded-2xl overflow-hidden"
-                      style={{
-                        border: `2px solid ${matched ? `rgba(${agent.accentRgb}, 0.4)` : tokens.borderDefault}`,
-                        transition: 'border-color 0.9s',
-                      }}>
-                      <img src={agent.avatar} alt={agent.name} className="w-full h-full object-cover object-top" />
-                    </div>
-                    <div className="absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-full flex items-center justify-center"
-                      style={{
-                        background: `linear-gradient(135deg, ${agent.accentColor}, rgba(${agent.accentRgb}, 0.7))`,
-                        border: `2.5px solid ${tokens.bgPage}`,
-                        boxShadow: matched ? `0 0 12px rgba(${agent.accentRgb}, 0.5)` : 'none',
-                        transition: 'box-shadow 0.9s',
-                      }}>
-                      <Bot size={12} className="text-white" />
-                    </div>
-                  </div>
-                  <div className="flex-1 min-w-0 pt-0.5">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <span className="text-[16px] font-bold" style={{ color: tokens.textPrimary }}>{agent.name}</span>
-                      <CheckCircle2 size={15} style={{ color: agent.accentColor }} className="flex-shrink-0" />
-                      {matched && (
-                        <motion.span
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          className="text-[11px] font-bold ml-auto"
-                          style={{ color: agent.accentColor }}
-                        >★ {agent.rating}</motion.span>
-                      )}
-                    </div>
-                    <p className="text-[12px] line-clamp-2 leading-snug" style={{ color: tokens.textSecondary }}>{agent.tagline}</p>
-                  </div>
-                </div>
-
-                {/* Pills */}
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full"
-                    style={{ background: `rgba(${agent.accentRgb}, 0.1)`, color: agent.accentColor, border: `1px solid rgba(${agent.accentRgb}, 0.2)` }}>
-                    {agent.category}
-                  </span>
-                  <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full flex items-center gap-1.5"
-                    style={{ background: 'rgba(16,185,129,0.08)', color: '#34D399', border: '1px solid rgba(16,185,129,0.15)' }}>
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />Available
-                  </span>
-                </div>
-
-                {/* Skills (compact) */}
-                <div className="flex items-center gap-1.5 flex-wrap mb-3">
-                  {agent.skills.slice(0, 4).map(skill => (
-                    <span key={skill} className="text-[10px] font-medium px-2 py-0.5 rounded"
-                      style={{ background: tokens.bgSurface, color: tokens.textMuted, border: `1px solid ${tokens.borderDefault}` }}>
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Match score + stats (only when matched, compact) */}
-                <AnimatePresence>
-                  {matched && (
-                    <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}>
-                      {/* Match score inline */}
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: tokens.bgSurface }}>
-                          <motion.div
-                            className="h-full rounded-full"
-                            style={{ background: `linear-gradient(90deg, ${agent.accentColor}, rgba(${agent.accentRgb}, 0.5))` }}
-                            initial={{ width: 0 }}
-                            animate={{ width: `${agent.matchScore}%` }}
-                            transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                          />
-                        </div>
-                        <span className="text-[12px] font-extrabold flex-shrink-0" style={{ color: agent.accentColor }}>{agent.matchScore}% match</span>
-                      </div>
-
-                      {/* Stats row */}
-                      <div className="grid grid-cols-3 gap-2 mb-3">
-                        {[
-                          { label: 'Success', value: `${agent.successRate}%`, hl: true },
-                          { label: 'Response', value: agent.responseTime, hl: false },
-                          { label: 'Done', value: `${agent.jobsCompleted}`, hl: false },
-                        ].map(s => (
-                          <div key={s.label} className="text-center rounded-lg py-2 px-1"
-                            style={{ background: s.hl ? `rgba(${agent.accentRgb}, 0.08)` : tokens.bgSurface,
-                              border: `1px solid ${s.hl ? `rgba(${agent.accentRgb}, 0.12)` : tokens.borderDefault}` }}>
-                            <div className="text-[14px] font-bold" style={{ color: s.hl ? agent.accentColor : tokens.textPrimary }}>{s.value}</div>
-                            <div className="text-[9px] font-medium mt-0.5 uppercase tracking-wider" style={{ color: tokens.textMuted }}>{s.label}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <div className="mt-auto">
-                  <span className="text-lg font-bold" style={{ color: tokens.textPrimary }}>{agent.monthlyRate}</span>
-                </div>
-              </motion.div>
+              <AgentMatchCard agent={agent} matched={matched} tokens={tokens} compact />
             </>
           )}
         </AnimatePresence>
@@ -721,7 +779,7 @@ function JoinView({ role, agent }: { role: Role; agent: Agent }) {
         >
           <div className="relative mb-2">
             <div
-              className="w-[88px] h-[88px] rounded-full overflow-hidden"
+              className="w-[60px] h-[60px] sm:w-[88px] sm:h-[88px] rounded-full overflow-hidden"
               style={{
                 border: `3px solid ${tokens.borderDefault}`,
                 boxShadow: `${tokens.shadowCardHover}, 0 0 30px rgba(0,0,0,0.1)`,
@@ -730,17 +788,16 @@ function JoinView({ role, agent }: { role: Role; agent: Agent }) {
               <img src={lead.avatar} alt={lead.name} className="w-full h-full object-cover" />
             </div>
           </div>
-          <span className="text-[16px] font-bold" style={{ color: tokens.textPrimary }}>{lead.name}</span>
-          <span className="text-[12px] font-medium" style={{ color: tokens.textMuted }}>{lead.title}</span>
+          <span className="text-[13px] sm:text-[16px] font-bold" style={{ color: tokens.textPrimary }}>{lead.name}</span>
+          <span className="text-[10px] sm:text-[12px] font-medium" style={{ color: tokens.textMuted }}>{lead.title}</span>
         </motion.div>
 
         {/* ── SVG connecting lines ── */}
         <motion.svg
-          width="460"
-          height="80"
           viewBox="0 0 460 80"
-          className="overflow-visible flex-shrink-0"
-          style={{ marginTop: 4, marginBottom: -4 }}
+          className="overflow-visible flex-shrink-0 w-full max-w-[460px]"
+          style={{ marginTop: 4, marginBottom: -4, height: 'auto', aspectRatio: '460 / 80' }}
+          preserveAspectRatio="xMidYMid meet"
         >
           {zoomed && (
             <>
@@ -774,7 +831,7 @@ function JoinView({ role, agent }: { role: Role; agent: Agent }) {
       </motion.div>
 
       {/* ── Avatars row ── */}
-      <div className="flex items-center gap-14">
+      <div className="flex items-center gap-6 sm:gap-14">
         {role.team.members.map((member, i) => (
           <motion.div
             key={member.name}
@@ -784,7 +841,7 @@ function JoinView({ role, agent }: { role: Role; agent: Agent }) {
             className="flex flex-col items-center"
           >
             <div
-              className="w-20 h-20 rounded-full overflow-hidden mb-3"
+              className="w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden mb-2 sm:mb-3"
               style={{
                 border: `2px solid ${tokens.borderDefault}`,
                 boxShadow: tokens.shadowCard,
@@ -792,7 +849,7 @@ function JoinView({ role, agent }: { role: Role; agent: Agent }) {
             >
               <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
             </div>
-            <span className="text-[15px]" style={{ color: tokens.textSecondary }}>{member.name}</span>
+            <span className="text-[12px] sm:text-[15px]" style={{ color: tokens.textSecondary }}>{member.name}</span>
           </motion.div>
         ))}
 
@@ -804,11 +861,11 @@ function JoinView({ role, agent }: { role: Role; agent: Agent }) {
           className="flex flex-col items-center relative"
         >
           <div
-            className="absolute -inset-6 rounded-full pointer-events-none"
+            className="absolute -inset-4 sm:-inset-6 rounded-full pointer-events-none"
             style={{ background: `radial-gradient(circle, rgba(${agent.accentRgb}, 0.12), transparent 70%)` }}
           />
           <div
-            className="relative w-20 h-20 rounded-full overflow-hidden mb-3"
+            className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden mb-2 sm:mb-3"
             style={{
               border: `2.5px solid rgba(${agent.accentRgb}, 0.4)`,
               boxShadow: `0 0 30px rgba(${agent.accentRgb}, 0.2)`,
@@ -825,7 +882,7 @@ function JoinView({ role, agent }: { role: Role; agent: Agent }) {
               <Bot size={12} className="text-white" />
             </div>
           </div>
-          <span className="text-[15px] font-semibold" style={{ color: agent.accentColor }}>{agent.name}</span>
+          <span className="text-[12px] sm:text-[15px] font-semibold" style={{ color: agent.accentColor }}>{agent.name}</span>
         </motion.div>
       </div>
 
@@ -834,7 +891,7 @@ function JoinView({ role, agent }: { role: Role; agent: Agent }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.9 }}
-        className="mt-8 text-[15px]"
+        className="mt-5 sm:mt-8 text-[12px] sm:text-[15px]"
         style={{ color: tokens.textMuted }}
       >
         <AnimatePresence mode="wait">
@@ -942,8 +999,8 @@ function PartnerView({ role, agent }: { role: Role; agent: Agent }) {
         {agent.name} is now working for {role.company}...
       </motion.p>
 
-      <div className="flex items-stretch gap-6 w-full">
-      {/* ── Terminal panel (left) ── */}
+      <div className="flex flex-col lg:flex-row items-stretch gap-4 lg:gap-6 w-full">
+      {/* ── Terminal panel ── */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -956,28 +1013,28 @@ function PartnerView({ role, agent }: { role: Role; agent: Agent }) {
         }}
       >
         {/* Terminal header bar */}
-        <div className="flex items-center gap-3 px-5 py-3.5" style={{ borderBottom: `1px solid ${tokens.dividerColor}`, background: terminalHeaderBg }}>
+        <div className="flex items-center gap-2 sm:gap-3 px-3.5 sm:px-5 py-2.5 sm:py-3.5" style={{ borderBottom: `1px solid ${tokens.dividerColor}`, background: terminalHeaderBg }}>
           <div className="flex gap-1.5">
-            <div className="w-3 h-3 rounded-full" style={{ background: '#FF5F57' }} />
-            <div className="w-3 h-3 rounded-full" style={{ background: '#FFBD2E' }} />
-            <div className="w-3 h-3 rounded-full" style={{ background: '#28C840' }} />
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full" style={{ background: '#FF5F57' }} />
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full" style={{ background: '#FFBD2E' }} />
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full" style={{ background: '#28C840' }} />
           </div>
-          <div className="flex items-center gap-2 flex-1">
-            <div className="w-6 h-6 rounded flex items-center justify-center overflow-hidden flex-shrink-0"
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded flex items-center justify-center overflow-hidden flex-shrink-0"
               style={{ background: tokens.bgSurface2 }}>
-              <img src={role.companyLogo} alt={role.company} className="w-4 h-4 object-contain" style={{ filter: logoFilter(tokens) }} />
+              <img src={role.companyLogo} alt={role.company} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" style={{ filter: logoFilter(tokens) }} />
             </div>
-            <span className="text-[12px] font-medium" style={{ color: tokens.textMuted }}>{role.company} · {role.title}</span>
+            <span className="text-[10px] sm:text-[12px] font-medium truncate" style={{ color: tokens.textMuted }}>{role.company} · {role.title}</span>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 flex-shrink-0">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] font-medium" style={{ color: '#34D399' }}>Live</span>
+            <span className="text-[10px] sm:text-[11px] font-medium" style={{ color: '#34D399' }}>Live</span>
           </div>
         </div>
 
         {/* Log lines */}
-        <div className="px-5 pb-4 flex-1">
-          <div className="text-[11px] font-mono pt-3 mb-1" style={{ color: commandColor }}>
+        <div className="px-3.5 sm:px-5 pb-3 sm:pb-4 flex-1">
+          <div className="text-[10px] sm:text-[11px] font-mono pt-2.5 sm:pt-3 mb-1" style={{ color: commandColor }}>
             $ agent start --task "{role.title}"
           </div>
           {role.activities.map((act, i) => (
@@ -986,12 +1043,12 @@ function PartnerView({ role, agent }: { role: Role; agent: Agent }) {
         </div>
       </motion.div>
 
-      {/* ── Agent card (right) ── */}
+      {/* ── Agent card ── */}
       <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-        className="w-[240px] max-w-full flex-shrink-0 rounded-2xl p-5 flex flex-col"
+        className="w-full lg:w-[240px] lg:max-w-full flex-shrink-0 rounded-2xl p-4 sm:p-5 flex flex-row lg:flex-col items-center lg:items-stretch gap-4 lg:gap-0"
         style={{
           background: `rgba(${agent.accentRgb}, 0.05)`,
           border: `1px solid rgba(${agent.accentRgb}, 0.18)`,
@@ -999,46 +1056,47 @@ function PartnerView({ role, agent }: { role: Role; agent: Agent }) {
         }}
       >
         {/* Avatar */}
-        <div className="flex flex-col items-center mb-4">
-          <div className="relative mb-3">
+        <div className="flex flex-col items-center lg:mb-4 flex-shrink-0">
+          <div className="relative mb-2 lg:mb-3">
             <div className="absolute -inset-2 rounded-2xl opacity-40 blur-lg pointer-events-none"
               style={{ background: `linear-gradient(135deg, ${agent.accentColor}, transparent)` }} />
-            <div className="relative w-20 h-20 rounded-2xl overflow-hidden"
+            <div className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-2xl overflow-hidden"
               style={{ border: `2px solid rgba(${agent.accentRgb}, 0.4)`, boxShadow: `0 0 24px rgba(${agent.accentRgb}, 0.15)` }}>
               <img src={agent.avatar} alt={agent.name} className="w-full h-full object-cover object-top" />
-              <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center"
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center"
                 style={{ background: `linear-gradient(135deg, ${agent.accentColor}, rgba(${agent.accentRgb}, 0.7))`, border: `2px solid ${tokens.bgPage}`, boxShadow: `0 0 10px rgba(${agent.accentRgb}, 0.5)` }}>
-                <Bot size={11} className="text-white" />
+                <Bot size={10} className="text-white" />
               </div>
             </div>
           </div>
-          <div className="text-[15px] font-bold mb-0.5" style={{ color: tokens.textPrimary }}>{agent.name}</div>
-          <div className="text-[11px] text-center" style={{ color: tokens.textMuted }}>{agent.tagline}</div>
+          <div className="text-[13px] sm:text-[15px] font-bold mb-0.5 text-center" style={{ color: tokens.textPrimary }}>{agent.name}</div>
+          <div className="text-[10px] sm:text-[11px] text-center hidden lg:block" style={{ color: tokens.textMuted }}>{agent.tagline}</div>
         </div>
 
-        {/* Status */}
-        <div className="flex items-center justify-center gap-2 mb-4 py-2 rounded-lg"
-          style={{ background: `rgba(${agent.accentRgb}, 0.08)`, border: `1px solid rgba(${agent.accentRgb}, 0.15)` }}>
-          <motion.span
-            animate={{ opacity: [0.4, 1, 0.4] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-            className="w-2 h-2 rounded-full flex-shrink-0"
-            style={{ background: agent.accentColor }}
-          />
-          <span className="text-[12px] font-semibold" style={{ color: agent.accentColor }}>Working for {role.company}</span>
-        </div>
+        {/* Status + stats */}
+        <div className="flex-1 min-w-0 flex flex-col">
+          <div className="flex items-center justify-center gap-2 mb-3 lg:mb-4 py-1.5 sm:py-2 rounded-lg"
+            style={{ background: `rgba(${agent.accentRgb}, 0.08)`, border: `1px solid rgba(${agent.accentRgb}, 0.15)` }}>
+            <motion.span
+              animate={{ opacity: [0.4, 1, 0.4] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="w-2 h-2 rounded-full flex-shrink-0"
+              style={{ background: agent.accentColor }}
+            />
+            <span className="text-[11px] sm:text-[12px] font-semibold" style={{ color: agent.accentColor }}>Working for {role.company}</span>
+          </div>
 
-        {/* Mini stats */}
-        <div className="space-y-2 mt-auto">
-          {[
-            { label: 'Success rate', value: `${agent.successRate}%` },
-            { label: 'Response time', value: agent.responseTime },
-          ].map(s => (
-            <div key={s.label} className="flex items-center justify-between">
-              <span className="text-[11px]" style={{ color: tokens.textMuted }}>{s.label}</span>
-              <span className="text-[12px] font-bold" style={{ color: tokens.textPrimary }}>{s.value}</span>
-            </div>
-          ))}
+          <div className="space-y-1.5 sm:space-y-2 mt-auto">
+            {[
+              { label: 'Success rate', value: `${agent.successRate}%` },
+              { label: 'Response time', value: agent.responseTime },
+            ].map(s => (
+              <div key={s.label} className="flex items-center justify-between">
+                <span className="text-[10px] sm:text-[11px]" style={{ color: tokens.textMuted }}>{s.label}</span>
+                <span className="text-[11px] sm:text-[12px] font-bold" style={{ color: tokens.textPrimary }}>{s.value}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </motion.div>
       </div>
@@ -1080,7 +1138,7 @@ export default function LiveMatchHero() {
 
   return (
     <section
-      className="relative min-h-screen flex items-center overflow-hidden"
+      className="relative min-h-[auto] lg:min-h-screen flex items-center overflow-hidden"
       style={{ transition: 'background 0.3s' }}
     >
 
@@ -1158,9 +1216,9 @@ export default function LiveMatchHero() {
 
           </div>
 
-          {/* ── Right: Animation stage ── */}
-          <div className="hidden lg:flex flex-col items-center justify-center flex-1 min-w-0">
-            <div className="w-full flex items-center justify-center" style={{ minHeight: 460 }}>
+          {/* ── Right / Below: Animation stage ── */}
+          <div className="flex flex-col items-center justify-center flex-1 min-w-0 w-full">
+            <div className="w-full flex items-center justify-center min-h-[300px] lg:min-h-[460px]">
               <AnimatePresence mode="wait">
                 {phase === 'match' && <MatchView key={`m-${rIdx}`} role={role} agent={agent} />}
                 {phase === 'join' && <JoinView key={`j-${rIdx}`} role={role} agent={agent} />}
