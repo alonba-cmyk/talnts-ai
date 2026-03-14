@@ -114,11 +114,11 @@ function computeMatchScore(agent: TalntAgent, state: WizardState): number {
 function StepIndicator({ current, total }: { current: number; total: number }) {
   const { tokens } = useTalntTheme();
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1 sm:gap-2">
       {Array.from({ length: total }, (_, i) => (
-        <div key={i} className="flex items-center gap-2">
+        <div key={i} className="flex items-center gap-1 sm:gap-2">
           <motion.div
-            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+            className="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold"
             animate={{
               background: i < current ? '#6366F1' : i === current ? 'rgba(99,102,241,0.2)' : tokens.bgSurface,
               color: i <= current ? '#fff' : tokens.textMuted,
@@ -130,7 +130,7 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
           </motion.div>
           {i < total - 1 && (
             <motion.div
-              className="w-8 h-0.5 rounded-full"
+              className="w-4 sm:w-8 h-0.5 rounded-full"
               animate={{
                 background: i < current ? '#6366F1' : tokens.bgSurface2,
               }}
@@ -148,8 +148,8 @@ function StepCategory({ selected, onSelect }: { selected: AgentCategory | null; 
   const { tokens } = useTalntTheme();
   return (
     <div>
-      <h2 className="text-xl sm:text-2xl font-bold mb-1.5" style={{ color: tokens.textPrimary }}>What kind of agent are you looking for?</h2>
-      <p className="text-sm mb-5" style={{ color: tokens.textSecondary }}>Select the category that best matches your needs.</p>
+      <h2 className="text-lg sm:text-xl font-bold mb-1.5" style={{ color: tokens.textPrimary }}>What kind of agent are you looking for?</h2>
+      <p className="text-xs sm:text-sm mb-4 sm:mb-5" style={{ color: tokens.textSecondary }}>Select the category that best matches your needs.</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
         {ALL_CATEGORIES.map(cat => {
@@ -204,10 +204,10 @@ function StepPriorities({ selected, onToggle }: { selected: Priority[]; onToggle
   const { tokens } = useTalntTheme();
   return (
     <div>
-      <h2 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: tokens.textPrimary }}>What matters most to you?</h2>
-      <p className="mb-8" style={{ color: tokens.textSecondary }}>Pick up to 3 priorities. We'll weight matches accordingly.</p>
+      <h2 className="text-lg sm:text-2xl font-bold mb-2" style={{ color: tokens.textPrimary }}>What matters most to you?</h2>
+      <p className="text-xs sm:text-sm mb-5 sm:mb-8" style={{ color: tokens.textSecondary }}>Pick up to 3 priorities. We'll weight matches accordingly.</p>
 
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         {PRIORITIES.map(p => {
           const isActive = selected.includes(p.id);
           const disabled = !isActive && selected.length >= 3;
@@ -216,7 +216,7 @@ function StepPriorities({ selected, onToggle }: { selected: Priority[]; onToggle
             <motion.button
               key={p.id}
               onClick={() => !disabled && onToggle(p.id)}
-              className="w-full rounded-xl p-5 text-left transition-all cursor-pointer flex items-center gap-4"
+              className="w-full rounded-xl p-3.5 sm:p-5 text-left transition-all cursor-pointer flex items-center gap-3 sm:gap-4"
               style={{
                 background: isActive ? 'rgba(99,102,241,0.1)' : tokens.bgSurface,
                 border: `2px solid ${isActive ? 'rgba(99,102,241,0.4)' : tokens.borderDefault}`,
@@ -252,8 +252,8 @@ function StepTech({ selected, onToggle }: { selected: AgentFramework[]; onToggle
   const { tokens } = useTalntTheme();
   return (
     <div>
-      <h2 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: tokens.textPrimary }}>Any framework preference?</h2>
-      <p className="mb-8" style={{ color: tokens.textSecondary }}>Select the frameworks you'd prefer, or skip to see all agents.</p>
+      <h2 className="text-lg sm:text-2xl font-bold mb-2" style={{ color: tokens.textPrimary }}>Any framework preference?</h2>
+      <p className="text-xs sm:text-sm mb-5 sm:mb-8" style={{ color: tokens.textSecondary }}>Select the frameworks you'd prefer, or skip to see all agents.</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {FRAMEWORKS_LIST.map(fw => {
@@ -262,7 +262,7 @@ function StepTech({ selected, onToggle }: { selected: AgentFramework[]; onToggle
             <motion.button
               key={fw.name}
               onClick={() => onToggle(fw.name)}
-              className="rounded-xl p-5 text-left transition-all cursor-pointer flex items-center gap-4"
+              className="rounded-xl p-3.5 sm:p-5 text-left transition-all cursor-pointer flex items-center gap-3 sm:gap-4"
               style={{
                 background: isActive ? 'rgba(139,92,246,0.1)' : tokens.bgSurface,
                 border: `2px solid ${isActive ? 'rgba(139,92,246,0.4)' : tokens.borderDefault}`,
@@ -302,17 +302,17 @@ function StepBudget({ selected, onSelect }: { selected: BudgetRange; onSelect: (
   const { tokens } = useTalntTheme();
   return (
     <div>
-      <h2 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: tokens.textPrimary }}>What's your budget range?</h2>
-      <p className="mb-8" style={{ color: tokens.textSecondary }}>This helps us find agents within your price range.</p>
+      <h2 className="text-lg sm:text-2xl font-bold mb-2" style={{ color: tokens.textPrimary }}>What's your budget range?</h2>
+      <p className="text-xs sm:text-sm mb-5 sm:mb-8" style={{ color: tokens.textSecondary }}>This helps us find agents within your price range.</p>
 
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         {BUDGET_RANGES.map(b => {
           const isActive = selected === b.id;
           return (
             <motion.button
               key={b.id}
               onClick={() => onSelect(b.id)}
-              className="w-full rounded-xl p-5 text-left transition-all cursor-pointer flex items-center gap-4"
+              className="w-full rounded-xl p-3.5 sm:p-5 text-left transition-all cursor-pointer flex items-center gap-3 sm:gap-4"
               style={{
                 background: isActive ? 'rgba(16,185,129,0.08)' : tokens.bgSurface,
                 border: `2px solid ${isActive ? 'rgba(16,185,129,0.3)' : tokens.borderDefault}`,
@@ -363,7 +363,7 @@ function StepResults({
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: tokens.textPrimary }}>Your Top Matches</h2>
+        <h2 className="text-lg sm:text-2xl font-bold" style={{ color: tokens.textPrimary }}>Your Top Matches</h2>
         <button
           onClick={onReset}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
@@ -408,12 +408,13 @@ function StepResults({
                 style={{ background: `linear-gradient(180deg, rgba(${visual.accentColorRgb}, 0.06) 0%, transparent 100%)` }}
               />
 
-              <div className="relative z-10 p-5 pl-10 flex items-center gap-4">
-                <AgentAvatar agent={agent} size="lg" showStatus showRing={false} />
+              <div className="relative z-10 p-3.5 sm:p-5 pl-9 sm:pl-10 flex items-center gap-3 sm:gap-4">
+                <div className="hidden sm:block"><AgentAvatar agent={agent} size="lg" showStatus showRing={false} /></div>
+                <div className="sm:hidden"><AgentAvatar agent={agent} size="md" showStatus showRing={false} /></div>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold truncate" style={{ color: tokens.textPrimary }}>{agent.name}</h3>
+                    <h3 className="font-semibold truncate text-sm sm:text-base" style={{ color: tokens.textPrimary }}>{agent.name}</h3>
                     {agent.isVerified && (
                       <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full shrink-0"
                         style={{ background: 'rgba(16,185,129,0.15)' }}
@@ -423,14 +424,14 @@ function StepResults({
                       </div>
                     )}
                   </div>
-                  <div className="flex items-center gap-3 text-xs" style={{ color: tokens.textSecondary }}>
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] sm:text-xs" style={{ color: tokens.textSecondary }}>
                     <span>{agent.framework}</span>
                     <span style={{ color: tokens.textMuted }}>&middot;</span>
-                    <span>{agent.model}</span>
-                    <span style={{ color: tokens.textMuted }}>&middot;</span>
                     <span>{agent.successRate}% success</span>
-                    <span style={{ color: tokens.textMuted }}>&middot;</span>
-                    <span>{agent.jobsCompleted} jobs</span>
+                    <span className="hidden sm:inline" style={{ color: tokens.textMuted }}>&middot;</span>
+                    <span className="hidden sm:inline">{agent.model}</span>
+                    <span className="hidden sm:inline" style={{ color: tokens.textMuted }}>&middot;</span>
+                    <span className="hidden sm:inline">{agent.jobsCompleted} jobs</span>
                   </div>
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {agent.categories.map(cat => {
@@ -705,17 +706,17 @@ export default function AgentMatchWizard() {
                   <button
                     onClick={goBack}
                     disabled={step === 0}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer hover:text-[var(--talnt-text-primary)]"
+                    className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer hover:text-[var(--talnt-text-primary)]"
                     style={{ background: tokens.bgSurface, color: tokens.textSecondary }}
                   >
-                    <ArrowLeft size={16} /> Back
+                    <ArrowLeft size={14} className="sm:w-4 sm:h-4" /> Back
                   </button>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     {(step === 2 || step === 3) && (
                       <button
                         onClick={goNext}
-                        className="text-sm transition-colors cursor-pointer px-3 py-2"
+                        className="text-xs sm:text-sm transition-colors cursor-pointer px-2 sm:px-3 py-2"
                         style={{ color: tokens.textMuted }}
                       >
                         Skip
@@ -724,7 +725,7 @@ export default function AgentMatchWizard() {
                     <button
                       onClick={step === 3 ? () => { setDirection(1); setStep(4); } : goNext}
                       disabled={!canProceed}
-                      className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-indigo-500/20 cursor-pointer"
+                      className="flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-indigo-500/20 cursor-pointer"
                       style={{
                         background: canProceed ? 'linear-gradient(135deg, #6366F1, #7C3AED)' : 'rgba(99,102,241,0.3)',
                       }}

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, ArrowLeft, Check, Shield, Users, Zap, Star } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Check, Shield, Users, Zap, Star, Upload, X } from 'lucide-react';
 import { useTalntTheme } from './TalntThemeContext';
 import { useAgents } from './useTalnt';
 import type {
@@ -42,12 +42,14 @@ interface FormData {
   operatorName: string;
   operatorEmail: string;
   email: string;
+  avatarPreview: string;
 }
 
 const EMPTY_FORM: FormData = {
   name: '', tagline: '', description: '', categories: [],
   framework: '', model: '', securityClearance: '', exclusivity: '',
   monthlyRate: '', operatorName: '', operatorEmail: '', email: '',
+  avatarPreview: '',
 };
 
 export default function ListAgentPage() {
@@ -57,9 +59,19 @@ export default function ListAgentPage() {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState<FormData>(EMPTY_FORM);
   const [submitted, setSubmitted] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const set = <K extends keyof FormData>(key: K, value: FormData[K]) =>
     setForm(f => ({ ...f, [key]: value }));
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) return;
+    const reader = new FileReader();
+    reader.onload = () => set('avatarPreview', reader.result as string);
+    reader.readAsDataURL(file);
+  };
 
   const toggleCategory = (cat: AgentCategory) => {
     set('categories', form.categories.includes(cat)
@@ -85,7 +97,7 @@ export default function ListAgentPage() {
       description: form.description,
       tagline: form.tagline,
       monthlyRate: form.monthlyRate.startsWith('$') ? form.monthlyRate : `$${form.monthlyRate}/mo`,
-      avatarUrl: '',
+      avatarUrl: form.avatarPreview,
       operatorName: form.operatorName,
       operatorEmail: form.operatorEmail,
       categories: form.categories,
@@ -104,42 +116,42 @@ export default function ListAgentPage() {
   };
 
   // Shared input style
-  const inputStyle = {
+  const inputStyle: React.CSSProperties = {
     background: tokens.bgInput,
     border: `1px solid ${tokens.borderDefault}`,
     color: tokens.textPrimary,
     borderRadius: '0.625rem',
-    padding: '0.75rem 1rem',
+    padding: '0.625rem 0.875rem',
     width: '100%',
     outline: 'none',
-    fontSize: '0.9rem',
+    fontSize: '0.85rem',
     transition: 'border-color 0.2s',
   };
-  const labelStyle = { color: tokens.textSecondary, fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.4rem', display: 'block' };
+  const labelStyle: React.CSSProperties = { color: tokens.textSecondary, fontSize: '0.75rem', fontWeight: 600, marginBottom: '0.35rem', display: 'block' };
 
   return (
     <div className="min-h-screen flex" style={{ background: tokens.bgPage }}>
 
       {/* Left: Form */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-16 lg:px-12">
+      <div className="flex-1 flex flex-col items-center justify-start sm:justify-center px-4 sm:px-6 py-8 sm:py-16 lg:px-12">
         <div className="w-full max-w-lg">
 
           {/* Logo link */}
-          <button onClick={() => navigate('/talnt')} className="flex items-center gap-2 mb-10 cursor-pointer group">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
+          <button onClick={() => navigate('/talnt')} className="flex items-center gap-2 mb-6 sm:mb-10 cursor-pointer group">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-white font-bold text-xs sm:text-sm"
               style={{ background: 'linear-gradient(135deg, #6366F1, #8B5CF6)' }}>T</div>
-            <span className="font-semibold text-lg tracking-tight" style={{ color: tokens.textPrimary }}>
+            <span className="font-semibold text-base sm:text-lg tracking-tight" style={{ color: tokens.textPrimary }}>
               Talnt<span style={{ color: tokens.textAccent }}>.ai</span>
             </span>
           </button>
 
           {/* Step indicator */}
-          <div className="flex items-center gap-0 mb-8">
+          <div className="flex items-center gap-0 mb-6 sm:mb-8">
             {STEPS.map((s, i) => (
               <div key={s.id} className="flex items-center flex-1">
                 <div className="flex flex-col items-center flex-shrink-0">
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300"
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold transition-all duration-300"
                     style={{
                       background: step > s.id ? '#10B981' : step === s.id ? 'linear-gradient(135deg, #6366F1, #8B5CF6)' : tokens.bgSurface,
                       color: step >= s.id ? 'white' : tokens.textMuted,
@@ -161,7 +173,7 @@ export default function ListAgentPage() {
           </div>
 
           {/* Progress bar */}
-          <div className="h-1 rounded-full mb-8 overflow-hidden" style={{ background: tokens.bgSurface }}>
+          <div className="h-1 rounded-full mb-6 sm:mb-8 overflow-hidden" style={{ background: tokens.bgSurface }}>
             <motion.div
               className="h-full rounded-full"
               style={{ background: 'linear-gradient(90deg, #6366F1, #8B5CF6)' }}
@@ -197,10 +209,61 @@ export default function ListAgentPage() {
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               >
                 {step === 1 && (
-                  <div className="space-y-5">
+                  <div className="space-y-4 sm:space-y-5">
                     <div>
-                      <h2 className="text-2xl font-black mb-1" style={{ color: tokens.textPrimary }}>Tell us about your agent</h2>
-                      <p className="text-sm" style={{ color: tokens.textSecondary }}>What does your agent do, and what makes it stand out?</p>
+                      <h2 className="text-xl sm:text-2xl font-black mb-1" style={{ color: tokens.textPrimary }}>Tell us about your agent</h2>
+                      <p className="text-xs sm:text-sm" style={{ color: tokens.textSecondary }}>What does your agent do, and what makes it stand out?</p>
+                    </div>
+
+                    {/* Image upload */}
+                    <div>
+                      <label style={labelStyle}>Agent Avatar</label>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageUpload}
+                      />
+                      <div className="flex items-center gap-4">
+                        <div
+                          className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl flex items-center justify-center overflow-hidden cursor-pointer shrink-0 group"
+                          style={{ background: tokens.bgSurface, border: `2px dashed ${tokens.borderDefault}` }}
+                          onClick={() => fileInputRef.current?.click()}
+                        >
+                          {form.avatarPreview ? (
+                            <>
+                              <img src={form.avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
+                              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <Upload size={16} className="text-white" />
+                              </div>
+                            </>
+                          ) : (
+                            <Upload size={20} style={{ color: tokens.textMuted }} />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="text-xs sm:text-sm font-semibold cursor-pointer"
+                            style={{ color: tokens.textAccent }}
+                          >
+                            {form.avatarPreview ? 'Change image' : 'Upload image'}
+                          </button>
+                          <p className="text-[10px] sm:text-[11px] mt-0.5" style={{ color: tokens.textMuted }}>PNG, JPG, or WebP. Max 5MB.</p>
+                          {form.avatarPreview && (
+                            <button
+                              type="button"
+                              onClick={() => set('avatarPreview', '')}
+                              className="flex items-center gap-1 text-[10px] mt-1 cursor-pointer"
+                              style={{ color: tokens.textMuted }}
+                            >
+                              <X size={10} /> Remove
+                            </button>
+                          )}
+                        </div>
+                      </div>
                     </div>
 
                     <div>
@@ -259,13 +322,13 @@ export default function ListAgentPage() {
                 )}
 
                 {step === 2 && (
-                  <div className="space-y-5">
+                  <div className="space-y-4 sm:space-y-5">
                     <div>
-                      <h2 className="text-2xl font-black mb-1" style={{ color: tokens.textPrimary }}>Technical details</h2>
-                      <p className="text-sm" style={{ color: tokens.textSecondary }}>Framework, model, and trust configuration.</p>
+                      <h2 className="text-xl sm:text-2xl font-black mb-1" style={{ color: tokens.textPrimary }}>Technical details</h2>
+                      <p className="text-xs sm:text-sm" style={{ color: tokens.textSecondary }}>Framework, model, and trust configuration.</p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       <div>
                         <label style={labelStyle}>Framework *</label>
                         <select
@@ -292,13 +355,13 @@ export default function ListAgentPage() {
 
                     <div>
                       <label style={labelStyle}>Security Clearance *</label>
-                      <div className="grid grid-cols-3 gap-2 mt-1">
+                      <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mt-1">
                         {(['basic', 'standard', 'enterprise'] as SecurityClearance[]).map(c => (
                           <button
                             key={c}
                             type="button"
                             onClick={() => set('securityClearance', c)}
-                            className="py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer capitalize"
+                            className="py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-150 cursor-pointer capitalize"
                             style={{
                               background: form.securityClearance === c ? tokens.bgPillActive : tokens.bgSurface,
                               color: form.securityClearance === c ? tokens.textAccent : tokens.textSecondary,
@@ -313,17 +376,17 @@ export default function ListAgentPage() {
 
                     <div>
                       <label style={labelStyle}>Exclusivity *</label>
-                      <div className="grid grid-cols-2 gap-3 mt-1">
+                      <div className="grid grid-cols-2 gap-2 sm:gap-3 mt-1">
                         <button
                           type="button"
                           onClick={() => set('exclusivity', 'exclusive')}
-                          className="flex flex-col items-start gap-1 p-4 rounded-xl text-left transition-all duration-150 cursor-pointer"
+                          className="flex flex-col items-start gap-1 p-3 sm:p-4 rounded-xl text-left transition-all duration-150 cursor-pointer"
                           style={{
                             background: form.exclusivity === 'exclusive' ? tokens.bgPillActive : tokens.bgSurface,
                             border: `1px solid ${form.exclusivity === 'exclusive' ? tokens.borderHover : tokens.borderDefault}`,
                           }}
                         >
-                          <span className="flex items-center gap-1.5 text-sm font-bold" style={{ color: form.exclusivity === 'exclusive' ? tokens.textAccent : tokens.textPrimary }}>
+                          <span className="flex items-center gap-1.5 text-xs sm:text-sm font-bold" style={{ color: form.exclusivity === 'exclusive' ? tokens.textAccent : tokens.textPrimary }}>
                             <Star size={13} /> Exclusive
                           </span>
                           <span className="text-[11px]" style={{ color: tokens.textMuted }}>Works with one company at a time</span>
@@ -331,13 +394,13 @@ export default function ListAgentPage() {
                         <button
                           type="button"
                           onClick={() => set('exclusivity', 'multi_client')}
-                          className="flex flex-col items-start gap-1 p-4 rounded-xl text-left transition-all duration-150 cursor-pointer"
+                          className="flex flex-col items-start gap-1 p-3 sm:p-4 rounded-xl text-left transition-all duration-150 cursor-pointer"
                           style={{
                             background: form.exclusivity === 'multi_client' ? tokens.bgPillActive : tokens.bgSurface,
                             border: `1px solid ${form.exclusivity === 'multi_client' ? tokens.borderHover : tokens.borderDefault}`,
                           }}
                         >
-                          <span className="flex items-center gap-1.5 text-sm font-bold" style={{ color: form.exclusivity === 'multi_client' ? tokens.textAccent : tokens.textPrimary }}>
+                          <span className="flex items-center gap-1.5 text-xs sm:text-sm font-bold" style={{ color: form.exclusivity === 'multi_client' ? tokens.textAccent : tokens.textPrimary }}>
                             <Users size={13} /> Multi-client
                           </span>
                           <span className="text-[11px]" style={{ color: tokens.textMuted }}>Available to multiple companies</span>
@@ -348,10 +411,10 @@ export default function ListAgentPage() {
                 )}
 
                 {step === 3 && (
-                  <div className="space-y-5">
+                  <div className="space-y-4 sm:space-y-5">
                     <div>
-                      <h2 className="text-2xl font-black mb-1" style={{ color: tokens.textPrimary }}>Pricing & operator</h2>
-                      <p className="text-sm" style={{ color: tokens.textSecondary }}>Who's behind this agent, and what does it cost?</p>
+                      <h2 className="text-xl sm:text-2xl font-black mb-1" style={{ color: tokens.textPrimary }}>Pricing & operator</h2>
+                      <p className="text-xs sm:text-sm" style={{ color: tokens.textSecondary }}>Who's behind this agent, and what does it cost?</p>
                     </div>
 
                     <div>
@@ -369,7 +432,7 @@ export default function ListAgentPage() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       <div>
                         <label style={labelStyle}>Operator Name *</label>
                         <input style={inputStyle} placeholder="Your full name"
@@ -422,14 +485,14 @@ export default function ListAgentPage() {
                 )}
 
                 {/* Navigation buttons */}
-                <div className="flex items-center justify-between mt-8 gap-3">
+                <div className="flex items-center justify-between mt-6 sm:mt-8 gap-3">
                   {step > 1 ? (
                     <button
                       onClick={() => setStep(s => s - 1)}
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer"
+                      className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer"
                       style={{ border: `1px solid ${tokens.borderDefault}`, color: tokens.textSecondary }}
                     >
-                      <ArrowLeft size={15} /> Back
+                      <ArrowLeft size={14} /> Back
                     </button>
                   ) : (
                     <div />
@@ -438,7 +501,7 @@ export default function ListAgentPage() {
                   {step < 3 ? (
                     <button
                       onClick={() => canNext() && setStep(s => s + 1)}
-                      className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition-all cursor-pointer"
+                      className="flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white transition-all cursor-pointer"
                       style={{
                         background: canNext() ? 'linear-gradient(135deg, #6366F1, #8B5CF6)' : tokens.bgSurface,
                         color: canNext() ? 'white' : tokens.textMuted,
@@ -451,7 +514,7 @@ export default function ListAgentPage() {
                   ) : (
                     <button
                       onClick={() => canNext() && handleSubmit()}
-                      className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                      className="flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all"
                       style={{
                         background: canNext() ? 'linear-gradient(135deg, #6366F1, #8B5CF6)' : tokens.bgSurface,
                         color: canNext() ? 'white' : tokens.textMuted,
