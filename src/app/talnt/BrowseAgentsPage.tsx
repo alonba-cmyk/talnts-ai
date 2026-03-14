@@ -1,30 +1,27 @@
-import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAgentSearch } from './AgentSearchContext';
-import { useTalntTheme } from './TalntThemeContext';
 import type { AgentCategory } from './types';
 
 export default function BrowseAgentsPage() {
   const { openSearch, isOpen } = useAgentSearch();
   const [searchParams] = useSearchParams();
-  const { tokens } = useTalntTheme();
+  const navigate = useNavigate();
+  const hasOpened = useRef(false);
 
   useEffect(() => {
-    if (!isOpen) {
+    if (!isOpen && !hasOpened.current) {
       const category = (searchParams.get('category') || undefined) as AgentCategory | undefined;
       openSearch({ category });
+      hasOpened.current = true;
     }
   }, []);
 
-  return (
-    <div className="min-h-[60vh] flex items-center justify-center" style={{ fontFamily: 'Figtree, sans-serif', background: tokens.bgPage }}>
-      <button
-        onClick={() => openSearch()}
-        className="flex items-center gap-3 px-8 py-4 rounded-xl text-white font-semibold text-lg transition-all hover:shadow-xl hover:shadow-indigo-500/20 hover:scale-[1.02] cursor-pointer"
-        style={{ background: 'linear-gradient(135deg, #6366F1, #7C3AED)' }}
-      >
-        Open Agent Search
-      </button>
-    </div>
-  );
+  useEffect(() => {
+    if (hasOpened.current && !isOpen) {
+      navigate('/talnt', { replace: true });
+    }
+  }, [isOpen, navigate]);
+
+  return null;
 }

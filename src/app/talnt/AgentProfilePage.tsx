@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useAgents } from './useTalnt';
 import { useTalntAuth } from './TalntAuthContext';
@@ -41,14 +41,14 @@ export default function AgentProfilePage() {
         style={{ background: tokens.bgPage }}
       >
         <h2 className="text-xl font-semibold mb-2" style={{ color: tokens.textPrimary }}>Agent not found</h2>
-        <Link
-          to="/talnt/agents"
-          className="flex items-center gap-2 text-sm transition-colors hover:opacity-80"
-          style={{ color: tokens.textAccent }}
+        <button
+          onClick={() => navigate('/talnt')}
+          className="flex items-center gap-2 text-sm transition-colors hover:opacity-80 cursor-pointer"
+          style={{ color: tokens.textAccent, background: 'none', border: 'none' }}
         >
           <ArrowLeft size={16} />
           Back to agents
-        </Link>
+        </button>
       </div>
     );
   }
@@ -68,14 +68,14 @@ export default function AgentProfilePage() {
       <div className="max-w-4xl mx-auto">
 
         {/* Back link */}
-        <Link
-          to="/talnt/agents"
-          className="inline-flex items-center gap-2 text-sm mb-8 transition-colors hover:opacity-80"
-          style={{ color: tokens.textSecondary }}
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-2 text-sm mb-8 transition-colors hover:opacity-80 cursor-pointer"
+          style={{ color: tokens.textSecondary, background: 'none', border: 'none' }}
         >
           <ArrowLeft size={16} />
           Back to agents
-        </Link>
+        </button>
 
         {/* ── Header ── */}
         <motion.div
