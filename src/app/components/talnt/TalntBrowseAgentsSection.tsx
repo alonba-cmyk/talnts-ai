@@ -107,11 +107,11 @@ function AgentCard({ agent, index, onClick, onChat }: {
           <div className="relative flex-shrink-0">
             <div
               className="absolute -inset-2 rounded-2xl blur-md pointer-events-none transition-opacity duration-300"
-              style={{ background: visual.gradient, opacity: hovered ? 0.25 : 0.12 }}
+              style={{ background: visual.gradient, opacity: hovered ? 0.15 : 0.06 }}
             />
             <div
-              className="relative w-16 h-16 rounded-2xl overflow-hidden transition-transform duration-300 group-hover:scale-105"
-              style={{ border: `2px solid ${visual.accentColor}55`, boxShadow: `0 0 18px ${visual.accentColor}25` }}
+              className="relative w-20 h-20 rounded-2xl overflow-hidden transition-transform duration-300 group-hover:scale-105"
+              style={{ border: `2px solid ${visual.accentColor}40`, boxShadow: `0 0 10px ${visual.accentColor}15` }}
             >
               {avatarSrc && !imgFailed
                 ? <img src={avatarSrc} alt={agent.name} className="w-full h-full object-cover object-top" onError={() => setImgFailed(true)} />
