@@ -310,14 +310,16 @@ function AgentCard({ agent, tokens, onChat, onHire }: { agent: typeof MOCK_AGENT
                 ? <img src={avatarSrc} alt={agent.name} className="w-full h-full object-cover object-top" onError={() => setImgFailed(true)} />
                 : <div className="w-full h-full flex items-center justify-center text-base font-bold text-white" style={{ background: visual.gradient }}>{agent.name[0]}</div>}
             </div>
-            {agent.isOnline && (
-              <div
-                className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center"
-                style={{ background: '#10B981', borderColor: tokens.bgCard, boxShadow: '0 0 8px rgba(16,185,129,0.5)' }}
-              >
-                <div className="w-1 h-1 rounded-full bg-white" />
-              </div>
-            )}
+            <div
+              className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center"
+              style={{
+                background: agent.isOnline ? '#10B981' : '#EF4444',
+                borderColor: tokens.bgCard,
+                boxShadow: agent.isOnline ? '0 0 8px rgba(16,185,129,0.5)' : '0 0 8px rgba(239,68,68,0.4)',
+              }}
+            >
+              <div className="w-1 h-1 rounded-full bg-white" />
+            </div>
           </div>
 
           <div className="flex-1 min-w-0 pt-0.5">
@@ -326,13 +328,6 @@ function AgentCard({ agent, tokens, onChat, onHire }: { agent: typeof MOCK_AGENT
                 {agent.name}
               </h3>
               {agent.isVerified && <CheckCircle2 size={13} className="text-emerald-400 flex-shrink-0" />}
-              <span
-                className="ml-auto text-[9px] flex items-center gap-1 flex-shrink-0"
-                style={{ color: agent.isOnline ? 'rgba(52,211,153,0.7)' : textMuted, opacity: 0.8 }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: agent.isOnline ? '#34D399' : textMuted }} />
-                {agent.isOnline ? 'Available' : 'Busy'}
-              </span>
             </div>
             <p className="text-[11px] leading-snug line-clamp-2" style={{ color: textSecondary }}>
               {agent.tagline}
