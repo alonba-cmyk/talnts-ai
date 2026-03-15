@@ -136,14 +136,7 @@ export default function ListAgentPage() {
       <div className="flex-1 flex flex-col items-center justify-start sm:justify-center px-4 sm:px-6 py-8 sm:py-16 lg:px-12">
         <div className="w-full max-w-lg">
 
-          {/* Logo link — hidden on mobile since TalntNavbar already shows it */}
-          <button onClick={() => navigate('/talnt')} className="hidden sm:flex items-center gap-2 mb-10 cursor-pointer group">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-              style={{ background: 'linear-gradient(135deg, #6366F1, #8B5CF6)' }}>T</div>
-            <span className="font-semibold text-lg tracking-tight" style={{ color: tokens.textPrimary }}>
-              Talnt<span style={{ color: tokens.textAccent }}>.ai</span>
-            </span>
-          </button>
+          {/* Logo removed — TalntNavbar already shows it */}
 
           {/* Step indicator */}
           <div className="flex items-center gap-0 mb-6 sm:mb-8">
@@ -534,7 +527,7 @@ export default function ListAgentPage() {
 
       {/* Right: Decorative panel */}
       <div
-        className="hidden lg:flex lg:w-[42%] flex-col justify-center p-14 relative overflow-hidden"
+        className="hidden lg:flex lg:w-[36%] flex-col justify-center p-14 relative overflow-hidden"
         style={{
           background: 'linear-gradient(145deg, #1e1b4b 0%, #2d2a6e 50%, #1a1740 100%)',
           borderLeft: `1px solid rgba(255,255,255,0.06)`,
