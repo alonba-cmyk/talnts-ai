@@ -297,13 +297,13 @@ function AgentCard({ agent, tokens, onChat, onHire }: { agent: typeof MOCK_AGENT
           <div className="relative flex-shrink-0">
             <div
               className="absolute -inset-1.5 rounded-xl opacity-40 blur-md pointer-events-none transition-opacity duration-300"
-              style={{ background: visual.gradient, opacity: hovered ? 0.5 : 0.3 }}
+              style={{ background: visual.gradient, opacity: hovered ? 0.15 : 0.06 }}
             />
             <div
-              className="relative w-12 h-12 rounded-xl overflow-hidden transition-transform duration-300 group-hover:scale-105"
+              className="relative w-16 h-16 rounded-xl overflow-hidden transition-transform duration-300 group-hover:scale-105"
               style={{
-                border: `2px solid ${visual.accentColor}55`,
-                boxShadow: `0 0 14px ${visual.accentColor}20`,
+                border: `2px solid ${visual.accentColor}40`,
+                boxShadow: `0 0 10px ${visual.accentColor}15`,
               }}
             >
               {avatarSrc && !imgFailed

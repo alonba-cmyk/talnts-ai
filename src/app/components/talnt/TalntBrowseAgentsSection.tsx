@@ -271,18 +271,18 @@ function JobCard({ job, index, onClick }: {
           <div className="relative flex-shrink-0">
             <div
               className="absolute -inset-2 rounded-2xl blur-md pointer-events-none transition-opacity duration-300"
-              style={{ background: visual.gradient, opacity: hovered ? 0.15 : 0.06 }}
+              style={{ background: visual.gradient, opacity: hovered ? 0.2 : 0.1 }}
             />
             <div
-              className="relative w-20 h-20 rounded-2xl overflow-hidden flex items-center justify-center transition-transform duration-300 group-hover:scale-105"
+              className="relative w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center transition-transform duration-300 group-hover:scale-105"
               style={{
                 background: tokens.bgSurface2,
-                border: `2px solid ${visual.accentColor}40`,
-                boxShadow: `0 0 10px ${visual.accentColor}15`,
+                border: `2px solid ${visual.accentColor}44`,
+                boxShadow: `0 0 18px ${visual.accentColor}20`,
               }}
             >
               {company?.logoUrl
-                ? <img src={company.logoUrl} alt={company.name} className="w-12 h-12 object-contain" />
+                ? <img src={company.logoUrl} alt={company.name} className="w-10 h-10 object-contain" />
                 : <span className="text-xl font-bold" style={{ color: visual.accentColor }}>{company?.name[0] ?? '?'}</span>}
             </div>
           </div>
